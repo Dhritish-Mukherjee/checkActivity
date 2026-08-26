@@ -24,12 +24,17 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'User with this email already exists.' });
     }
 
-    // Create user (only admin can set role, otherwise default to employee)
+    // Determine role - only an authenticated admin can set roles, otherwise it defaults to employee
+    let assignedRole = 'employee';
+    if (req.user && req.user.role === 'admin' && role) {
+      assignedRole = role;
+    }
+
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      role: role || 'employee'
+      role: assignedRole
     });
 
     await user.save();
@@ -114,6 +119,20 @@ const getEmployees = async (req, res) => {
   }
 };
 
+// Get all users (for assigning tasks)
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find()
+      .select('-password')
+      .sort({ name: 1 });
+
+    res.json({ users });
+  } catch (error) {
+    console.error('Get all users error:', error);
+    res.status(500).json({ message: 'Failed to get users.' });
+  }
+};
+
 // Get user by ID (admin only)
 const getUserById = async (req, res) => {
   try {
@@ -135,5 +154,6 @@ module.exports = {
   login,
   getCurrentUser,
   getEmployees,
+  getAllUsers,
   getUserById
 };

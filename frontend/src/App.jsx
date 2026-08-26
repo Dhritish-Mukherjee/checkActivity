@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
 
+import SignupPage from './pages/SignupPage';
+
 function RedirectByRole() {
   const { user, loading, isAuthenticated } = useAuth();
 
@@ -30,12 +32,22 @@ function LoginGuard() {
   return <LoginPage />;
 }
 
+function SignupGuard() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return null;
+  if (isAuthenticated) return <Navigate to="/" replace />;
+
+  return <SignupPage />;
+}
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginGuard />} />
+          <Route path="/signup" element={<SignupGuard />} />
           <Route path="/*" element={<RedirectByRole />} />
         </Routes>
       </BrowserRouter>

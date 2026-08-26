@@ -272,11 +272,28 @@ const getAllTimeLogs = async (req, res) => {
   }
 };
 
+// Get the current user's active running timer (if any)
+const getActiveTimer = async (req, res) => {
+  try {
+    const activeTimer = await TimeLog.findOne({
+      user: req.user._id,
+      type: 'timer',
+      endTime: null
+    }).populate('task', 'title _id');
+
+    res.json({ activeTimer: activeTimer || null });
+  } catch (error) {
+    console.error('Get active timer error:', error);
+    res.status(500).json({ message: 'Failed to get active timer.' });
+  }
+};
+
 module.exports = {
   createManualEntry,
   startTimer,
   stopTimer,
   getMyTimeLogs,
   getTaskTimeLogs,
-  getAllTimeLogs
+  getAllTimeLogs,
+  getActiveTimer
 };

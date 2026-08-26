@@ -8,10 +8,12 @@ const { isAdmin } = require('../middleware/roleCheck');
 router.use(auth);
 
 // Admin only routes
-router.post('/', isAdmin, taskController.createTask);
 router.put('/:id', isAdmin, taskController.updateTask);
 router.delete('/:id', isAdmin, taskController.deleteTask);
 router.get('/all', isAdmin, taskController.getAllTasks);
+
+// Routes accessible by both admin and employees
+router.post('/', taskController.createTask);
 
 // Routes accessible by both admin and employees
 router.get('/my', taskController.getMyTasks);

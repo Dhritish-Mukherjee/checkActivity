@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const LoginPage = () => {
+const SignupPage = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,10 +17,10 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/');
+      await register({ name, email, password });
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -30,7 +31,7 @@ const LoginPage = () => {
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-slate-800 mb-2">Strivers Task</h1>
-          <p className="text-slate-500">Sign in to your account</p>
+          <p className="text-slate-500">Create an account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -39,6 +40,21 @@ const LoginPage = () => {
               {error}
             </div>
           )}
+
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+              placeholder="John Doe"
+            />
+          </div>
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
@@ -75,15 +91,15 @@ const LoginPage = () => {
             disabled={loading}
             className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
         <div className="mt-6 text-center text-sm text-slate-500">
           <p>
-            Don't have an account?{' '}
-            <a href="/signup" className="text-primary hover:underline font-medium">
-              Create Account
+            Already have an account?{' '}
+            <a href="/login" className="text-primary hover:underline font-medium">
+              Sign In
             </a>
           </p>
         </div>
@@ -92,4 +108,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

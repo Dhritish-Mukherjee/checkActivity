@@ -8,6 +8,7 @@ import EmployeeDetail from '../pages/admin/EmployeeDetail';
 import MyTasks from '../pages/employee/MyTasks';
 import MyTimeLogs from '../pages/employee/MyTimeLogs';
 import TaskDetail from '../pages/employee/TaskDetail';
+import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -17,6 +18,7 @@ const Layout = () => {
       <Sidebar user={user} logout={logout} isAdmin={isAdmin} />
 
       <main className="flex-1 ml-64">
+        {!isAdmin && <GlobalTimerBanner />}
         <header className="bg-white border-b border-slate-200 px-8 py-4">
           <div className="flex items-center justify-between">
             <div>

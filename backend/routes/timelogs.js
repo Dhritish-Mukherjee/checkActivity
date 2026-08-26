@@ -15,6 +15,7 @@ router.patch('/timer/:id/stop', timeLogController.stopTimer);
 
 // Get time logs
 router.get('/my', timeLogController.getMyTimeLogs);
+router.get('/active', timeLogController.getActiveTimer);
 router.get('/task/:taskId', timeLogController.getTaskTimeLogs);
 
 // Admin routes for getting all time logs

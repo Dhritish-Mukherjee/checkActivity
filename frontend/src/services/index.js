@@ -39,6 +39,7 @@ export const authAPI = {
   register: (userData) => api.post('/auth/register', userData),
   getCurrentUser: () => api.get('/auth/me'),
   getEmployees: () => api.get('/auth/employees'),
+  getAllUsers: () => api.get('/auth/users'),
 };
 
 export const taskAPI = {
@@ -53,6 +54,7 @@ export const taskAPI = {
 
 export const timeLogAPI = {
   getMyTimeLogs: (params) => api.get('/timelogs/my', { params }),
+  getActiveTimer: () => api.get('/timelogs/active'),
   getTaskTimeLogs: (taskId) => api.get(`/timelogs/task/${taskId}`),
   getAllTimeLogs: (params) => api.get('/timelogs/all', { params }),
   createManualEntry: (data) => api.post('/timelogs/manual', data),

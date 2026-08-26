@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { taskAPI, authAPI } from '../../services';
 
 const STATUS_BADGES = {
-  todo: 'bg-yellow-100 text-yellow-700',
-  in_progress: 'bg-blue-100 text-blue-700',
+  todo: 'bg-slate-100 text-slate-600',
+  accepted: 'bg-blue-100 text-blue-700',
+  in_progress: 'bg-violet-100 text-violet-700',
   completed: 'bg-green-100 text-green-700',
 };
 
@@ -122,6 +123,7 @@ const ManageTasks = () => {
         >
           <option value="">All Statuses</option>
           <option value="todo">To Do</option>
+          <option value="accepted">Accepted</option>
           <option value="in_progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
@@ -189,7 +191,7 @@ const ManageTasks = () => {
                         STATUS_BADGES[task.status]
                       }`}
                     >
-                      {task.status.replace('_', ' ')}
+                      {task.status === 'in_progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                     </span>
                   </td>
                   <td className="py-3 px-2">

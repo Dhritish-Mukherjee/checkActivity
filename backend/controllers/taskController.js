@@ -13,15 +13,14 @@ const createTask = async (req, res) => {
       });
     }
 
-    // Verify all assigned users exist and are employees
-    const employees = await User.find({
-      _id: { $in: assignedTo },
-      role: 'employee'
+    // Verify all assigned users exist
+    const users = await User.find({
+      _id: { $in: assignedTo }
     });
 
-    if (employees.length !== assignedTo.length) {
+    if (users.length !== assignedTo.length) {
       return res.status(400).json({
-        message: 'One or more assigned users are invalid or not employees.'
+        message: 'One or more assigned users are invalid.'
       });
     }
 
@@ -156,14 +155,13 @@ const updateTask = async (req, res) => {
     if (title) task.title = title.trim();
     if (description !== undefined) task.description = description.trim();
     if (assignedTo && assignedTo.length > 0) {
-      // Verify all assigned users exist and are employees
-      const employees = await User.find({
-        _id: { $in: assignedTo },
-        role: 'employee'
+      // Verify all assigned users exist
+      const users = await User.find({
+        _id: { $in: assignedTo }
       });
-      if (employees.length !== assignedTo.length) {
+      if (users.length !== assignedTo.length) {
         return res.status(400).json({
-          message: 'One or more assigned users are invalid or not employees.'
+          message: 'One or more assigned users are invalid.'
         });
       }
       task.assignedTo = assignedTo;
@@ -191,9 +189,9 @@ const updateTaskStatus = async (req, res) => {
   try {
     const { status } = req.body;
 
-    if (!status || !['todo', 'in_progress', 'completed'].includes(status)) {
+    if (!status || !['todo', 'accepted', 'in_progress', 'completed'].includes(status)) {
       return res.status(400).json({
-        message: 'Valid status is required (todo, in_progress, completed).'
+        message: 'Valid status is required (todo, accepted, in_progress, completed).'
       });
     }
 
