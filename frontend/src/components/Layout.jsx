@@ -95,6 +95,7 @@ const Layout = () => {
                 <Route path="/tasks" element={<MyTasks />} />
                 <Route path="/tasks/:id" element={<TaskDetail />} />
                 <Route path="/time-logs" element={<MyTimeLogs />} />
+                <Route path="/quiz-generator" element={<QuizGenerator />} />
                 <Route path="/settings" element={<Settings />} />
               </>
             )}

@@ -13,6 +13,7 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
   const employeeLinks = [
     { to: '/', icon: '▣', label: 'My Tasks' },
     { to: '/time-logs', icon: '◎', label: 'Time Logs' },
+    { to: '/quiz-generator', icon: '⚡', label: 'Quiz Engine' },
     { to: '/settings', icon: '◮', label: 'Settings' },
   ];
 
