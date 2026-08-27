@@ -108,4 +108,8 @@ export const dashboardAPI = {
   getQuizLogs: () => api.get('/dashboard/quiz-logs'),
 };
 
+export const youtubeAPI = {
+  getRecentStreams: (limit = 12) => api.get('/youtube/streams', { params: { limit }, bypassCache: true }),
+};
+
 export default api;

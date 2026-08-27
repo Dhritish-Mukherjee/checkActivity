@@ -26,6 +26,7 @@ const taskRoutes = require('./routes/tasks');
 const timeLogRoutes = require('./routes/timelogs');
 const dashboardRoutes = require('./routes/dashboard');
 const quizGeneratorRoutes = require('./routes/quizGenerator');
+const youtubeRoutes = require('./routes/youtube');
 const path = require('path');
 
 // Serve quiz generator statics
@@ -38,6 +39,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/timelogs', timeLogRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/quiz-generator', quizGeneratorRoutes);
+app.use('/api/youtube', youtubeRoutes);
 
 // Basic route for API testing
 app.get('/api', (req, res) => {

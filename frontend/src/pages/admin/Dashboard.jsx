@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { dashboardAPI } from '../../services';
+import YoutubeStreams from './YoutubeStreams';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -323,6 +324,10 @@ const AdminDashboard = () => {
         ) : (
           <p className="text-slate-500 text-center py-8">No quizzes generated yet.</p>
         )}
+      </div>
+      {/* YouTube Live Streams Section */}
+      <div className="border-t border-white/5 pt-6">
+        <YoutubeStreams />
       </div>
     </div>
   );
