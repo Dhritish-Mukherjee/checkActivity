@@ -64,8 +64,12 @@ const EmployeesPage = () => {
             >
               <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700" />
               <div className="flex items-center gap-3.5 mb-4 relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-base shadow-lg shadow-indigo-500/20 border border-white/20 shrink-0">
-                  {emp.name.charAt(0).toUpperCase()}
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-base shadow-lg shadow-indigo-500/20 border border-white/20 shrink-0 overflow-hidden">
+                  {emp.profilePicture ? (
+                    <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
+                  ) : (
+                    emp.name.charAt(0).toUpperCase()
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-white group-hover:text-indigo-300 transition-colors truncate font-heading">{emp.name}</p>

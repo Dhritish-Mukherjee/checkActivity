@@ -61,8 +61,12 @@ const EmployeeDetail = () => {
       </Link>
 
       <div className="card flex items-center gap-4 bg-gradient-to-r from-indigo-950/40 to-slate-900/80 border-indigo-500/30">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-2xl shadow-xl shadow-indigo-500/20 border border-white/20">
-          {employee.name.charAt(0).toUpperCase()}
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-2xl shadow-xl shadow-indigo-500/20 border border-white/20 shrink-0 overflow-hidden">
+          {employee.profilePicture ? (
+            <img src={employee.profilePicture} alt={employee.name} className="w-full h-full object-cover" />
+          ) : (
+            employee.name.charAt(0).toUpperCase()
+          )}
         </div>
         <div>
           <h1 className="text-2xl font-extrabold text-white font-heading">{employee.name}</h1>
