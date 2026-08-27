@@ -170,8 +170,8 @@ const ManageTasks = () => {
         )}
       </div>
 
-      {/* Tasks Table */}
-      <div className="card overflow-x-auto">
+      {/* Tasks List */}
+      <div className="card !p-0 overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
@@ -179,62 +179,72 @@ const ManageTasks = () => {
         ) : tasks.length === 0 ? (
           <p className="text-center py-12 text-slate-500 text-sm">No tasks matched your filter criteria.</p>
         ) : (
-          <table className="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr className="border-b border-white/10 text-xs uppercase tracking-wider text-slate-400">
-                <th className="py-3.5 px-3">Title &amp; Description</th>
-                <th className="py-3.5 px-3">Assignees</th>
-                <th className="py-3.5 px-3">Status</th>
-                <th className="py-3.5 px-3">Priority</th>
-                <th className="py-3.5 px-3">Due Date</th>
-                <th className="py-3.5 px-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {tasks.map((task) => (
-                <tr key={task._id} className="hover:bg-white/5 transition-colors">
-                  <td className="py-3.5 px-3">
-                    <div className="font-bold text-white text-sm">{task.title}</div>
-                    {task.description && (
-                      <div className="text-xs text-slate-400 truncate max-w-sm mt-0.5">
-                        {task.description}
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-3.5 px-3 text-slate-300 text-xs">
-                    {task.assignedTo?.map((u) => u.name).join(', ') || 'None'}
-                  </td>
-                  <td className="py-3.5 px-3">
+          <div className="flex flex-col divide-y divide-white/5">
+            {/* Desktop Header */}
+            <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-950/40 text-xs uppercase tracking-wider text-slate-400 font-bold border-b border-white/10">
+              <div className="col-span-4">Title &amp; Description</div>
+              <div className="col-span-3">Assignees</div>
+              <div className="col-span-2">Status &amp; Priority</div>
+              <div className="col-span-1">Due Date</div>
+              <div className="col-span-2 text-right">Actions</div>
+            </div>
+
+            {/* Task Rows */}
+            {tasks.map((task) => (
+              <div key={task._id} className="grid grid-cols-1 lg:grid-cols-12 gap-y-3 lg:gap-4 px-5 py-5 lg:px-6 lg:py-4 hover:bg-slate-900/40 transition-colors lg:items-center">
+                <div className="col-span-4">
+                  <div className="font-bold text-white text-base lg:text-sm leading-tight">{task.title}</div>
+                  {task.description && (
+                    <div className="text-xs text-slate-400 mt-1 line-clamp-2 lg:line-clamp-1">
+                      {task.description}
+                    </div>
+                  )}
+                  <div className="lg:hidden mt-3 flex flex-wrap gap-2">
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${STATUS_BADGES[task.status]}`}>
-                      {task.status === 'in_progress' ? 'In Progress' : task.status}
+                      {task.status.replace('_', ' ')}
                     </span>
-                  </td>
-                  <td className="py-3.5 px-3">
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${PRIORITY_BADGES[task.priority]}`}>
                       {task.priority}
                     </span>
-                  </td>
-                  <td className="py-3.5 px-3 text-xs text-slate-400 font-mono">
-                    {task.dueDate ? new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—'}
-                  </td>
-                  <td className="py-3.5 px-3 text-right space-x-2">
-                    <button
-                      onClick={() => handleEdit(task)}
-                      className="px-2.5 py-1 text-xs font-semibold text-indigo-400 hover:text-white bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(task._id)}
-                      className="px-2.5 py-1 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 rounded-lg transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+
+                <div className="col-span-3 text-slate-300 text-xs flex flex-col justify-center">
+                  <span className="lg:hidden text-[10px] uppercase text-slate-500 font-bold mb-1">Assignees</span>
+                  <div className="truncate">{task.assignedTo?.map((u) => u.name).join(', ') || 'None'}</div>
+                </div>
+
+                <div className="col-span-2 hidden lg:flex flex-col items-start gap-1.5">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${STATUS_BADGES[task.status]}`}>
+                     {task.status.replace('_', ' ')}
+                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${PRIORITY_BADGES[task.priority]}`}>
+                     {task.priority}
+                  </span>
+                </div>
+
+                <div className="col-span-1 text-xs text-slate-400 font-mono flex flex-col justify-center">
+                  <span className="lg:hidden text-[10px] uppercase text-slate-500 font-bold mb-1 font-sans">Due Date</span>
+                  {task.dueDate ? new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—'}
+                </div>
+
+                <div className="col-span-2 flex items-center justify-start lg:justify-end gap-2 mt-2 lg:mt-0 pt-4 lg:pt-0 border-t lg:border-none border-white/5">
+                  <button
+                    onClick={() => handleEdit(task)}
+                    className="px-4 py-2 lg:px-3 lg:py-1.5 text-xs font-semibold text-indigo-400 hover:text-white bg-indigo-500/10 hover:bg-indigo-500/20 rounded-lg transition-colors flex-1 lg:flex-none text-center border border-indigo-500/20"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(task._id)}
+                    className="px-4 py-2 lg:px-3 lg:py-1.5 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 rounded-lg transition-colors flex-1 lg:flex-none text-center border border-rose-500/20"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
