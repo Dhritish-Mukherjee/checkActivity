@@ -34,6 +34,39 @@ api.interceptors.response.use(
   }
 );
 
+// --- Simple Frontend Caching Layer ---
+const cache = new Map();
+const CACHE_TTL = 2 * 60 * 1000; // 2 minutes
+
+const originalGet = api.get;
+api.get = async (url, config = {}) => {
+  if (config.bypassCache) {
+    return originalGet.call(api, url, config);
+  }
+
+  const cacheKey = url + JSON.stringify(config.params || {});
+  const cached = cache.get(cacheKey);
+
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    // Return cloned data so components don't accidentally mutate the cache
+    return Promise.resolve(JSON.parse(JSON.stringify(cached.data)));
+  }
+
+  const response = await originalGet.call(api, url, config);
+  // Clone response before caching to avoid mutation issues
+  cache.set(cacheKey, { timestamp: Date.now(), data: JSON.parse(JSON.stringify(response)) });
+  return response;
+};
+
+// Clear cache on any data mutation to keep it fresh
+api.interceptors.request.use((config) => {
+  if (['post', 'put', 'patch', 'delete'].includes(config.method?.toLowerCase())) {
+    cache.clear();
+  }
+  return config;
+});
+// -------------------------------------
+
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   register: (userData) => api.post('/auth/register', userData),
@@ -54,7 +87,7 @@ export const taskAPI = {
 
 export const timeLogAPI = {
   getMyTimeLogs: (params) => api.get('/timelogs/my', { params }),
-  getActiveTimer: () => api.get('/timelogs/active'),
+  getActiveTimer: () => api.get('/timelogs/active', { bypassCache: true }),
   getTaskTimeLogs: (taskId) => api.get(`/timelogs/task/${taskId}`),
   getAllTimeLogs: (params) => api.get('/timelogs/all', { params }),
   createManualEntry: (data) => api.post('/timelogs/manual', data),
