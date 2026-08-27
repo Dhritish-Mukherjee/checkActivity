@@ -120,7 +120,7 @@ const getCurrentUser = async (req, res) => {
 // Get all employees (admin only)
 const getEmployees = async (req, res) => {
   try {
-    const employees = await User.find({ role: 'employee' })
+    const employees = await User.find()
       .select('-password')
       .sort({ createdAt: -1 });
 
