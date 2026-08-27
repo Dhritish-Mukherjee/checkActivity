@@ -31,11 +31,10 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'employee'],
     default: 'employee'
   },
-  department: {
+  department: [{
     type: String,
-    enum: ['faculty', 'tech', 'promotional', null],
-    default: null
-  },
+    enum: ['faculty', 'tech', 'promotional', 'owners_club']
+  }],
   // For faculty: the name alias that appears in YouTube video titles (e.g. "Somnath Sir")
   youtubeAlias: {
     type: String,

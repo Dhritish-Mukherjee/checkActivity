@@ -363,7 +363,7 @@ const getEmployeesSummary = async (req, res) => {
         name: employee.name,
         email: employee.email,
         profilePicture: employee.profilePicture,
-        department: employee.department || null,
+        department: employee.department || [],
         teacherStats: employee.teacherStats || null,
         youtubeAlias: employee.youtubeAlias || null,
         createdAt: employee.createdAt,

@@ -9,6 +9,8 @@ const STATUS_BADGES = {
   completed: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
 };
 
+const isFaculty = (dept) => Array.isArray(dept) ? dept.includes('faculty') : dept === 'faculty';
+
 const EmployeeDetail = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
@@ -35,7 +37,7 @@ const EmployeeDetail = () => {
       setTimeLogs(logsRes.data.timeLogs || []);
 
       // If faculty, load their YouTube videos
-      if (emp?.department === 'faculty') {
+      if (isFaculty(emp?.department)) {
         try {
           const teachersRes = await youtubeAPI.getTeachers();
           const teacher = teachersRes.data.teachers.find((t) => t._id === id);
@@ -74,8 +76,8 @@ const EmployeeDetail = () => {
         ← Back to Team Directory
       </Link>
 
-      <div className={`card flex items-center gap-4 bg-gradient-to-r ${employee.department === 'faculty' ? 'from-violet-950/40 to-slate-900/80 border-violet-500/30' : 'from-indigo-950/40 to-slate-900/80 border-indigo-500/30'}`}>
-        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr ${employee.department === 'faculty' ? 'from-violet-600 to-purple-600 shadow-violet-500/20' : 'from-indigo-600 to-purple-600 shadow-indigo-500/20'} text-white font-black flex items-center justify-center text-2xl shadow-xl border border-white/20 shrink-0 overflow-hidden`}>
+      <div className={`card flex items-center gap-4 bg-gradient-to-r ${isFaculty(employee.department) ? 'from-violet-950/40 to-slate-900/80 border-violet-500/30' : 'from-indigo-950/40 to-slate-900/80 border-indigo-500/30'}`}>
+        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr ${isFaculty(employee.department) ? 'from-violet-600 to-purple-600 shadow-violet-500/20' : 'from-indigo-600 to-purple-600 shadow-indigo-500/20'} text-white font-black flex items-center justify-center text-2xl shadow-xl border border-white/20 shrink-0 overflow-hidden`}>
           {employee.profilePicture ? (
             <img src={employee.profilePicture} alt={employee.name} className="w-full h-full object-cover" />
           ) : (
@@ -85,7 +87,7 @@ const EmployeeDetail = () => {
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-2xl font-extrabold text-white font-heading">{employee.name}</h1>
-            {employee.department === 'faculty' && (
+            {isFaculty(employee.department) && (
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/10 border border-violet-500/20 text-violet-400">Faculty</span>
             )}
             {employee.isPlaceholder && (
@@ -100,7 +102,7 @@ const EmployeeDetail = () => {
       </div>
 
       {/* Stats row — YouTube stats for faculty, task stats for others */}
-      {employee.department === 'faculty' ? (
+      {isFaculty(employee.department) ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           <div className="card border-violet-500/20 bg-gradient-to-br from-violet-950/30 to-slate-900/60">
             <p className="text-xs font-bold uppercase tracking-wider text-violet-400 mb-1">Total Classes</p>
@@ -141,7 +143,7 @@ const EmployeeDetail = () => {
       )}
 
       {/* Recent YouTube videos — faculty only */}
-      {employee.department === 'faculty' && ytVideos.length > 0 && (
+      {isFaculty(employee.department) && ytVideos.length > 0 && (
         <div className="card">
           <h2 className="text-base font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">Recent Live Streams</h2>
           <div className="space-y-2">

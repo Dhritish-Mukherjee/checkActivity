@@ -31,10 +31,14 @@ const register = async (req, res) => {
     }
 
     // Determine department - only admin can assign
-    let assignedDepartment = null;
-    const validDepartments = ['faculty', 'tech', 'promotional'];
-    if (req.user && req.user.role === 'admin' && department && validDepartments.includes(department)) {
-      assignedDepartment = department;
+    let assignedDepartment = [];
+    const validDepartments = ['faculty', 'tech', 'promotional', 'owners_club'];
+    if (req.user && req.user.role === 'admin' && department) {
+      if (Array.isArray(department)) {
+        assignedDepartment = department.filter(d => validDepartments.includes(d));
+      } else if (validDepartments.includes(department)) {
+        assignedDepartment = [department];
+      }
     }
 
     const user = new User({

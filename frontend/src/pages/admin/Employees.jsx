@@ -43,26 +43,44 @@ const DEPARTMENTS = [
       </svg>
     ),
   },
+  {
+    key: 'owners_club',
+    label: 'Owners Club',
+    color: 'emerald',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+      </svg>
+    ),
+  },
 ];
 
 const DEPT_COLORS = {
   faculty: { bg: 'bg-violet-500/10', border: 'border-violet-500/20', text: 'text-violet-400', avatar: 'from-violet-600 to-purple-600', shadow: 'shadow-violet-500/20' },
   tech: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/20', text: 'text-cyan-400', avatar: 'from-cyan-600 to-blue-600', shadow: 'shadow-cyan-500/20' },
   promotional: { bg: 'bg-rose-500/10', border: 'border-rose-500/20', text: 'text-rose-400', avatar: 'from-rose-600 to-pink-600', shadow: 'shadow-rose-500/20' },
+  owners_club: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', avatar: 'from-emerald-600 to-teal-600', shadow: 'shadow-emerald-500/20' },
   default: { bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', text: 'text-indigo-400', avatar: 'from-indigo-600 to-purple-600', shadow: 'shadow-indigo-500/20' },
 };
 
 const getDeptStyle = (dept) => DEPT_COLORS[dept] || DEPT_COLORS.default;
 
 const DeptBadge = ({ dept }) => {
-  if (!dept) return null;
-  const s = getDeptStyle(dept);
-  const info = DEPARTMENTS.find((d) => d.key === dept);
+  if (!dept || (Array.isArray(dept) && dept.length === 0)) return null;
+  const depts = Array.isArray(dept) ? dept : [dept];
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${s.bg} ${s.border} border ${s.text}`}>
-      {info?.icon}
-      {info?.label || dept}
-    </span>
+    <div className="flex flex-wrap gap-1">
+      {depts.map(d => {
+        const s = getDeptStyle(d);
+        const info = DEPARTMENTS.find((x) => x.key === d);
+        return (
+          <span key={d} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${s.bg} ${s.border} border ${s.text}`}>
+            {info?.icon}
+            {info?.label || d}
+          </span>
+        );
+      })}
+    </div>
   );
 };
 
@@ -72,7 +90,7 @@ const EmployeesPage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', password: '', department: '' });
+  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', password: '', department: [] });
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
@@ -94,10 +112,10 @@ const EmployeesPage = () => {
     e.preventDefault();
     try {
       const payload = { ...newEmployee, role: 'employee' };
-      if (!payload.department) delete payload.department; // send null/omit if not selected
+      if (!payload.department || payload.department.length === 0) delete payload.department; // send null/omit if not selected
       await authAPI.register(payload);
       setShowCreateModal(false);
-      setNewEmployee({ name: '', email: '', password: '', department: '' });
+      setNewEmployee({ name: '', email: '', password: '', department: [] });
       fetchEmployees();
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to create employee');
@@ -124,10 +142,10 @@ const EmployeesPage = () => {
 
   const filtered = activeTab === 'all'
     ? employees
-    : employees.filter((e) => e.department === activeTab);
+    : employees.filter((e) => Array.isArray(e.department) ? e.department.includes(activeTab) : e.department === activeTab);
 
   const countFor = (key) =>
-    key === 'all' ? employees.length : employees.filter((e) => e.department === key).length;
+    key === 'all' ? employees.length : employees.filter((e) => Array.isArray(e.department) ? e.department.includes(key) : e.department === key).length;
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -152,6 +170,7 @@ const EmployeesPage = () => {
             violet: isActive ? 'bg-violet-500/15 border-violet-500/40 text-violet-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
             cyan: isActive ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
             rose: isActive ? 'bg-rose-500/15 border-rose-500/40 text-rose-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
+            emerald: isActive ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
           };
           return (
             <button
@@ -185,7 +204,8 @@ const EmployeesPage = () => {
           </div>
         ) : (
           filtered.map((emp) => {
-            const style = getDeptStyle(emp.department);
+            const primaryDept = Array.isArray(emp.department) ? emp.department[0] : emp.department;
+            const style = getDeptStyle(primaryDept);
             return (
               <div
                 key={emp._id}
@@ -228,7 +248,7 @@ const EmployeesPage = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 pt-3.5 border-t border-white/10 bg-slate-950/40 -mx-6 -mb-6 p-4 rounded-b-2xl pointer-events-none relative z-0">
-                  {emp.department === 'faculty' ? (
+                  {(Array.isArray(emp.department) ? emp.department.includes('faculty') : emp.department === 'faculty') ? (
                     // Faculty: show YouTube stats
                     <>
                       <div className="text-center">
@@ -345,18 +365,21 @@ const EmployeesPage = () => {
 
               {/* Department Selector */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Department</label>
-                <div className="grid grid-cols-3 gap-2">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Departments</label>
+                <div className="grid grid-cols-2 gap-2">
                   {DEPARTMENTS.filter((d) => d.key !== 'all').map((dept) => {
-                    const isSelected = newEmployee.department === dept.key;
+                    const isSelected = newEmployee.department.includes(dept.key);
                     const s = getDeptStyle(dept.key);
                     return (
                       <button
                         key={dept.key}
                         type="button"
-                        onClick={() =>
-                          setNewEmployee({ ...newEmployee, department: isSelected ? '' : dept.key })
-                        }
+                        onClick={() => {
+                          const newDepts = isSelected
+                            ? newEmployee.department.filter(d => d !== dept.key)
+                            : [...newEmployee.department, dept.key];
+                          setNewEmployee({ ...newEmployee, department: newDepts });
+                        }}
                         className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-xs font-semibold ${
                           isSelected
                             ? `${s.bg} ${s.border} ${s.text}`
@@ -369,7 +392,7 @@ const EmployeesPage = () => {
                     );
                   })}
                 </div>
-                {!newEmployee.department && (
+                {newEmployee.department.length === 0 && (
                   <p className="text-[10px] text-slate-600 mt-1.5">Optional — can be assigned later</p>
                 )}
               </div>
@@ -377,7 +400,7 @@ const EmployeesPage = () => {
               <div className="flex gap-3 justify-end pt-4 border-t border-white/10">
                 <button
                   type="button"
-                  onClick={() => { setShowCreateModal(false); setNewEmployee({ name: '', email: '', password: '', department: '' }); }}
+                  onClick={() => { setShowCreateModal(false); setNewEmployee({ name: '', email: '', password: '', department: [] }); }}
                   className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
                 >
                   Cancel
