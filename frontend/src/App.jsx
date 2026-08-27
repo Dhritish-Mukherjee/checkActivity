@@ -2,14 +2,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
+import CatLoader from './components/CatLoader';
 
 function RedirectByRole() {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-100">
-        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full"></div>
+      <div className="flex items-center justify-center min-h-[100dvh] bg-slate-950">
+        <CatLoader text="Initializing Workspace..." size="w-40 h-40" />
       </div>
     );
   }

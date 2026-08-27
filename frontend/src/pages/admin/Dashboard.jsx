@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { dashboardAPI } from '../../services';
 import YoutubeStreams from './YoutubeStreams';
+import CatLoader from '../../components/CatLoader';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -70,7 +71,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <CatLoader text="Loading Dashboard..." />
       </div>
     );
   }

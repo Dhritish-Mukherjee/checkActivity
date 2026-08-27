@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { taskAPI, timeLogAPI, authAPI, youtubeAPI } from '../../services';
+import CatLoader from '../../components/CatLoader';
 
 const STATUS_BADGES = {
   todo: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
@@ -58,7 +59,7 @@ const EmployeeDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <CatLoader text="Loading Employee Profile..." size="w-32 h-32" />
       </div>
     );
   }
