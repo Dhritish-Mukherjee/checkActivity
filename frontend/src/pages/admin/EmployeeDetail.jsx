@@ -59,7 +59,7 @@ const EmployeeDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <CatLoader text="Loading Employee Profile..." size="w-32 h-32" />
+        <CatLoader text="Loading Employee Profile..." />
       </div>
     );
   }

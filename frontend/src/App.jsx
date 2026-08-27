@@ -10,7 +10,7 @@ function RedirectByRole() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[100dvh] bg-slate-950">
-        <CatLoader text="Initializing Workspace..." size="w-40 h-40" />
+        <CatLoader text="Initializing Workspace..." />
       </div>
     );
   }

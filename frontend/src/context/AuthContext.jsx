@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { authAPI } from '../services';
+import CatLoader from '../components/CatLoader';
 
 const AuthContext = createContext();
 
@@ -92,7 +93,11 @@ export const ProtectedRoute = ({ children, requiredRole = null }) => {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-950">
+        <CatLoader text="Authenticating..." />
+      </div>
+    );
   }
 
   if (!isAuthenticated) {

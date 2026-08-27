@@ -194,7 +194,7 @@ const EmployeesPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
           <div className="col-span-full flex justify-center py-16">
-            <CatLoader text="Loading Members..." size="w-32 h-32" />
+            <CatLoader text="Loading Members..." />
           </div>
         ) : filtered.length === 0 ? (
           <div className="col-span-full flex flex-col items-center py-16 gap-3 text-center">
