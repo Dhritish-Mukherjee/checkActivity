@@ -35,6 +35,19 @@ const EmployeesPage = () => {
     }
   };
 
+  const handleDelete = async (id, name, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+      try {
+        await authAPI.deleteEmployee(id);
+        fetchEmployees();
+      } catch (error) {
+        alert(error.response?.data?.message || 'Failed to delete employee');
+      }
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -63,6 +76,16 @@ const EmployeesPage = () => {
               className="card card-hover block group relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700" />
+              
+              {/* Delete Button */}
+              <button 
+                onClick={(e) => handleDelete(emp._id, emp.name, e)}
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-rose-500/20 border border-rose-500/20"
+                title="Delete Employee"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+              </button>
+
               <div className="flex items-center gap-3.5 mb-4 relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-base shadow-lg shadow-indigo-500/20 border border-white/20 shrink-0 overflow-hidden">
                   {emp.profilePicture ? (
@@ -71,7 +94,7 @@ const EmployeesPage = () => {
                     emp.name.charAt(0).toUpperCase()
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 pr-10">
                   <p className="font-bold text-white group-hover:text-indigo-300 transition-colors truncate font-heading">{emp.name}</p>
                   <p className="text-xs text-slate-400 truncate">{emp.email}</p>
                 </div>

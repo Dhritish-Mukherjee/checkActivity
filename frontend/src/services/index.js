@@ -74,6 +74,7 @@ export const authAPI = {
   getCurrentUser: () => api.get('/auth/me'),
   getEmployees: () => api.get('/auth/employees'),
   getAllUsers: () => api.get('/auth/users'),
+  deleteEmployee: (id) => api.delete(`/auth/users/${id}`),
 };
 
 export const taskAPI = {

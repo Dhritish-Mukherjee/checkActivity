@@ -16,5 +16,6 @@ router.get('/users', auth, authController.getAllUsers);
 // Admin only routes
 router.get('/employees', auth, isAdmin, authController.getEmployees);
 router.get('/users/:id', auth, isAdmin, authController.getUserById);
+router.delete('/users/:id', auth, isAdmin, authController.deleteEmployee);
 
 module.exports = router;
