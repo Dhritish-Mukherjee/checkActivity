@@ -84,6 +84,8 @@ const Layout = () => {
               <>
                 <Route path="/" element={<AdminDashboard />} />
                 <Route path="/tasks" element={<ManageTasks />} />
+                <Route path="/my-tasks" element={<MyTasks />} />
+                <Route path="/my-tasks/:id" element={<TaskDetail />} />
                 <Route path="/employees" element={<EmployeesPage />} />
                 <Route path="/employees/:id" element={<EmployeeDetail />} />
                 <Route path="/quiz-generator" element={<QuizGenerator />} />

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { taskAPI, timeLogAPI } from '../../services';
+import { useAuth } from '../../context/AuthContext';
 
 const PRIORITY_BADGES = {
   low: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
@@ -25,6 +26,7 @@ const STATUS_LABELS = {
 const TaskDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   const [task, setTask] = useState(null);
   const [timeLogs, setTimeLogs] = useState([]);
@@ -214,7 +216,7 @@ const TaskDetail = () => {
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back Button */}
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate(isAdmin ? '/my-tasks' : '/')}
         className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors"
       >
         ← Back to My Tasks

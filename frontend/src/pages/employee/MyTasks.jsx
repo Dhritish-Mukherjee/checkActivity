@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { taskAPI, authAPI } from '../../services';
+import { useAuth } from '../../context/AuthContext';
 
 const STATUS_BADGES = {
   todo: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
@@ -23,6 +24,7 @@ const PRIORITY_BADGES = {
 };
 
 const MyTasks = () => {
+  const { isAdmin } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -147,7 +149,7 @@ const MyTasks = () => {
           {tasks.map((task) => (
             <Link
               key={task._id}
-              to={`/tasks/${task._id}`}
+              to={isAdmin ? `/my-tasks/${task._id}` : `/tasks/${task._id}`}
               className="card card-hover flex flex-col justify-between group"
             >
               <div>

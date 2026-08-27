@@ -5,6 +5,7 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
   const adminLinks = [
     { to: '/', icon: '◈', label: 'Dashboard' },
     { to: '/tasks', icon: '▣', label: 'All Tasks' },
+    { to: '/my-tasks', icon: '▤', label: 'My Tasks' },
     { to: '/employees', icon: '◩', label: 'Team Members' },
     { to: '/quiz-generator', icon: '⚡', label: 'Quiz Engine' },
     { to: '/settings', icon: '◮', label: 'Settings' },
