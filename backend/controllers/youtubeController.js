@@ -22,30 +22,44 @@ const formatDuration = (seconds) => {
 
 // ─── GET /api/youtube/streams ─────────────────────────────────────────────────
 /**
- * Returns recent streams — first tries the DB (fast), falls back to live YouTube API.
+ * Returns recent videos/streams — first tries the DB (fast), falls back to live YouTube API.
  * Prefers DB data since it's enriched with teacher and series refs.
  */
 const getRecentStreams = async (req, res) => {
   const apiKey = process.env.YOUTUBE_API_KEY;
   if (!apiKey) return res.status(500).json({ message: 'YouTube API key not configured.' });
 
-  const limit = parseInt(req.query.limit) || 12;
+  const limit = req.query.limit !== undefined ? parseInt(req.query.limit) : 12;
+  const type = req.query.type; // 'live', 'upload', or undefined/all
 
   try {
     // Try DB first
     const dbCount = await Video.countDocuments();
 
     if (dbCount > 0) {
-      const videos = await Video.find({})
+      const filter = {};
+      if (type && type !== 'all') {
+        filter.videoType = type;
+      }
+
+      const query = Video.find(filter)
         .sort({ publishedAt: -1 })
-        .limit(limit)
         .populate('teacher', 'name youtubeAlias profilePicture teacherStats')
         .populate('series', 'name type slug');
+      
+      if (limit > 0) {
+        query.limit(limit);
+      }
+
+      const videos = await query.exec();
 
       const streams = videos.map((v) => ({
+        _id: v._id,
         videoId: v.videoId,
         title: v.title,
+        videoType: v.videoType,
         teacher: v.teacher?.name || v.teacherAlias || null,
+        teacherId: v.teacher?._id || null,
         teacherAlias: v.teacherAlias,
         series: v.series?.name || v.seriesRaw || null,
         seriesType: v.series?.type || null,
@@ -61,7 +75,7 @@ const getRecentStreams = async (req, res) => {
 
       return res.json({
         streams,
-        total: dbCount,
+        total: await Video.countDocuments(filter),
         source: 'database',
         lastSync: videos[0]?.updatedAt || null,
       });
@@ -199,7 +213,7 @@ const getTeachers = async (req, res) => {
           email: t.email,
           profilePicture: t.profilePicture,
           youtubeAlias: t.youtubeAlias,
-          isPlaceholder: t.email?.endsWith('.placeholder@strivers.local'),
+          isPlaceholder: t.email?.endsWith('@placeholder.strivers.com'),
           teacherStats: t.teacherStats,
           recentVideos: recentVideos.map((v) => ({
             videoId: v.videoId,
@@ -247,6 +261,42 @@ const getSeries = async (req, res) => {
   }
 };
 
+// ─── PATCH /api/youtube/videos/:id/teacher ─────────────────────────────────
+/** Manually assign a teacher to a video */
+const updateVideoTeacher = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { teacherId } = req.body;
+
+    const video = await Video.findById(id);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found.' });
+    }
+
+    const oldTeacherId = video.teacher;
+    video.teacher = teacherId || null;
+    
+    if (teacherId) {
+      const t = await User.findById(teacherId);
+      video.teacherAlias = t ? t.name : null;
+    } else {
+      video.teacherAlias = null;
+    }
+
+    await video.save();
+
+    // Recompute stats for both old and new teachers
+    const { computeTeacherStats } = require('../services/youtubeSync');
+    if (oldTeacherId) await computeTeacherStats(oldTeacherId);
+    if (teacherId) await computeTeacherStats(teacherId);
+
+    res.json({ message: 'Teacher assigned successfully', video });
+  } catch (error) {
+    console.error('Update video teacher error:', error.message);
+    res.status(500).json({ message: 'Failed to assign teacher.' });
+  }
+};
+
 module.exports = {
   getRecentStreams,
   triggerSync,
@@ -254,4 +304,5 @@ module.exports = {
   getSyncStatus,
   getTeachers,
   getSeries,
+  updateVideoTeacher,
 };

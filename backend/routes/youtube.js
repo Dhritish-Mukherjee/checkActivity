@@ -7,6 +7,7 @@ const {
   getSyncStatus,
   getTeachers,
   getSeries,
+  updateVideoTeacher,
 } = require('../controllers/youtubeController');
 const { auth } = require('../middleware/auth');
 const { isAdmin } = require('../middleware/roleCheck');
@@ -24,5 +25,6 @@ router.get('/series',       getSeries);          // Series list with counts
 // ── Action endpoints ─────────────────────────────────────────────────────────
 router.post('/sync',          triggerSync);        // Full sync (admin button)
 router.post('/refresh-views', triggerRefreshViews); // Refresh view counts only
+router.patch('/videos/:id/teacher', updateVideoTeacher); // Assign teacher manually
 
 module.exports = router;

@@ -70,57 +70,15 @@ const extractSeriesFromTitle = (title, allSeries) => {
 // ─── Teacher management ────────────────────────────────────────────────────────
 
 /**
- * Find an existing User by youtubeAlias (case-insensitive), or create a
- * placeholder faculty User that the admin can edit later.
+ * Find an existing User by youtubeAlias (case-insensitive).
+ * We no longer create placeholders — admins will manually assign missing teachers.
  */
-const findOrCreateTeacher = async (alias) => {
+const findTeacher = async (alias) => {
   if (!alias) return null;
-
-  // Escape regex special chars in alias
   const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  let user = await User.findOne({
+  return await User.findOne({
     youtubeAlias: { $regex: new RegExp(`^${escaped}$`, 'i') },
   });
-
-  if (!user) {
-    // Build a safe placeholder email
-    let slugName = alias
-      .toLowerCase()
-      .replace(/\s+/g, '.')
-      .replace(/[^a-z0-9.]/g, '')
-      .replace(/\.+/g, '.') // replace multiple dots with single dot
-      .replace(/^\.+|\.+$/g, ''); // strip leading and trailing dots
-    
-    if (!slugName || slugName.replace(/\./g, '').length === 0) {
-      slugName = `teacher.${Date.now()}`;
-    }
-
-    const placeholderEmail = `${slugName}@placeholder.strivers.com`;
-
-    // Guard against duplicate emails (e.g. two aliases that slugify identically)
-    const existing = await User.findOne({ email: placeholderEmail });
-    if (existing) {
-      // Attach the alias if missing
-      if (!existing.youtubeAlias) {
-        existing.youtubeAlias = alias;
-        await existing.save();
-      }
-      return existing;
-    }
-
-    user = new User({
-      name: alias,
-      email: placeholderEmail,
-      password: uuidv4(), // never used — placeholder
-      role: 'employee',
-      department: 'faculty',
-      youtubeAlias: alias,
-    });
-    await user.save();
-    console.log(`  👤 Created placeholder teacher: "${alias}"`);
-  }
-
-  return user;
 };
 
 // ─── Stats computation ─────────────────────────────────────────────────────────
@@ -160,20 +118,19 @@ const computeTeacherStats = async (teacherId) => {
 // ─── YouTube API helpers ───────────────────────────────────────────────────────
 
 /**
- * Fetch ALL completed live streams from the channel (paginated, max 50/page).
+ * Fetch ALL videos from the channel's uploads playlist (paginated, max 50/page).
+ * Channel ID UCEOMA6LSxTcObT4--Ruqg1Q -> Uploads Playlist UUEOMA6LSxTcObT4--Ruqg1Q
  */
-const fetchAllStreams = async (apiKey) => {
+const fetchAllVideos = async (apiKey) => {
   const allItems = [];
   let nextPageToken = null;
+  const UPLOADS_PLAYLIST_ID = 'UUEOMA6LSxTcObT4--Ruqg1Q';
 
   do {
-    const res = await axios.get(`${YOUTUBE_API_BASE}/search`, {
+    const res = await axios.get(`${YOUTUBE_API_BASE}/playlistItems`, {
       params: {
         part: 'snippet',
-        channelId: CHANNEL_ID,
-        eventType: 'completed',
-        type: 'video',
-        order: 'date',
+        playlistId: UPLOADS_PLAYLIST_ID,
         maxResults: 50,
         pageToken: nextPageToken || undefined,
         key: apiKey,
@@ -198,7 +155,7 @@ const enrichVideoDetails = async (videoIds, apiKey) => {
     const batch = videoIds.slice(i, i + BATCH);
     const res = await axios.get(`${YOUTUBE_API_BASE}/videos`, {
       params: {
-        part: 'contentDetails,statistics',
+        part: 'contentDetails,statistics,liveStreamingDetails',
         id: batch.join(','),
         key: apiKey,
       },
@@ -208,6 +165,7 @@ const enrichVideoDetails = async (videoIds, apiKey) => {
         durationSeconds: parseDurationToSeconds(v.contentDetails?.duration),
         views: parseInt(v.statistics?.viewCount || 0),
         likes: parseInt(v.statistics?.likeCount || 0),
+        videoType: v.liveStreamingDetails ? 'live' : 'upload',
       };
     }
   }
@@ -232,15 +190,15 @@ const syncAllStreams = async (apiKey) => {
   // Load series for matching
   const allSeries = await Series.find({ isActive: true });
 
-  // Fetch from YouTube
-  const items = await fetchAllStreams(apiKey);
-  console.log(`  📺 ${items.length} streams found on YouTube`);
+  // Fetch from YouTube uploads playlist
+  const items = await fetchAllVideos(apiKey);
+  console.log(`  📺 ${items.length} videos found on YouTube`);
   if (items.length === 0) {
     return { synced: 0, created: 0, updated: 0, teachersAffected: 0 };
   }
 
-  // Enrich with details (duration, views)
-  const videoIds = items.map((i) => i.id.videoId);
+  // Enrich with details (duration, views, type)
+  const videoIds = items.map((i) => i.snippet.resourceId.videoId);
   const detailsMap = await enrichVideoDetails(videoIds, apiKey);
 
   let created = 0;
@@ -248,17 +206,17 @@ const syncAllStreams = async (apiKey) => {
   const touchedTeacherIds = new Set();
 
   for (const item of items) {
-    const videoId = item.id.videoId;
+    const videoId = item.snippet.resourceId.videoId;
     const snippet = item.snippet;
     const title = snippet.title;
-    const details = detailsMap[videoId] || { durationSeconds: 0, views: 0, likes: 0 };
+    const details = detailsMap[videoId] || { durationSeconds: 0, views: 0, likes: 0, videoType: 'upload' };
 
     // Extract teacher and series from title
     const teacherAlias = extractTeacherAlias(title);
     const matchedSeries = extractSeriesFromTitle(title, allSeries);
 
-    // Find or create teacher
-    const teacher = await findOrCreateTeacher(teacherAlias);
+    // Find teacher
+    const teacher = await findTeacher(teacherAlias);
     if (teacher) touchedTeacherIds.add(teacher._id.toString());
 
     // Upsert the video
@@ -272,6 +230,7 @@ const syncAllStreams = async (apiKey) => {
         teacherAlias,
         series: matchedSeries?._id || null,
         seriesRaw: matchedSeries?.name || null,
+        videoType: details.videoType,
         durationSeconds: details.durationSeconds,
         views: details.views,
         likes: details.likes,

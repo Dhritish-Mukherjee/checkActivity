@@ -65,7 +65,7 @@ const SeriesBadge = ({ name }) => {
 };
 
 // ─── Stream Card ──────────────────────────────────────────────────────────────
-const StreamCard = ({ stream }) => (
+const StreamCard = ({ stream, teachers, onAssignTeacher }) => (
   <a
     href={stream.url}
     target="_blank"
@@ -80,13 +80,20 @@ const StreamCard = ({ stream }) => (
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         loading="lazy"
       />
+      <div className="absolute top-2 left-2 flex flex-col gap-1">
+        {stream.videoType === 'live' && (
+          <span className="px-1.5 py-0.5 bg-red-600/90 text-white text-[9px] uppercase font-bold rounded-sm tracking-wider shadow-sm">
+            Live
+          </span>
+        )}
+      </div>
       {stream.duration && (
         <span className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 text-white text-[10px] font-mono rounded-sm font-semibold">
           {stream.duration}
         </span>
       )}
       {/* Play overlay */}
-      <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all duration-300">
+      <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all duration-300 pointer-events-none">
         <div className="w-11 h-11 rounded-full flex items-center justify-center scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100 bg-red-600 transition-all duration-300 text-white shadow-lg">
           <PlayIcon />
         </div>
@@ -96,16 +103,29 @@ const StreamCard = ({ stream }) => (
     {/* Info */}
     <div className="p-3 flex flex-col gap-1.5 flex-1">
       {/* Badges row */}
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 relative z-10" onClick={(e) => e.preventDefault()}>
         {stream.series && <SeriesBadge name={stream.series} />}
-        {stream.teacher && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide border bg-red-500/10 border-red-500/25 text-red-400">
-            {stream.teacher}
-          </span>
+        
+        {/* Teacher Select */}
+        <select
+          value={stream.teacherId || ''}
+          onChange={(e) => onAssignTeacher(stream.videoId, stream._id, e.target.value)}
+          className="bg-slate-800/50 border border-slate-600/50 hover:border-slate-500 text-slate-300 text-[10px] font-bold rounded-full px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-red-500/50 transition-colors max-w-[120px] cursor-pointer"
+        >
+          <option value="">No Teacher</option>
+          {teachers.map(t => (
+            <option key={t._id} value={t._id}>{t.name}</option>
+          ))}
+        </select>
+        
+        {!stream.teacherId && stream.teacherAlias && (
+           <span className="text-[10px] text-amber-500/70 italic line-clamp-1 max-w-[100px]" title="Detected from title">
+             (Title: {stream.teacherAlias})
+           </span>
         )}
       </div>
       {/* Title */}
-      <p className="text-sm font-semibold text-slate-200 leading-snug line-clamp-2 group-hover:text-white transition-colors">
+      <p className="text-sm font-semibold text-slate-200 leading-snug line-clamp-2 group-hover:text-white transition-colors mt-1">
         {stream.title}
       </p>
       {/* Meta */}
@@ -122,23 +142,27 @@ const StreamCard = ({ stream }) => (
 // ─── Main Component ───────────────────────────────────────────────────────────
 const YoutubeStreams = () => {
   const [streams, setStreams]       = useState([]);
+  const [teachers, setTeachers]     = useState([]);
   const [status, setStatus]         = useState(null); // sync status
   const [loading, setLoading]       = useState(true);
   const [syncing, setSyncing]       = useState(false);
   const [syncResult, setSyncResult] = useState(null);
   const [error, setError]           = useState(null);
   const [limit, setLimit]           = useState(12);
+  const [videoType, setVideoType]   = useState('all');
 
-  const fetchStreams = useCallback(async (count) => {
+  const fetchStreams = useCallback(async (count, type) => {
     setLoading(true);
     setError(null);
     try {
-      const [streamsRes, statusRes] = await Promise.all([
-        youtubeAPI.getRecentStreams(count),
+      const [streamsRes, statusRes, teachersRes] = await Promise.all([
+        youtubeAPI.getRecentStreams(count, type),
         youtubeAPI.getSyncStatus(),
+        youtubeAPI.getTeachers(),
       ]);
       setStreams(streamsRes.data.streams || []);
       setStatus(statusRes.data);
+      setTeachers(teachersRes.data.teachers || []);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load streams.');
     } finally {
@@ -146,7 +170,22 @@ const YoutubeStreams = () => {
     }
   }, []);
 
-  useEffect(() => { fetchStreams(limit); }, [limit, fetchStreams]);
+  useEffect(() => { fetchStreams(limit, videoType); }, [limit, videoType, fetchStreams]);
+
+  const handleAssignTeacher = async (videoId, dbId, teacherId) => {
+    try {
+      await youtubeAPI.updateVideoTeacher(dbId, teacherId);
+      // Update local state instantly
+      setStreams((prev) => prev.map((s) => {
+        if (s._id === dbId) {
+          return { ...s, teacherId: teacherId || null };
+        }
+        return s;
+      }));
+    } catch (err) {
+      console.error('Failed to assign teacher', err);
+    }
+  };
 
   const handleSync = async () => {
     if (syncing) return;
@@ -165,67 +204,91 @@ const YoutubeStreams = () => {
 
   return (
     <div className="space-y-4">
-      {/* Section Header */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-red-600/15 border border-red-500/20 flex items-center justify-center text-red-500">
-            <YoutubeIcon />
+      <div className="flex flex-col gap-4">
+        {/* Top Row: Title and Filters */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-red-600/15 border border-red-500/20 flex items-center justify-center text-red-500">
+              <YoutubeIcon />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-white font-heading leading-tight">YouTube Content</h2>
+              <p className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-0.5">
+                @Striverseducation
+                {status && (
+                  <>
+                    <span className="text-slate-700">·</span>
+                    <DBIcon />
+                    <span>{status.totalVideos} in DB</span>
+                    {status.lastSynced && (
+                      <>
+                        <span className="text-slate-700">·</span>
+                        <span>synced {timeAgo(status.lastSynced)}</span>
+                      </>
+                    )}
+                  </>
+                )}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-base font-bold text-white font-heading leading-tight">Recent Live Streams</h2>
-            <p className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-0.5">
-              @Striverseducation
-              {status && (
-                <>
-                  <span className="text-slate-700">·</span>
-                  <DBIcon />
-                  <span>{status.totalVideos} in DB</span>
-                  {status.lastSynced && (
-                    <>
-                      <span className="text-slate-700">·</span>
-                      <span>synced {timeAgo(status.lastSynced)}</span>
-                    </>
-                  )}
-                </>
-              )}
-            </p>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <select
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
+              className="text-xs bg-slate-800 border border-white/10 text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-red-500/40 cursor-pointer"
+            >
+              <option value={6}>Last 6</option>
+              <option value={12}>Last 12</option>
+              <option value={24}>Last 24</option>
+              <option value={0}>View All</option>
+            </select>
+
+            {/* Sync button */}
+            <button
+              onClick={handleSync}
+              disabled={syncing}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                syncing
+                  ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 cursor-not-allowed'
+                  : 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 hover:text-indigo-300'
+              }`}
+            >
+              <SyncIcon spin={syncing} />
+              {syncing ? 'Syncing…' : 'Sync Now'}
+            </button>
+
+            <a
+              href="https://www.youtube.com/@Striverseducation/streams"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/10 border border-red-500/20 text-red-400 text-xs font-semibold hover:bg-red-600/20 hover:text-red-300 transition-all"
+            >
+              <YoutubeIcon />
+              Channel
+            </a>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <select
-            value={limit}
-            onChange={(e) => setLimit(Number(e.target.value))}
-            className="text-xs bg-slate-800 border border-white/10 text-slate-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-red-500/40 cursor-pointer"
-          >
-            <option value={6}>Last 6</option>
-            <option value={12}>Last 12</option>
-            <option value={24}>Last 24</option>
-          </select>
-
-          {/* Sync button */}
-          <button
-            onClick={handleSync}
-            disabled={syncing}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
-              syncing
-                ? 'bg-amber-500/10 border-amber-500/20 text-amber-400 cursor-not-allowed'
-                : 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 hover:text-indigo-300'
-            }`}
-          >
-            <SyncIcon spin={syncing} />
-            {syncing ? 'Syncing…' : 'Sync Now'}
-          </button>
-
-          <a
-            href="https://www.youtube.com/@Striverseducation/streams"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600/10 border border-red-500/20 text-red-400 text-xs font-semibold hover:bg-red-600/20 hover:text-red-300 transition-all"
-          >
-            <YoutubeIcon />
-            Channel
-          </a>
+        {/* Bottom Row: Tabs */}
+        <div className="flex items-center gap-1 p-1 bg-slate-900/50 border border-white/5 rounded-xl self-start">
+          {[
+            { id: 'all', label: 'All Content' },
+            { id: 'live', label: 'Live Streams' },
+            { id: 'upload', label: 'Uploaded Videos' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setVideoType(tab.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                videoType === tab.id
+                  ? 'bg-slate-800 text-white shadow-sm border border-white/10'
+                  : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/50 border border-transparent'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -280,7 +343,7 @@ const YoutubeStreams = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {streams.map((stream) => (
-            <StreamCard key={stream.videoId} stream={stream} />
+            <StreamCard key={stream.videoId} stream={stream} teachers={teachers} onAssignTeacher={handleAssignTeacher} />
           ))}
         </div>
       )}

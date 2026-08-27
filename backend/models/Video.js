@@ -34,6 +34,12 @@ const videoSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  // Type of video
+  videoType: {
+    type: String,
+    enum: ['live', 'upload'],
+    default: 'upload',
+  },
   // Duration in seconds
   durationSeconds: {
     type: Number,
