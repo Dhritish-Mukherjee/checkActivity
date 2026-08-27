@@ -46,7 +46,7 @@ const DEPARTMENTS = [
   {
     key: 'owners_club',
     label: 'Owners Club',
-    color: 'emerald',
+    color: 'amber',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -59,7 +59,7 @@ const DEPT_COLORS = {
   faculty: { bg: 'bg-violet-500/10', border: 'border-violet-500/20', text: 'text-violet-400', avatar: 'from-violet-600 to-purple-600', shadow: 'shadow-violet-500/20' },
   tech: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/20', text: 'text-cyan-400', avatar: 'from-cyan-600 to-blue-600', shadow: 'shadow-cyan-500/20' },
   promotional: { bg: 'bg-rose-500/10', border: 'border-rose-500/20', text: 'text-rose-400', avatar: 'from-rose-600 to-pink-600', shadow: 'shadow-rose-500/20' },
-  owners_club: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400', avatar: 'from-emerald-600 to-teal-600', shadow: 'shadow-emerald-500/20' },
+  owners_club: { bg: 'bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20', border: 'border-amber-400/40 shadow-[0_0_12px_rgba(251,191,36,0.25)]', text: 'text-amber-300', avatar: 'from-amber-400 via-yellow-500 to-orange-500', shadow: 'shadow-amber-500/40' },
   default: { bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', text: 'text-indigo-400', avatar: 'from-indigo-600 to-purple-600', shadow: 'shadow-indigo-500/20' },
 };
 
@@ -170,7 +170,7 @@ const EmployeesPage = () => {
             violet: isActive ? 'bg-violet-500/15 border-violet-500/40 text-violet-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
             cyan: isActive ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
             rose: isActive ? 'bg-rose-500/15 border-rose-500/40 text-rose-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
-            emerald: isActive ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
+            amber: isActive ? 'bg-amber-500/15 border-amber-500/50 text-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.3)]' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
           };
           return (
             <button

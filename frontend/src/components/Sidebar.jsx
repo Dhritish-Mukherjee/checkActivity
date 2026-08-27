@@ -56,8 +56,8 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
         {/* Brand Header */}
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-500 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/30 border border-white/20">
-              S
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+              <img src="/logo.png" alt="Strivers Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2 font-heading">
