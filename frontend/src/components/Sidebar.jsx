@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
@@ -13,6 +14,17 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
   ];
 
   const links = isAdmin ? adminLinks : employeeLinks;
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   // Initials for avatar
   const initials = user?.name
@@ -31,11 +43,11 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
       
       {/* Sidebar */}
       <aside 
-        className={`fixed left-0 top-0 h-screen w-64 bg-slate-950/80 backdrop-blur-xl border-r border-white/10 text-slate-200 z-50 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
+        className={`fixed left-0 top-0 h-[100dvh] w-64 bg-slate-950/80 backdrop-blur-xl border-r border-white/10 text-slate-200 z-50 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
-      <div>
+      <div className="overflow-y-auto overflow-x-hidden flex-1 no-scrollbar">
         {/* Brand Header */}
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
