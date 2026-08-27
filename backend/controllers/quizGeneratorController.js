@@ -139,7 +139,9 @@ function runPythonScriptStreaming({ templatePath, questionsPath, outputPath, ima
       });
     });
 
+    let stderrOutput = '';
     pyProcess.stderr.on('data', (data) => {
+      stderrOutput += data.toString();
       console.error(`Python Stderr: ${data}`);
     });
 
@@ -147,7 +149,7 @@ function runPythonScriptStreaming({ templatePath, questionsPath, outputPath, ima
       if (code === 0) {
         resolve();
       } else {
-        reject(new Error(`Python script exited with code ${code}`));
+        reject(new Error(`Python script exited with code ${code}. Error: ${stderrOutput}`));
       }
     });
   });
