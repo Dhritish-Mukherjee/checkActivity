@@ -84,11 +84,18 @@ const findOrCreateTeacher = async (alias) => {
 
   if (!user) {
     // Build a safe placeholder email
-    const slugName = alias
+    let slugName = alias
       .toLowerCase()
       .replace(/\s+/g, '.')
-      .replace(/[^a-z.]/g, '');
-    const placeholderEmail = `${slugName}.placeholder@strivers.local`;
+      .replace(/[^a-z0-9.]/g, '')
+      .replace(/\.+/g, '.') // replace multiple dots with single dot
+      .replace(/^\.+|\.+$/g, ''); // strip leading and trailing dots
+    
+    if (!slugName || slugName.replace(/\./g, '').length === 0) {
+      slugName = `teacher.${Date.now()}`;
+    }
+
+    const placeholderEmail = `${slugName}@placeholder.strivers.com`;
 
     // Guard against duplicate emails (e.g. two aliases that slugify identically)
     const existing = await User.findOne({ email: placeholderEmail });
