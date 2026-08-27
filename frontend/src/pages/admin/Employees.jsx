@@ -2,13 +2,78 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardAPI, authAPI } from '../../services';
 
+const DEPARTMENTS = [
+  {
+    key: 'all',
+    label: 'All Members',
+    color: 'indigo',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
+  {
+    key: 'faculty',
+    label: 'Faculty',
+    color: 'violet',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    ),
+  },
+  {
+    key: 'tech',
+    label: 'Tech',
+    color: 'cyan',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+      </svg>
+    ),
+  },
+  {
+    key: 'promotional',
+    label: 'Promotional',
+    color: 'rose',
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+      </svg>
+    ),
+  },
+];
+
+const DEPT_COLORS = {
+  faculty: { bg: 'bg-violet-500/10', border: 'border-violet-500/20', text: 'text-violet-400', avatar: 'from-violet-600 to-purple-600', shadow: 'shadow-violet-500/20' },
+  tech: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/20', text: 'text-cyan-400', avatar: 'from-cyan-600 to-blue-600', shadow: 'shadow-cyan-500/20' },
+  promotional: { bg: 'bg-rose-500/10', border: 'border-rose-500/20', text: 'text-rose-400', avatar: 'from-rose-600 to-pink-600', shadow: 'shadow-rose-500/20' },
+  default: { bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', text: 'text-indigo-400', avatar: 'from-indigo-600 to-purple-600', shadow: 'shadow-indigo-500/20' },
+};
+
+const getDeptStyle = (dept) => DEPT_COLORS[dept] || DEPT_COLORS.default;
+
+const DeptBadge = ({ dept }) => {
+  if (!dept) return null;
+  const s = getDeptStyle(dept);
+  const info = DEPARTMENTS.find((d) => d.key === dept);
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${s.bg} ${s.border} border ${s.text}`}>
+      {info?.icon}
+      {info?.label || dept}
+    </span>
+  );
+};
+
 const EmployeesPage = () => {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', password: '' });
-  const [confirmDelete, setConfirmDelete] = useState(null); // { id, name }
+  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', password: '', department: '' });
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     fetchEmployees();
@@ -28,9 +93,11 @@ const EmployeesPage = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await authAPI.register({ ...newEmployee, role: 'employee' });
+      const payload = { ...newEmployee, role: 'employee' };
+      if (!payload.department) delete payload.department; // send null/omit if not selected
+      await authAPI.register(payload);
       setShowCreateModal(false);
-      setNewEmployee({ name: '', email: '', password: '' });
+      setNewEmployee({ name: '', email: '', password: '', department: '' });
       fetchEmployees();
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to create employee');
@@ -55,8 +122,16 @@ const EmployeesPage = () => {
     }
   };
 
+  const filtered = activeTab === 'all'
+    ? employees
+    : employees.filter((e) => e.department === activeTab);
+
+  const countFor = (key) =>
+    key === 'all' ? employees.length : employees.filter((e) => e.department === key).length;
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading">Team Directory</h1>
@@ -68,70 +143,107 @@ const EmployeesPage = () => {
         </button>
       </div>
 
+      {/* Category Tabs */}
+      <div className="flex items-center gap-2 flex-wrap border-b border-white/5 pb-1">
+        {DEPARTMENTS.map((dept) => {
+          const isActive = activeTab === dept.key;
+          const colorMap = {
+            indigo: isActive ? 'bg-indigo-500/15 border-indigo-500/40 text-indigo-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
+            violet: isActive ? 'bg-violet-500/15 border-violet-500/40 text-violet-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
+            cyan: isActive ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
+            rose: isActive ? 'bg-rose-500/15 border-rose-500/40 text-rose-300' : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent',
+          };
+          return (
+            <button
+              key={dept.key}
+              onClick={() => setActiveTab(dept.key)}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-sm font-semibold transition-all ${colorMap[dept.color]}`}
+            >
+              {dept.icon}
+              {dept.label}
+              <span className={`ml-0.5 text-[11px] font-mono px-1.5 py-0.5 rounded-md ${isActive ? 'bg-white/10' : 'bg-white/5'}`}>
+                {countFor(dept.key)}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Employee Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
           <div className="col-span-full flex justify-center py-16">
             <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
           </div>
-        ) : employees.length === 0 ? (
-          <p className="text-slate-500 col-span-full text-center py-12">No employees registered yet.</p>
+        ) : filtered.length === 0 ? (
+          <div className="col-span-full flex flex-col items-center py-16 gap-3 text-center">
+            <p className="text-slate-500">
+              {activeTab === 'all'
+                ? 'No employees registered yet.'
+                : `No employees in the ${DEPARTMENTS.find((d) => d.key === activeTab)?.label} department yet.`}
+            </p>
+          </div>
         ) : (
-          employees.map((emp) => (
-            <div
-              key={emp._id}
-              className="card card-hover block group relative overflow-hidden"
-            >
-              {/* Navigation Overlay (Behind buttons, above background) */}
-              <div 
-                onClick={() => navigate(`/employees/${emp._id}`)}
-                className="absolute inset-0 z-10 cursor-pointer"
-                title={`View ${emp.name}'s profile`}
-              />
-
-              {/* Background gradient effect */}
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700 pointer-events-none" />
-              
-              {/* Delete Button (Highest Z-index) */}
-              <button 
-                type="button"
-                onClick={(e) => handleDelete(emp._id, emp.name, e)}
-                className="absolute top-4 right-4 z-30 w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-rose-500/30 hover:text-rose-300 border border-rose-500/30 cursor-pointer shadow-lg"
-                title="Delete Employee"
+          filtered.map((emp) => {
+            const style = getDeptStyle(emp.department);
+            return (
+              <div
+                key={emp._id}
+                className="card card-hover block group relative overflow-hidden"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-              </button>
+                {/* Navigation Overlay */}
+                <div
+                  onClick={() => navigate(`/employees/${emp._id}`)}
+                  className="absolute inset-0 z-10 cursor-pointer"
+                  title={`View ${emp.name}'s profile`}
+                />
 
-              {/* Card Content */}
-              <div className="flex items-center gap-3.5 mb-4 relative z-0 pointer-events-none">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-base shadow-lg shadow-indigo-500/20 border border-white/20 shrink-0 overflow-hidden">
-                  {emp.profilePicture ? (
-                    <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
-                  ) : (
-                    emp.name.charAt(0).toUpperCase()
-                  )}
+                {/* Background shimmer */}
+                <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700 pointer-events-none" />
+
+                {/* Delete Button */}
+                <button
+                  type="button"
+                  onClick={(e) => handleDelete(emp._id, emp.name, e)}
+                  className="absolute top-4 right-4 z-30 w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-rose-500/30 hover:text-rose-300 border border-rose-500/30 cursor-pointer shadow-lg"
+                  title="Delete Employee"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                </button>
+
+                {/* Card Content */}
+                <div className="flex items-center gap-3.5 mb-4 relative z-0 pointer-events-none">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${style.avatar} text-white font-black flex items-center justify-center text-base shadow-lg ${style.shadow} border border-white/20 shrink-0 overflow-hidden`}>
+                    {emp.profilePicture ? (
+                      <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
+                    ) : (
+                      emp.name.charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0 pr-10 space-y-1">
+                    <p className="font-bold text-white group-hover:text-indigo-300 transition-colors truncate font-heading">{emp.name}</p>
+                    <p className="text-xs text-slate-400 truncate">{emp.email}</p>
+                    <DeptBadge dept={emp.department} />
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0 pr-10">
-                  <p className="font-bold text-white group-hover:text-indigo-300 transition-colors truncate font-heading">{emp.name}</p>
-                  <p className="text-xs text-slate-400 truncate">{emp.email}</p>
+
+                <div className="grid grid-cols-3 gap-2 pt-3.5 border-t border-white/10 bg-slate-950/40 -mx-6 -mb-6 p-4 rounded-b-2xl pointer-events-none relative z-0">
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-white font-mono">{emp.totalTasks}</p>
+                    <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Tasks</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-emerald-400 font-mono">{emp.completedTasks}</p>
+                    <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Done</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-cyan-400 font-mono">{emp.totalHours}h</p>
+                    <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Logged</p>
+                  </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-3 gap-2 pt-3.5 border-t border-white/10 bg-slate-950/40 -mx-6 -mb-6 p-4 rounded-b-2xl pointer-events-none relative z-0">
-                <div className="text-center">
-                  <p className="text-lg font-bold text-white font-mono">{emp.totalTasks}</p>
-                  <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Tasks</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-lg font-bold text-emerald-400 font-mono">{emp.completedTasks}</p>
-                  <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Done</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-lg font-bold text-cyan-400 font-mono">{emp.totalHours}h</p>
-                  <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Logged</p>
-                </div>
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -166,54 +278,83 @@ const EmployeesPage = () => {
         </div>
       )}
 
+      {/* Create Employee Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
           <div className="bg-slate-900 border border-white/10 rounded-3xl max-w-md w-full p-7 shadow-2xl">
-            <h2 className="text-xl font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">
-              Add New Employee Account
-            </h2>
+            <h2 className="text-xl font-bold text-white font-heading mb-1">Add New Employee</h2>
+            <p className="text-xs text-slate-500 mb-5 border-b border-white/10 pb-4">Create an account and assign their department.</p>
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Full Name *
-                </label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={newEmployee.name}
                   onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm"
+                  className="w-full px-4 py-2.5 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50"
+                  placeholder="e.g. Anirban Ghosh"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Email Address *
-                </label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Email Address *</label>
                 <input
                   type="email"
                   required
                   value={newEmployee.email}
                   onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm"
+                  className="w-full px-4 py-2.5 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50"
+                  placeholder="email@example.com"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Initial Password *
-                </label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Initial Password *</label>
                 <input
                   type="password"
                   required
                   minLength={6}
                   value={newEmployee.password}
                   onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm"
+                  className="w-full px-4 py-2.5 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50"
+                  placeholder="Min. 6 characters"
                 />
               </div>
+
+              {/* Department Selector */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Department</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {DEPARTMENTS.filter((d) => d.key !== 'all').map((dept) => {
+                    const isSelected = newEmployee.department === dept.key;
+                    const s = getDeptStyle(dept.key);
+                    return (
+                      <button
+                        key={dept.key}
+                        type="button"
+                        onClick={() =>
+                          setNewEmployee({ ...newEmployee, department: isSelected ? '' : dept.key })
+                        }
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all text-xs font-semibold ${
+                          isSelected
+                            ? `${s.bg} ${s.border} ${s.text}`
+                            : 'border-white/10 text-slate-400 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <span className={isSelected ? s.text : 'text-slate-500'}>{dept.icon}</span>
+                        {dept.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                {!newEmployee.department && (
+                  <p className="text-[10px] text-slate-600 mt-1.5">Optional — can be assigned later</p>
+                )}
+              </div>
+
               <div className="flex gap-3 justify-end pt-4 border-t border-white/10">
                 <button
                   type="button"
-                  onClick={() => setShowCreateModal(false)}
+                  onClick={() => { setShowCreateModal(false); setNewEmployee({ name: '', email: '', password: '', department: '' }); }}
                   className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white"
                 >
                   Cancel

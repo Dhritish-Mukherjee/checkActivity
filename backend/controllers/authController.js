@@ -11,7 +11,7 @@ const generateToken = (userId) => {
 // Register new user (admin only)
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, department } = req.body;
 
     // Validation
     if (!name || !email || !password) {
@@ -30,11 +30,19 @@ const register = async (req, res) => {
       assignedRole = role;
     }
 
+    // Determine department - only admin can assign
+    let assignedDepartment = null;
+    const validDepartments = ['faculty', 'tech', 'promotional'];
+    if (req.user && req.user.role === 'admin' && department && validDepartments.includes(department)) {
+      assignedDepartment = department;
+    }
+
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      role: assignedRole
+      role: assignedRole,
+      department: assignedDepartment
     });
 
     await user.save();

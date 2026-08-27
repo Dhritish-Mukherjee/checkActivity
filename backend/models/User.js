@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'employee'],
     default: 'employee'
   },
+  department: {
+    type: String,
+    enum: ['faculty', 'tech', 'promotional', null],
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
