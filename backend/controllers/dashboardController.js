@@ -188,6 +188,89 @@ const getTimeTrend = async (req, res) => {
   }
 };
 
+// Get employee time trend (last 7/30 days per user)
+const getEmployeeTimeTrend = async (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - days);
+
+    // Get all users who logged time in this period
+    const activeUsersLogs = await TimeLog.aggregate([
+      {
+        $match: {
+          date: { $gte: startDate, $lte: endDate }
+        }
+      },
+      {
+        $group: {
+          _id: '$user'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      { $unwind: '$user' }
+    ]);
+
+    const activeUsers = activeUsersLogs.map(log => ({ id: log._id, name: log.user.name }));
+    const trend = [];
+
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(startDate);
+      date.setDate(date.getDate() + i);
+
+      const nextDate = new Date(date);
+      nextDate.setDate(date.getDate() + 1);
+
+      const dailyLogs = await TimeLog.aggregate([
+        {
+          $match: {
+            date: {
+              $gte: date,
+              $lt: nextDate
+            }
+          }
+        },
+        {
+          $group: {
+            _id: '$user',
+            totalMinutes: { $sum: '$durationMinutes' }
+          }
+        }
+      ]);
+
+      // Create map of userId -> hours for this day
+      const userHours = {};
+      dailyLogs.forEach(log => {
+        userHours[log._id.toString()] = (log.totalMinutes / 60).toFixed(2);
+      });
+
+      const dayData = {
+        date: date.toISOString().split('T')[0]
+      };
+
+      // Add 0 for users who didn't log time that day
+      activeUsers.forEach(u => {
+        dayData[u.name] = parseFloat(userHours[u.id.toString()] || 0);
+      });
+
+      trend.push(dayData);
+    }
+
+    res.json({ trend, days, users: activeUsers.map(u => u.name) });
+  } catch (error) {
+    console.error('Get employee time trend error:', error);
+    res.status(500).json({ message: 'Failed to get employee time trend.' });
+  }
+};
+
 // Get tasks completed per employee
 const getTasksCompletedPerEmployee = async (req, res) => {
   try {
@@ -316,6 +399,7 @@ module.exports = {
   getHoursPerEmployee,
   getTaskStatusBreakdown,
   getTimeTrend,
+  getEmployeeTimeTrend,
   getTasksCompletedPerEmployee,
   getEmployeesSummary,
   getQuizLogs

@@ -31,6 +31,7 @@ const AdminDashboard = () => {
   const [hoursData, setHoursData] = useState([]);
   const [statusData, setStatusData] = useState({ todo: 0, accepted: 0, in_progress: 0, completed: 0 });
   const [trendData, setTrendData] = useState([]);
+  const [employeeTrendData, setEmployeeTrendData] = useState({ trend: [], users: [] });
   const [quizLogs, setQuizLogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,11 +41,12 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [statsRes, hoursRes, statusRes, trendRes, quizLogsRes] = await Promise.all([
+      const [statsRes, hoursRes, statusRes, trendRes, empTrendRes, quizLogsRes] = await Promise.all([
         dashboardAPI.getStatistics(),
         dashboardAPI.getHoursPerEmployee(),
         dashboardAPI.getTaskStatusBreakdown(),
         dashboardAPI.getTimeTrend({ days: 7 }),
+        dashboardAPI.getEmployeeTimeTrend({ days: 7 }),
         dashboardAPI.getQuizLogs(),
       ]);
 
@@ -52,6 +54,10 @@ const AdminDashboard = () => {
       setHoursData(hoursRes.data.employees || []);
       setStatusData(statusRes.data.status || { todo: 0, accepted: 0, in_progress: 0, completed: 0 });
       setTrendData(trendRes.data.trend || []);
+      setEmployeeTrendData({
+        trend: empTrendRes.data.trend || [],
+        users: empTrendRes.data.users || [],
+      });
       setQuizLogs(quizLogsRes.data.logs || []);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
@@ -95,7 +101,7 @@ const AdminDashboard = () => {
     labels: trendData.map((d) => d.date?.slice(5) || ''),
     datasets: [
       {
-        label: 'Hours Logged',
+        label: 'Total Hours Logged',
         data: trendData.map((d) => parseFloat(d.hours) || 0),
         borderColor: '#8b5cf6',
         backgroundColor: 'rgba(139, 92, 246, 0.15)',
@@ -104,6 +110,45 @@ const AdminDashboard = () => {
         pointBackgroundColor: '#c084fc',
       },
     ],
+  };
+
+  const colors = ['#6366f1', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f43f5e'];
+  const employeeTrendChartData = {
+    labels: employeeTrendData.trend.map((d) => d.date?.slice(5) || ''),
+    datasets: employeeTrendData.users.map((user, idx) => ({
+      label: user,
+      data: employeeTrendData.trend.map((d) => d[user] || 0),
+      backgroundColor: colors[idx % colors.length],
+      borderRadius: 4,
+    })),
+  };
+
+  const stackedChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        position: 'bottom',
+        labels: { color: '#cbd5e1', font: { family: 'Plus Jakarta Sans', size: 12 } }
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        ticks: { color: '#94a3b8' },
+        grid: { display: false },
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        ticks: { color: '#94a3b8' },
+        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+      },
+    },
   };
 
   const chartOptions = {
@@ -200,15 +245,30 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Line Chart */}
-      <div className="card">
-        <h2 className="text-base font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">7-Day Time Activity Trend</h2>
-        <div className="h-64">
-          {trendData.length > 0 ? (
-            <Line data={trendChartData} options={chartOptions} />
-          ) : (
-            <p className="text-slate-500 text-center py-16">No trend data found</p>
-          )}
+      {/* Trend Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Line Chart */}
+        <div className="card">
+          <h2 className="text-base font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">7-Day Time Activity Trend (Total)</h2>
+          <div className="h-64">
+            {trendData.length > 0 ? (
+              <Line data={trendChartData} options={chartOptions} />
+            ) : (
+              <p className="text-slate-500 text-center py-16">No trend data found</p>
+            )}
+          </div>
+        </div>
+
+        {/* Stacked Bar Chart - Employee Breakdown */}
+        <div className="card">
+          <h2 className="text-base font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">7-Day Activity by Employee</h2>
+          <div className="h-64">
+            {employeeTrendData.trend.length > 0 ? (
+              <Bar data={employeeTrendChartData} options={stackedChartOptions} />
+            ) : (
+              <p className="text-slate-500 text-center py-16">No employee trend data found</p>
+            )}
+          </div>
         </div>
       </div>
 

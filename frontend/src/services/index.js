@@ -102,6 +102,7 @@ export const dashboardAPI = {
   getHoursPerEmployee: (params) => api.get('/dashboard/hours-per-employee', { params }),
   getTaskStatusBreakdown: (params) => api.get('/dashboard/task-status', { params }),
   getTimeTrend: (params) => api.get('/dashboard/time-trend', { params }),
+  getEmployeeTimeTrend: (params) => api.get('/dashboard/employee-time-trend', { params }),
   getTasksCompletedPerEmployee: (params) => api.get('/dashboard/tasks-completed', { params }),
   getEmployeesSummary: () => api.get('/dashboard/employees-summary'),
   getQuizLogs: () => api.get('/dashboard/quiz-logs'),

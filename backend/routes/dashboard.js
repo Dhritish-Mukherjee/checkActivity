@@ -19,6 +19,7 @@ router.get('/task-status', dashboardController.getTaskStatusBreakdown);
 
 // Time logged trend (last 7/30 days)
 router.get('/time-trend', dashboardController.getTimeTrend);
+router.get('/employee-time-trend', dashboardController.getEmployeeTimeTrend);
 
 // Tasks completed per employee
 router.get('/tasks-completed', dashboardController.getTasksCompletedPerEmployee);
