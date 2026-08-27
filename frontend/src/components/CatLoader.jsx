@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Lottie } from 'lottie-react';
 
+let cachedAnimationData = null;
+let fetchPromise = null;
+
 const CatLoader = ({ text = "Loading...", size = "w-32 h-32 md:w-48 md:h-48 lg:w-56 lg:h-56" }) => {
-  const [animationData, setAnimationData] = useState(null);
+  const [animationData, setAnimationData] = useState(cachedAnimationData);
 
   useEffect(() => {
-    fetch('/pet-loading.json')
-      .then(res => res.json())
-      .then(data => setAnimationData(data))
-      .catch(err => console.error("Failed to load Lottie animation:", err));
+    if (cachedAnimationData) {
+      setAnimationData(cachedAnimationData);
+      return;
+    }
+
+    if (!fetchPromise) {
+      fetchPromise = fetch('/pet-loading.json')
+        .then(res => res.json())
+        .then(data => {
+          cachedAnimationData = data;
+          return data;
+        })
+        .catch(err => {
+          console.error("Failed to load Lottie animation:", err);
+          return null;
+        });
+    }
+
+    fetchPromise.then(data => {
+      if (data) setAnimationData(data);
+    });
   }, []);
 
   return (
@@ -19,7 +39,7 @@ const CatLoader = ({ text = "Loading...", size = "w-32 h-32 md:w-48 md:h-48 lg:w
         </div>
       ) : (
         <div className={`${size} flex items-center justify-center`}>
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          {/* Waiting for Lottie JSON to load */}
         </div>
       )}
       <p className="text-xs font-bold tracking-widest uppercase text-indigo-400 animate-pulse">{text}</p>
