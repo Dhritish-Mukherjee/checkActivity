@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-const Sidebar = ({ user, logout, isAdmin }) => {
+const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
   const adminLinks = [
     { to: '/', icon: '◈', label: 'Dashboard' },
     { to: '/tasks', icon: '▣', label: 'All Tasks' },
@@ -20,7 +20,21 @@ const Sidebar = ({ user, logout, isAdmin }) => {
     : 'U';
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-950/80 backdrop-blur-xl border-r border-white/10 text-slate-200 z-30 flex flex-col justify-between">
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <aside 
+        className={`fixed left-0 top-0 h-screen w-64 bg-slate-950/80 backdrop-blur-xl border-r border-white/10 text-slate-200 z-50 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
       <div>
         {/* Brand Header */}
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
@@ -89,6 +103,7 @@ const Sidebar = ({ user, logout, isAdmin }) => {
         </div>
       </div>
     </aside>
+    </>
   );
 };
 

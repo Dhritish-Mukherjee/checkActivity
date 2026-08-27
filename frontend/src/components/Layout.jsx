@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from './Sidebar';
@@ -12,6 +13,7 @@ import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
   const { user, logout, isAdmin } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#080c14] text-slate-100 relative overflow-x-hidden flex">
@@ -21,23 +23,37 @@ const Layout = () => {
       <div className="fixed top-[40%] right-[30%] w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
 
       {/* Sidebar */}
-      <Sidebar user={user} logout={logout} isAdmin={isAdmin} />
+      <Sidebar 
+        user={user} 
+        logout={logout} 
+        isAdmin={isAdmin} 
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-64 flex flex-col min-w-0 relative z-10">
+      <main className="flex-1 md:ml-64 flex flex-col min-w-0 relative z-10">
         {/* Active Timer Banner for Employees */}
         {!isAdmin && <GlobalTimerBanner />}
 
         {/* Top Header */}
-        <header className="sticky top-0 z-20 bg-slate-950/70 backdrop-blur-xl border-b border-white/10 px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-2 font-heading">
-                <span className="text-gradient">Strivers</span> Platform
-              </h1>
-              <p className="text-xs text-slate-400">
-                {isAdmin ? 'Administrator Operations Command' : 'Personal Activity & Time Hub'}
-              </p>
+        <header className="sticky top-0 z-20 bg-slate-950/70 backdrop-blur-xl border-b border-white/10 px-4 py-3 md:px-8 md:py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="md:hidden p-2 -ml-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+              </button>
+              <div>
+                <h1 className="text-base md:text-lg font-bold text-white tracking-tight flex items-center gap-2 font-heading">
+                  <span className="text-gradient">Strivers</span> <span className="hidden sm:inline">Platform</span>
+                </h1>
+                <p className="text-[10px] md:text-xs text-slate-400 truncate max-w-[150px] sm:max-w-none">
+                  {isAdmin ? 'Administrator Operations Command' : 'Personal Activity & Time Hub'}
+                </p>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -60,7 +76,7 @@ const Layout = () => {
         </header>
 
         {/* Page Content Container */}
-        <div className="p-8 flex-1">
+        <div className="p-4 md:p-8 flex-1 overflow-x-hidden">
           <Routes>
             {isAdmin ? (
               <>
