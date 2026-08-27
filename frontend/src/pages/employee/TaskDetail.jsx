@@ -327,8 +327,8 @@ const TaskDetail = () => {
           </div>
 
           {/* Digital Timer Display */}
-          <div className="text-center py-6 bg-slate-950/60 rounded-2xl border border-white/5 my-4">
-            <p className={`font-mono text-6xl sm:text-7xl font-black tracking-widest tabular-nums mb-6 transition-colors ${
+          <div className="text-center py-6 bg-slate-950/60 rounded-2xl border border-white/5 my-4 overflow-hidden">
+            <p className={`font-mono text-4xl sm:text-6xl md:text-7xl font-black tracking-wide sm:tracking-widest tabular-nums mb-6 transition-colors ${
               activeTimer
                 ? 'bg-gradient-to-r from-violet-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]'
                 : 'text-slate-600'
@@ -340,18 +340,19 @@ const TaskDetail = () => {
               <button
                 onClick={handleStopTimer}
                 disabled={actionLoading}
-                className="btn-danger text-base px-8 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 mx-auto"
+                className="btn-danger text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-3.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 sm:gap-3 mx-auto w-full max-w-[280px] sm:max-w-none sm:w-auto"
               >
                 <span className="w-3.5 h-3.5 bg-white rounded-sm shrink-0" />
-                <span>Stop &amp; Save Time Log</span>
+                <span>Stop &amp; Save Log</span>
               </button>
             ) : (
               <button
                 onClick={handleStartTimer}
                 disabled={actionLoading}
-                className="btn-primary text-base px-8 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 mx-auto"
+                className="btn-primary text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-3.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 sm:gap-3 mx-auto w-full max-w-[280px] sm:max-w-none sm:w-auto"
               >
-                <span className="font-mono">[&gt;]</span> <span>Start Stopwatch</span>
+                <span className="font-mono font-bold text-lg leading-none shrink-0">[&gt;]</span> 
+                <span>Start Stopwatch</span>
               </button>
             )}
           </div>

@@ -85,8 +85,9 @@ const startTimer = async (req, res) => {
       }
     }
 
-    // Check if there's already an active timer for this user
+    // Check if there's already an active timer for this specific task
     const activeTimer = await TimeLog.findOne({
+      task: taskId,
       user: req.user._id,
       type: 'timer',
       endTime: null
@@ -94,7 +95,7 @@ const startTimer = async (req, res) => {
 
     if (activeTimer) {
       return res.status(400).json({
-        message: 'You already have an active timer. Stop it before starting a new one.',
+        message: 'You already have an active timer running for this specific task.',
         activeTimer
       });
     }
@@ -279,7 +280,9 @@ const getActiveTimer = async (req, res) => {
       user: req.user._id,
       type: 'timer',
       endTime: null
-    }).populate('task', 'title _id');
+    })
+      .sort({ startTime: -1 })
+      .populate('task', 'title _id');
 
     res.json({ activeTimer: activeTimer || null });
   } catch (error) {
