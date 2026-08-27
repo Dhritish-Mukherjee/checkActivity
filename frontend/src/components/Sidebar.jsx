@@ -6,6 +6,7 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
     { to: '/', icon: '◈', label: 'Dashboard' },
     { to: '/tasks', icon: '▣', label: 'All Tasks' },
     { to: '/employees', icon: '◩', label: 'Team Members' },
+    { to: '/quiz-generator', icon: '⚡', label: 'Quiz Engine' },
     { to: '/settings', icon: '◮', label: 'Settings' },
   ];
 

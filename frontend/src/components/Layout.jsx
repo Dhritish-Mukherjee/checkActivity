@@ -10,6 +10,7 @@ import MyTasks from '../pages/employee/MyTasks';
 import MyTimeLogs from '../pages/employee/MyTimeLogs';
 import TaskDetail from '../pages/employee/TaskDetail';
 import Settings from '../pages/Settings';
+import QuizGenerator from '../pages/admin/QuizGenerator';
 import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
@@ -85,6 +86,7 @@ const Layout = () => {
                 <Route path="/tasks" element={<ManageTasks />} />
                 <Route path="/employees" element={<EmployeesPage />} />
                 <Route path="/employees/:id" element={<EmployeeDetail />} />
+                <Route path="/quiz-generator" element={<QuizGenerator />} />
                 <Route path="/settings" element={<Settings />} />
               </>
             ) : (

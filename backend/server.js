@@ -25,19 +25,24 @@ const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 const timeLogRoutes = require('./routes/timelogs');
 const dashboardRoutes = require('./routes/dashboard');
+const quizGeneratorRoutes = require('./routes/quizGenerator');
+const path = require('path');
+
+// Serve quiz generator statics
+app.use('/outputs', express.static(path.join(__dirname, 'outputs')));
+app.use('/templates', express.static(path.join(__dirname, 'templates')));
 
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/timelogs', timeLogRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/quiz-generator', quizGeneratorRoutes);
 
 // Basic route for API testing
 app.get('/api', (req, res) => {
   res.json({ message: 'Strivers Task API' });
 });
-
-const path = require('path');
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, 'public')));
