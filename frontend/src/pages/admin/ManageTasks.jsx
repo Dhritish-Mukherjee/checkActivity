@@ -117,8 +117,8 @@ const ManageTasks = () => {
           }}
           className="btn-primary shrink-0"
         >
-          <span>✨</span>
-          <span>+ Create Task</span>
+          <span className="font-mono text-indigo-200">[+]</span>
+          <span>Create Task</span>
         </button>
       </div>
 

@@ -52,10 +52,11 @@ const GlobalTimerBanner = () => {
   if (!activeTimer) return null;
 
   return (
-    <div className="bg-gradient-to-r from-violet-900/90 via-indigo-900/90 to-purple-900/90 border-b border-indigo-500/30 text-white px-8 py-3 flex items-center justify-between shadow-xl shadow-indigo-950/50 backdrop-blur-md relative z-30">
-      <div className="flex items-center gap-3.5">
+    <div className="bg-gradient-to-r from-violet-900/90 via-indigo-900/90 to-purple-900/90 border-b border-indigo-500/30 text-white px-8 py-3 flex items-center justify-between shadow-xl shadow-indigo-950/50 backdrop-blur-md relative z-30 overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] animate-sweep pointer-events-none" />
+      <div className="flex items-center gap-3.5 relative z-10">
         <span className="relative flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75 shadow-[0_0_10px_#c084fc]"></span>
           <span className="relative inline-flex rounded-full h-3 w-3 bg-violet-500"></span>
         </span>
         <span className="text-sm font-medium text-slate-200">

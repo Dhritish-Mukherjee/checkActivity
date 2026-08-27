@@ -2,14 +2,14 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = ({ user, logout, isAdmin }) => {
   const adminLinks = [
-    { to: '/', icon: '⚡', label: 'Dashboard' },
-    { to: '/tasks', icon: '🎯', label: 'All Tasks' },
-    { to: '/employees', icon: '👥', label: 'Team Members' },
+    { to: '/', icon: '◈', label: 'Dashboard' },
+    { to: '/tasks', icon: '▣', label: 'All Tasks' },
+    { to: '/employees', icon: '◩', label: 'Team Members' },
   ];
 
   const employeeLinks = [
-    { to: '/', icon: '📋', label: 'My Tasks' },
-    { to: '/time-logs', icon: '⏱️', label: 'Time Logs' },
+    { to: '/', icon: '▣', label: 'My Tasks' },
+    { to: '/time-logs', icon: '◎', label: 'Time Logs' },
   ];
 
   const links = isAdmin ? adminLinks : employeeLinks;
@@ -60,12 +60,12 @@ const Sidebar = ({ user, logout, isAdmin }) => {
             >
               {({ isActive }) => (
                 <>
-                  <span className={`text-lg transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-indigo-400' : ''}`}>
+                  <span className={`text-lg transition-transform duration-500 group-hover:rotate-90 group-hover:scale-110 ${isActive ? 'text-indigo-400 animate-pulse-glow' : 'opacity-70'}`}>
                     {link.icon}
                   </span>
-                  <span className="font-sans tracking-wide">{link.label}</span>
+                  <span className="font-sans tracking-widest uppercase text-[11px] font-bold">{link.label}</span>
                   {isActive && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]" />
+                    <span className="ml-auto w-1.5 h-1.5 rounded-none bg-indigo-400 shadow-[0_0_12px_#818cf8] animate-pulse-glow rotate-45" />
                   )}
                 </>
               )}

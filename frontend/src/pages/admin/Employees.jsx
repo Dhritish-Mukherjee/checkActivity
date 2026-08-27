@@ -43,8 +43,8 @@ const EmployeesPage = () => {
           <p className="text-slate-400 text-sm mt-0.5">Overview of active team members and logged activity</p>
         </div>
         <button onClick={() => setShowCreateModal(true)} className="btn-primary">
-          <span>✨</span>
-          <span>+ Add Employee</span>
+          <span className="font-mono text-indigo-200">[+]</span>
+          <span>Add Employee</span>
         </button>
       </div>
 
@@ -60,9 +60,10 @@ const EmployeesPage = () => {
             <Link
               key={emp._id}
               to={`/employees/${emp._id}`}
-              className="card card-hover block group"
+              className="card card-hover block group relative overflow-hidden"
             >
-              <div className="flex items-center gap-3.5 mb-4">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700" />
+              <div className="flex items-center gap-3.5 mb-4 relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-base shadow-lg shadow-indigo-500/20 border border-white/20 shrink-0">
                   {emp.name.charAt(0).toUpperCase()}
                 </div>

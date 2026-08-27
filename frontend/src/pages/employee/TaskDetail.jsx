@@ -223,13 +223,13 @@ const TaskDetail = () => {
       {/* Notifications */}
       {error && (
         <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm rounded-2xl flex items-center gap-3">
-          <span>⚠️</span>
+          <span className="font-mono font-bold">[!:]</span>
           <span>{error}</span>
         </div>
       )}
       {successMsg && (
         <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm rounded-2xl flex items-center gap-3">
-          <span>✅</span>
+          <span className="font-mono font-bold">[OK]</span>
           <span>{successMsg}</span>
         </div>
       )}
@@ -260,14 +260,14 @@ const TaskDetail = () => {
           </span>
 
           {task.dueDate && (
-            <span className="flex items-center gap-1">
-              📅 Due: <strong className="text-slate-200">{new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</strong>
+            <span className="flex items-center gap-1 font-mono">
+              [DATE] <strong className="text-slate-200">{new Date(task.dueDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: '2-digit' })}</strong>
             </span>
           )}
 
           {task.assignedBy && (
-            <span className="flex items-center gap-1">
-              👤 Assigned by: <strong className="text-slate-200">{task.assignedBy.name}</strong>
+            <span className="flex items-center gap-1 font-mono">
+              [BY] <strong className="text-slate-200">{task.assignedBy.name}</strong>
             </span>
           )}
         </div>
@@ -277,8 +277,9 @@ const TaskDetail = () => {
       {isNew && (
         <div className="card border-indigo-500/40 bg-gradient-to-r from-indigo-950/40 to-slate-900/60 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-2xl shrink-0">
-              📥
+            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-xl shrink-0 font-mono text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.2)] relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] animate-sweep" />
+              [&gt;&gt;]
             </div>
             <div>
               <h2 className="text-lg font-bold text-white font-heading">Step 1 — Accept Task</h2>
@@ -290,7 +291,7 @@ const TaskDetail = () => {
             disabled={actionLoading}
             className="btn-primary shrink-0 w-full sm:w-auto"
           >
-            ✅ Accept Task
+            <span className="font-mono mr-2">[OK]</span> Accept Task
           </button>
         </div>
       )}
@@ -304,10 +305,10 @@ const TaskDetail = () => {
         }`}>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
-                activeTimer ? 'bg-violet-500/20 text-violet-400 border border-violet-500/40' : 'bg-white/5 text-slate-400'
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg font-mono font-bold ${
+                activeTimer ? 'bg-violet-500/20 text-violet-400 border border-violet-500/40 shadow-[0_0_15px_rgba(139,92,246,0.3)] animate-pulse-glow' : 'bg-white/5 text-slate-400'
               }`}>
-                ⏱️
+                (O)
               </div>
               <div>
                 <h2 className="text-base font-bold text-white font-heading">Step 2 — Track Time</h2>
@@ -350,7 +351,7 @@ const TaskDetail = () => {
                 disabled={actionLoading}
                 className="btn-primary text-base px-8 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 mx-auto"
               >
-                <span>▶ Start Stopwatch</span>
+                <span className="font-mono">[&gt;]</span> <span>Start Stopwatch</span>
               </button>
             )}
           </div>
@@ -363,7 +364,7 @@ const TaskDetail = () => {
                   onClick={() => setShowManual(true)}
                   className="w-full py-2.5 text-xs font-semibold text-slate-400 hover:text-white border border-white/10 hover:border-white/20 rounded-xl transition-all bg-white/5 hover:bg-white/10 flex items-center justify-center gap-2"
                 >
-                  <span>✏️ Or enter time manually</span>
+                  <span className="font-mono text-indigo-400 mr-2">[+]</span> <span>Or enter time manually</span>
                 </button>
               ) : (
                 <form onSubmit={handleManualSubmit} className="space-y-4 p-5 bg-slate-950/80 border border-white/10 rounded-2xl mt-4">
@@ -425,8 +426,8 @@ const TaskDetail = () => {
       {canWork && !isCompleted && !activeTimer && (
         <div className="card border-emerald-500/30 bg-emerald-950/20 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-2xl shrink-0">
-              🏁
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0 font-mono text-emerald-400">
+              [V]
             </div>
             <div>
               <h2 className="text-lg font-bold text-white font-heading">Step 3 — Mark Task Completed</h2>
@@ -438,16 +439,17 @@ const TaskDetail = () => {
             disabled={actionLoading}
             className="btn-success shrink-0 w-full sm:w-auto"
           >
-            🎉 Complete Task
+            <span className="font-mono mr-2">[DONE]</span> Complete Task
           </button>
         </div>
       )}
 
       {/* Completed Banner */}
       {isCompleted && (
-        <div className="card border-emerald-500/40 bg-emerald-950/30 text-center py-10">
-          <div className="text-5xl mb-3">🎉</div>
-          <h2 className="text-2xl font-extrabold text-white font-heading">Task Completed!</h2>
+        <div className="card border-emerald-500/40 bg-emerald-950/30 text-center py-10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(16,185,129,0.05)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] animate-sweep" />
+          <div className="text-4xl mb-3 font-mono text-emerald-500 font-bold tracking-widest relative z-10">[DONE]</div>
+          <h2 className="text-2xl font-extrabold text-white font-heading relative z-10">Task Completed!</h2>
           <p className="text-sm text-emerald-400 mt-2 font-medium">
             Total logged time: <strong className="text-white text-base">{formatDuration(totalLogged)}</strong>
           </p>

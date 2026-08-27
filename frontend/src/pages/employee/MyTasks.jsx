@@ -100,7 +100,7 @@ const MyTasks = () => {
           onClick={() => setShowModal(true)}
           className="btn-primary"
         >
-          <span>✨</span>
+          <span className="font-mono text-indigo-200">▤</span>
           <span>Assign New Task</span>
         </button>
       </div>
@@ -108,11 +108,11 @@ const MyTasks = () => {
       {/* Filter Tabs */}
       <div className="card !p-2 flex flex-wrap gap-1.5 bg-slate-900/60 backdrop-blur-xl border border-white/10">
         {[
-          { value: '', label: 'All Tasks' },
-          { value: 'todo', label: '📥 To Do' },
-          { value: 'accepted', label: '✅ Accepted' },
-          { value: 'in_progress', label: '⏱️ In Progress' },
-          { value: 'completed', label: '🎉 Completed' },
+          { value: '', label: '[ All Tasks ]' },
+          { value: 'todo', label: '[] To Do' },
+          { value: 'accepted', label: '[x] Accepted' },
+          { value: 'in_progress', label: '/// In Progress' },
+          { value: 'completed', label: '=== Completed' },
         ].map((tab) => (
           <button
             key={tab.value}
@@ -134,10 +134,11 @@ const MyTasks = () => {
           <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : tasks.length === 0 ? (
-        <div className="card text-center py-16 border-dashed border-white/10">
-          <div className="text-4xl mb-3">🎯</div>
-          <h3 className="text-lg font-bold text-white font-heading">No tasks found</h3>
-          <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
+        <div className="card text-center py-16 border-dashed border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.02)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] animate-sweep" />
+          <div className="text-4xl mb-3 text-slate-600 font-mono">/0</div>
+          <h3 className="text-lg font-bold text-white font-heading relative z-10">No tasks found</h3>
+          <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto relative z-10">
             You don't have any tasks matching this status filter right now.
           </p>
         </div>
@@ -180,8 +181,8 @@ const MyTasks = () => {
                 </span>
 
                 {task.dueDate ? (
-                  <span className="flex items-center gap-1 text-slate-400 font-medium">
-                    📅 {new Date(task.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                  <span className="flex items-center gap-1 text-slate-400 font-medium font-mono text-[11px]">
+                    {new Date(task.dueDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                   </span>
                 ) : (
                   <span className="text-slate-600">No deadline</span>
@@ -198,7 +199,7 @@ const MyTasks = () => {
           <div className="bg-slate-900 border border-white/10 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-7 shadow-2xl shadow-indigo-950/80 relative">
             <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
               <h2 className="text-xl font-bold text-white font-heading flex items-center gap-2">
-                <span>✨</span> Assign a New Task
+                <span className="text-indigo-400">///</span> Assign a New Task
               </h2>
               <button
                 onClick={() => setShowModal(false)}

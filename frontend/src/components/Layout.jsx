@@ -16,9 +16,9 @@ const Layout = () => {
   return (
     <div className="min-h-screen bg-[#080c14] text-slate-100 relative overflow-x-hidden flex">
       {/* Background Ambient Glow Orbs */}
-      <div className="fixed top-[-10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="fixed top-[40%] right-[30%] w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed top-[-10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none animate-float" />
+      <div className="fixed bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none animate-pulse-glow" style={{ animationDelay: '1s' }} />
+      <div className="fixed top-[40%] right-[30%] w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
 
       {/* Sidebar */}
       <Sidebar user={user} logout={logout} isAdmin={isAdmin} />
@@ -50,10 +50,10 @@ const Layout = () => {
               {/* Logout Button */}
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-rose-500/10"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-rose-500/10 group"
               >
                 <span>Logout</span>
-                <span>↳</span>
+                <span className="transition-transform duration-300 group-hover:translate-x-1">⇲</span>
               </button>
             </div>
           </div>
