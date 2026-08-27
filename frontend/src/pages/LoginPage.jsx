@@ -99,14 +99,7 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <div className="mt-8 text-center text-xs text-slate-400 border-t border-white/5 pt-6">
-          <p>
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-indigo-400 hover:text-indigo-300 font-semibold underline ml-1">
-              Create Account
-            </Link>
-          </p>
-        </div>
+
       </div>
     </div>
   );
