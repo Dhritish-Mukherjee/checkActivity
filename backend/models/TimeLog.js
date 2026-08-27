@@ -26,8 +26,9 @@ const timeLogSchema = new mongoose.Schema({
   },
   durationMinutes: {
     type: Number,
-    required: [true, 'Duration is required'],
-    min: [1, 'Duration must be at least 1 minute'],
+    required: false,
+    default: 0,
+    min: [0, 'Duration cannot be negative'],
     max: [1440, 'Duration cannot exceed 24 hours (1440 minutes)']
   },
   note: {
