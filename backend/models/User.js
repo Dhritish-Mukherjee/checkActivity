@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'employee'],
     default: 'employee'
   },
+  isTeamMember: {
+    type: Boolean,
+    default: false
+  },
   department: [{
     type: String,
     enum: ['faculty', 'tech', 'promotional', 'owners_club']

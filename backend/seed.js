@@ -15,13 +15,14 @@ const seedData = async () => {
     await TimeLog.deleteMany({});
     console.log('Cleared existing data');
 
-    const admin = new User({ name: 'Strivers Admin', email: 'admin@strivers.co.in', password: 'admin123', role: 'admin' });
+    const admin = new User({ name: 'Strivers Admin', email: 'admin@strivers.co.in', password: 'admin123', role: 'admin', isTeamMember: true });
     await admin.save();
     console.log('Admin created: admin@strivers.co.in / admin123');
 
-    const rahul = new User({ name: 'Rahul Sharma', email: 'rahul@strivers.co.in', password: 'employee123', role: 'employee' });
-    const priya = new User({ name: 'Priya Patel', email: 'priya@strivers.co.in', password: 'employee123', role: 'employee' });
-    const amit = new User({ name: 'Amit Kumar', email: 'amit@strivers.co.in', password: 'employee123', role: 'employee' });
+    console.log('Creating initial employees...');
+    const rahul = new User({ name: 'Rahul Sharma', email: 'rahul@strivers.co.in', password: 'employee123', role: 'employee', isTeamMember: true });
+    const priya = new User({ name: 'Priya Patel', email: 'priya@strivers.co.in', password: 'employee123', role: 'employee', isTeamMember: true });
+    const amit = new User({ name: 'Amit Kumar', email: 'amit@strivers.co.in', password: 'employee123', role: 'employee', isTeamMember: true });
     await rahul.save();
     await priya.save();
     await amit.save();

@@ -7,8 +7,9 @@ const QuizLog = require('../models/QuizLog');
 const getStatistics = async (req, res) => {
   try {
     const totalTasks = await Task.countDocuments();
-    const totalEmployees = await User.countDocuments();
+    const totalEmployees = await User.countDocuments({ isTeamMember: true });
     const activeEmployees = await User.countDocuments({
+      isTeamMember: true,
       updatedAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } // Last 7 days
     });
 
@@ -326,7 +327,7 @@ const getTasksCompletedPerEmployee = async (req, res) => {
 // Get employees summary with stats
 const getEmployeesSummary = async (req, res) => {
   try {
-    const employees = await User.find()
+    const employees = await User.find({ isTeamMember: true })
       .select('name email profilePicture department teacherStats youtubeAlias createdAt');
 
     const employeeStats = [];

@@ -5,8 +5,10 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
   const adminLinks = [
     { to: '/', icon: '◈', label: 'Dashboard' },
     { to: '/tasks', icon: '▣', label: 'All Tasks' },
-    { to: '/my-tasks', icon: '▤', label: 'My Tasks' },
-    { to: '/time-logs', icon: '◎', label: 'Time Logs' },
+    ...(user?.isTeamMember ? [
+      { to: '/my-tasks', icon: '▤', label: 'My Tasks' },
+      { to: '/time-logs', icon: '◎', label: 'Time Logs' }
+    ] : []),
     { to: '/employees', icon: '◩', label: 'Team Members' },
     { to: '/quiz-generator', icon: '⚡', label: 'Quiz Engine' },
     { to: '/settings', icon: '◮', label: 'Settings' },

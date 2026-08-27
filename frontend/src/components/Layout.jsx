@@ -14,7 +14,7 @@ import QuizGenerator from '../pages/admin/QuizGenerator';
 import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, isTeamMember } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -36,7 +36,7 @@ const Layout = () => {
       {/* Main Content Area */}
       <main className="flex-1 md:ml-64 flex flex-col min-w-0 relative z-10">
         {/* Active Timer Banner for Employees */}
-        <GlobalTimerBanner />
+        {isTeamMember && <GlobalTimerBanner />}
 
         {/* Top Header */}
         <header className="sticky top-0 z-20 bg-slate-950/70 backdrop-blur-xl border-b border-white/10 px-4 py-3 md:px-8 md:py-4">
@@ -84,9 +84,13 @@ const Layout = () => {
               <>
                 <Route path="/" element={<AdminDashboard />} />
                 <Route path="/tasks" element={<ManageTasks />} />
-                <Route path="/my-tasks" element={<MyTasks />} />
-                <Route path="/my-tasks/:id" element={<TaskDetail />} />
-                <Route path="/time-logs" element={<MyTimeLogs />} />
+                {isTeamMember && (
+                  <>
+                    <Route path="/my-tasks" element={<MyTasks />} />
+                    <Route path="/my-tasks/:id" element={<TaskDetail />} />
+                    <Route path="/time-logs" element={<MyTimeLogs />} />
+                  </>
+                )}
                 <Route path="/employees" element={<EmployeesPage />} />
                 <Route path="/employees/:id" element={<EmployeeDetail />} />
                 <Route path="/quiz-generator" element={<QuizGenerator />} />

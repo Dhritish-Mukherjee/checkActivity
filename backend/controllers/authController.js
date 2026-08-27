@@ -11,7 +11,7 @@ const generateToken = (userId) => {
 // Register new user (admin only)
 const register = async (req, res) => {
   try {
-    const { name, email, password, role, department } = req.body;
+    const { name, email, password, role, department, isTeamMember } = req.body;
 
     // Validation
     if (!name || !email || !password) {
@@ -41,12 +41,18 @@ const register = async (req, res) => {
       }
     }
 
+    let assignedIsTeamMember = assignedRole === 'employee';
+    if (isTeamMember !== undefined) {
+      assignedIsTeamMember = isTeamMember === true || isTeamMember === 'true';
+    }
+
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
       role: assignedRole,
-      department: assignedDepartment
+      department: assignedDepartment,
+      isTeamMember: assignedIsTeamMember
     });
 
     await user.save();
@@ -120,7 +126,7 @@ const getCurrentUser = async (req, res) => {
 // Get all employees (admin only)
 const getEmployees = async (req, res) => {
   try {
-    const employees = await User.find()
+    const employees = await User.find({ isTeamMember: true })
       .select('-password')
       .sort({ createdAt: -1 });
 
@@ -134,7 +140,7 @@ const getEmployees = async (req, res) => {
 // Get all users (for assigning tasks)
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find()
+    const users = await User.find({ isTeamMember: true })
       .select('-password')
       .sort({ name: 1 });
 
