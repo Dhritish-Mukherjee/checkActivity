@@ -1,5 +1,5 @@
 import React from 'react';
-import Lottie from 'lottie-react';
+import { Lottie } from 'lottie-react';
 import animationData from '../../public/Pet Loading.json';
 
 const CatLoader = ({ text = "Loading...", size = "w-32 h-32" }) => {
