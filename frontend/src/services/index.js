@@ -103,6 +103,7 @@ export const dashboardAPI = {
   getTimeTrend: (params) => api.get('/dashboard/time-trend', { params }),
   getTasksCompletedPerEmployee: (params) => api.get('/dashboard/tasks-completed', { params }),
   getEmployeesSummary: () => api.get('/dashboard/employees-summary'),
+  getQuizLogs: () => api.get('/dashboard/quiz-logs'),
 };
 
 export default api;

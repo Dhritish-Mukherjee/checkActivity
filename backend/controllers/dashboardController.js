@@ -1,6 +1,7 @@
 const Task = require('../models/Task');
 const TimeLog = require('../models/TimeLog');
 const User = require('../models/User');
+const QuizLog = require('../models/QuizLog');
 
 // Get dashboard statistics
 const getStatistics = async (req, res) => {
@@ -29,12 +30,16 @@ const getStatistics = async (req, res) => {
       ? (timeLogsTotal[0].totalMinutes / 60).toFixed(1)
       : 0;
 
+    // Total quizzes generated
+    const totalQuizzesGenerated = await QuizLog.countDocuments();
+
     res.json({
       totalTasks,
       tasksCompletedThisWeek,
       totalEmployees,
       activeEmployees,
-      totalHours
+      totalHours,
+      totalQuizzesGenerated
     });
   } catch (error) {
     console.error('Get statistics error:', error);
@@ -291,11 +296,27 @@ const getEmployeesSummary = async (req, res) => {
   }
 };
 
+// Get quiz generation logs
+const getQuizLogs = async (req, res) => {
+  try {
+    const logs = await QuizLog.find()
+      .populate('user', 'name email profilePicture')
+      .sort({ createdAt: -1 })
+      .limit(50); // Get the 50 most recent
+
+    res.json({ logs });
+  } catch (error) {
+    console.error('Get quiz logs error:', error);
+    res.status(500).json({ message: 'Failed to get quiz logs.' });
+  }
+};
+
 module.exports = {
   getStatistics,
   getHoursPerEmployee,
   getTaskStatusBreakdown,
   getTimeTrend,
   getTasksCompletedPerEmployee,
-  getEmployeesSummary
+  getEmployeesSummary,
+  getQuizLogs
 };

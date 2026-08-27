@@ -4,6 +4,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const { v4: uuidv4 } = require('uuid');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const QuizLog = require('../models/QuizLog');
 
 // ── Multer config: store thumbnail in /outputs with a temp name ───────────
 const storage = multer.diskStorage({
@@ -218,6 +219,21 @@ const generateQuiz = async (req, res) => {
 
     if (!fs.existsSync(outputFilePath)) {
       throw new Error('Output file was not generated.');
+    }
+
+    // LOG IT TO DB
+    try {
+      await QuizLog.create({
+        user: req.user._id,
+        outputFileName,
+        templateUsed: templateNumber,
+        questionCount: formattedQuestions.length,
+        rawQuestions,
+        structuredQuestions: formattedQuestions
+      });
+    } catch (dbErr) {
+      console.error('Failed to log quiz to DB:', dbErr);
+      // We don't fail the generation if logging fails, but we note it in logs
     }
 
     const downloadUrl = `/outputs/${outputFileName}`;

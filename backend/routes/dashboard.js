@@ -26,4 +26,7 @@ router.get('/tasks-completed', dashboardController.getTasksCompletedPerEmployee)
 // Employee summary
 router.get('/employees-summary', dashboardController.getEmployeesSummary);
 
+// Quiz Logs
+router.get('/quiz-logs', dashboardController.getQuizLogs);
+
 module.exports = router;
