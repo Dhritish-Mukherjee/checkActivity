@@ -63,12 +63,17 @@ export const AuthProvider = ({ children }) => {
     return response.data;
   };
 
+  const updateUser = (newUserData) => {
+    setUser(newUserData);
+  };
+
   const value = {
     user,
     loading,
     login,
     logout,
     register,
+    updateUser,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isEmployee: user?.role === 'employee'

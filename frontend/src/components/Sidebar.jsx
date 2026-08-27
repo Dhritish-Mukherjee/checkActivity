@@ -6,11 +6,13 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
     { to: '/', icon: '◈', label: 'Dashboard' },
     { to: '/tasks', icon: '▣', label: 'All Tasks' },
     { to: '/employees', icon: '◩', label: 'Team Members' },
+    { to: '/settings', icon: '◮', label: 'Settings' },
   ];
 
   const employeeLinks = [
     { to: '/', icon: '▣', label: 'My Tasks' },
     { to: '/time-logs', icon: '◎', label: 'Time Logs' },
+    { to: '/settings', icon: '◮', label: 'Settings' },
   ];
 
   const links = isAdmin ? adminLinks : employeeLinks;
@@ -104,8 +106,12 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
       {/* User Footer Profile */}
       <div className="p-4 m-3 bg-slate-900/60 rounded-2xl border border-white/10 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold flex items-center justify-center text-xs shadow-md border border-white/20 shrink-0">
-            {initials}
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold flex items-center justify-center text-xs shadow-md border border-white/20 shrink-0 overflow-hidden">
+            {user?.profilePicture ? (
+              <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              initials
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-slate-200 truncate">{user?.name}</p>

@@ -10,6 +10,7 @@ router.post('/register', authController.register);
 
 // Protected routes
 router.get('/me', auth, authController.getCurrentUser);
+router.put('/profile', auth, authController.updateProfile);
 router.get('/users', auth, authController.getAllUsers);
 
 // Admin only routes

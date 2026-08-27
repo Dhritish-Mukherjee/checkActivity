@@ -149,10 +149,33 @@ const getUserById = async (req, res) => {
   }
 };
 
+// Update current user profile
+const updateProfile = async (req, res) => {
+  try {
+    const { profilePicture } = req.body;
+    
+    // Only update allowed fields
+    if (profilePicture !== undefined) {
+      req.user.profilePicture = profilePicture;
+    }
+    
+    await req.user.save();
+    
+    res.json({
+      message: 'Profile updated successfully',
+      user: req.user
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ message: 'Failed to update profile.' });
+  }
+};
+
 module.exports = {
   register,
   login,
   getCurrentUser,
+  updateProfile,
   getEmployees,
   getAllUsers,
   getUserById

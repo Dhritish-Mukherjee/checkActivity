@@ -9,6 +9,7 @@ import EmployeeDetail from '../pages/admin/EmployeeDetail';
 import MyTasks from '../pages/employee/MyTasks';
 import MyTimeLogs from '../pages/employee/MyTimeLogs';
 import TaskDetail from '../pages/employee/TaskDetail';
+import Settings from '../pages/Settings';
 import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
@@ -84,6 +85,7 @@ const Layout = () => {
                 <Route path="/tasks" element={<ManageTasks />} />
                 <Route path="/employees" element={<EmployeesPage />} />
                 <Route path="/employees/:id" element={<EmployeeDetail />} />
+                <Route path="/settings" element={<Settings />} />
               </>
             ) : (
               <>
@@ -91,6 +93,7 @@ const Layout = () => {
                 <Route path="/tasks" element={<MyTasks />} />
                 <Route path="/tasks/:id" element={<TaskDetail />} />
                 <Route path="/time-logs" element={<MyTimeLogs />} />
+                <Route path="/settings" element={<Settings />} />
               </>
             )}
             <Route path="*" element={<Navigate to="/" replace />} />

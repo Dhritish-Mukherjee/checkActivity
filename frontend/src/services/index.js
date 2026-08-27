@@ -70,6 +70,7 @@ api.interceptors.request.use((config) => {
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   register: (userData) => api.post('/auth/register', userData),
+  updateProfile: (data) => api.put('/auth/profile', data),
   getCurrentUser: () => api.get('/auth/me'),
   getEmployees: () => api.get('/auth/employees'),
   getAllUsers: () => api.get('/auth/users'),
