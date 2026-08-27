@@ -328,7 +328,7 @@ const getTasksCompletedPerEmployee = async (req, res) => {
 const getEmployeesSummary = async (req, res) => {
   try {
     const employees = await User.find({ role: 'employee' })
-      .select('name email profilePicture department createdAt');
+      .select('name email profilePicture department teacherStats youtubeAlias createdAt');
 
     const employeeStats = [];
 
@@ -364,6 +364,8 @@ const getEmployeesSummary = async (req, res) => {
         email: employee.email,
         profilePicture: employee.profilePicture,
         department: employee.department || null,
+        teacherStats: employee.teacherStats || null,
+        youtubeAlias: employee.youtubeAlias || null,
         createdAt: employee.createdAt,
         totalTasks: tasksCount,
         completedTasks,
