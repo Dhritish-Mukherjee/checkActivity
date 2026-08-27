@@ -34,9 +34,11 @@ const LoginPage = () => {
       {/* Auth Card */}
       <div className="w-full max-w-md bg-slate-900/70 backdrop-blur-2xl border border-white/10 p-8 rounded-3xl shadow-2xl shadow-indigo-950/50 relative z-10">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-400 mx-auto flex items-center justify-center font-black text-2xl text-white shadow-xl shadow-indigo-500/30 border border-white/20 mb-4">
-            S
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Strivers Logo" 
+            className="w-16 h-16 mx-auto mb-4 object-contain drop-shadow-xl" 
+          />
           <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading mb-1">
             Welcome Back
           </h1>
