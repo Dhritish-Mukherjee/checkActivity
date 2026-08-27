@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const SignupPage = () => {
@@ -27,22 +27,33 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl">
+    <div className="min-h-screen flex items-center justify-center bg-[#080c14] text-slate-100 relative overflow-hidden p-6">
+      {/* Background Ambient Orbs */}
+      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-violet-600/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[140px] pointer-events-none" />
+
+      {/* Auth Card */}
+      <div className="w-full max-w-md bg-slate-900/70 backdrop-blur-2xl border border-white/10 p-8 rounded-3xl shadow-2xl shadow-indigo-950/50 relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Strivers Task</h1>
-          <p className="text-slate-500">Create an account</p>
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 mx-auto flex items-center justify-center font-black text-2xl text-white shadow-xl shadow-indigo-500/30 border border-white/20 mb-4">
+            S
+          </div>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading mb-1">
+            Create Account
+          </h1>
+          <p className="text-sm text-slate-400">Join your team on Strivers Platform</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
-              {error}
+            <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm rounded-xl flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{error}</span>
             </div>
           )}
 
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+            <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
               Full Name
             </label>
             <input
@@ -51,13 +62,13 @@ const SignupPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-              placeholder="John Doe"
+              className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
+              placeholder="Alex Morgan"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+            <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
               Email Address
             </label>
             <input
@@ -66,13 +77,13 @@ const SignupPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-              placeholder="you@strivers.co.in"
+              className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
+              placeholder="alex@strivers.co.in"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+            <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
               Password
             </label>
             <input
@@ -81,7 +92,7 @@ const SignupPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
               placeholder="••••••••"
             />
           </div>
@@ -89,18 +100,25 @@ const SignupPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 border border-white/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
           >
-            {loading ? 'Creating Account...' : 'Sign Up'}
+            {loading ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Creating Account...</span>
+              </>
+            ) : (
+              <span>Sign Up →</span>
+            )}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-slate-500">
+        <div className="mt-6 text-center text-xs text-slate-400 border-t border-white/5 pt-5">
           <p>
             Already have an account?{' '}
-            <a href="/login" className="text-primary hover:underline font-medium">
+            <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold underline ml-1">
               Sign In
-            </a>
+            </Link>
           </p>
         </div>
       </div>

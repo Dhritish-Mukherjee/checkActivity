@@ -14,33 +14,53 @@ const Layout = () => {
   const { user, logout, isAdmin } = useAuth();
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-[#080c14] text-slate-100 relative overflow-x-hidden flex">
+      {/* Background Ambient Glow Orbs */}
+      <div className="fixed top-[-10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none" />
+      <div className="fixed top-[40%] right-[30%] w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Sidebar */}
       <Sidebar user={user} logout={logout} isAdmin={isAdmin} />
 
-      <main className="flex-1 ml-64">
+      {/* Main Content Area */}
+      <main className="flex-1 ml-64 flex flex-col min-w-0 relative z-10">
+        {/* Active Timer Banner for Employees */}
         {!isAdmin && <GlobalTimerBanner />}
-        <header className="bg-white border-b border-slate-200 px-8 py-4">
+
+        {/* Top Header */}
+        <header className="sticky top-0 z-20 bg-slate-950/70 backdrop-blur-xl border-b border-white/10 px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-semibold text-slate-800">Strivers Task</h1>
-              <p className="text-sm text-slate-500">Internal Task Management</p>
+              <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-2 font-heading">
+                <span className="text-gradient">Strivers</span> Platform
+              </h1>
+              <p className="text-xs text-slate-400">
+                {isAdmin ? 'Administrator Operations Command' : 'Personal Activity & Time Hub'}
+              </p>
             </div>
+
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm font-medium text-slate-800">{user?.name}</p>
-                <p className="text-xs text-slate-500 capitalize">{user?.role}</p>
+              {/* Status pill */}
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Live Sync Active
               </div>
+
+              {/* Logout Button */}
               <button
                 onClick={logout}
-                className="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-rose-500/10"
               >
-                Logout
+                <span>Logout</span>
+                <span>↳</span>
               </button>
             </div>
           </div>
         </header>
 
-        <div className="p-8">
+        {/* Page Content Container */}
+        <div className="p-8 flex-1">
           <Routes>
             {isAdmin ? (
               <>

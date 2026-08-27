@@ -2,12 +2,6 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { timeLogAPI } from '../services';
 
-/**
- * GlobalTimerBanner
- * Polls /timelogs/active every 10 seconds.
- * Shows a sticky banner at the top of the page if a timer is running — it ticks live.
- * Persists across page navigation because it lives in Layout, outside the route tree.
- */
 const GlobalTimerBanner = () => {
   const [activeTimer, setActiveTimer] = useState(null);
   const [elapsed, setElapsed] = useState(0);
@@ -35,13 +29,12 @@ const GlobalTimerBanner = () => {
         setElapsed(0);
       }
     } catch {
-      // silently fail — user might not be logged in yet
+      // silently ignore unauthenticated
     }
   }, [startTick]);
 
   useEffect(() => {
     fetchActive();
-    // Re-poll every 15s so if the timer is stopped from another tab it reflects
     pollRef.current = setInterval(fetchActive, 15000);
     return () => {
       clearInterval(tickRef.current);
@@ -59,20 +52,34 @@ const GlobalTimerBanner = () => {
   if (!activeTimer) return null;
 
   return (
-    <div className="bg-violet-600 text-white px-6 py-2 flex items-center justify-between text-sm">
-      <div className="flex items-center gap-3">
-        <span className="animate-pulse text-base">⏱️</span>
-        <span>
-          Timer running on{' '}
+    <div className="bg-gradient-to-r from-violet-900/90 via-indigo-900/90 to-purple-900/90 border-b border-indigo-500/30 text-white px-8 py-3 flex items-center justify-between shadow-xl shadow-indigo-950/50 backdrop-blur-md relative z-30">
+      <div className="flex items-center gap-3.5">
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-violet-500"></span>
+        </span>
+        <span className="text-sm font-medium text-slate-200">
+          Timer running for task:{' '}
           <Link
             to={`/tasks/${activeTimer.task?._id}`}
-            className="font-semibold underline hover:text-violet-200 transition-colors"
+            className="font-bold text-white underline hover:text-indigo-300 transition-colors ml-1"
           >
-            {activeTimer.task?.title || 'a task'}
+            {activeTimer.task?.title || 'Current Task'}
           </Link>
         </span>
       </div>
-      <span className="font-mono font-bold text-lg tabular-nums">{fmt(elapsed)}</span>
+
+      <div className="flex items-center gap-4">
+        <span className="font-mono text-xl font-black text-violet-200 tracking-wider bg-slate-950/60 px-4 py-1 rounded-xl border border-violet-500/30 shadow-inner">
+          {fmt(elapsed)}
+        </span>
+        <Link
+          to={`/tasks/${activeTimer.task?._id}`}
+          className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white transition-all shadow-md shadow-indigo-500/30"
+        >
+          View &amp; Stop
+        </Link>
+      </div>
     </div>
   );
 };
