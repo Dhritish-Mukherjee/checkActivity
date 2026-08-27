@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { taskAPI, timeLogAPI, authAPI } from '../../services';
+import { taskAPI, timeLogAPI, authAPI, youtubeAPI } from '../../services';
 
 const STATUS_BADGES = {
   todo: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
@@ -12,9 +12,10 @@ const STATUS_BADGES = {
 const EmployeeDetail = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState(null);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks]       = useState([]);
   const [timeLogs, setTimeLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ytVideos, setYtVideos] = useState([]);
+  const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
     fetchEmployeeData();
@@ -32,6 +33,19 @@ const EmployeeDetail = () => {
       setEmployee(emp);
       setTasks(tasksRes.data.tasks || []);
       setTimeLogs(logsRes.data.timeLogs || []);
+
+      // If faculty, load their YouTube videos
+      if (emp?.department === 'faculty') {
+        try {
+          const teachersRes = await youtubeAPI.getTeachers();
+          const teacher = teachersRes.data.teachers.find((t) => t._id === id);
+          if (teacher) {
+            setYtVideos(teacher.recentVideos || []);
+            // merge teacherStats back into employee object
+            setEmployee((prev) => ({ ...prev, teacherStats: teacher.teacherStats, youtubeAlias: teacher.youtubeAlias, isPlaceholder: teacher.isPlaceholder }));
+          }
+        } catch (_) { /* non-fatal */ }
+      }
     } catch (error) {
       console.error('Failed to fetch employee data:', error);
     } finally {
@@ -60,8 +74,8 @@ const EmployeeDetail = () => {
         ← Back to Team Directory
       </Link>
 
-      <div className="card flex items-center gap-4 bg-gradient-to-r from-indigo-950/40 to-slate-900/80 border-indigo-500/30">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-black flex items-center justify-center text-2xl shadow-xl shadow-indigo-500/20 border border-white/20 shrink-0 overflow-hidden">
+      <div className={`card flex items-center gap-4 bg-gradient-to-r ${employee.department === 'faculty' ? 'from-violet-950/40 to-slate-900/80 border-violet-500/30' : 'from-indigo-950/40 to-slate-900/80 border-indigo-500/30'}`}>
+        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr ${employee.department === 'faculty' ? 'from-violet-600 to-purple-600 shadow-violet-500/20' : 'from-indigo-600 to-purple-600 shadow-indigo-500/20'} text-white font-black flex items-center justify-center text-2xl shadow-xl border border-white/20 shrink-0 overflow-hidden`}>
           {employee.profilePicture ? (
             <img src={employee.profilePicture} alt={employee.name} className="w-full h-full object-cover" />
           ) : (
@@ -69,25 +83,91 @@ const EmployeeDetail = () => {
           )}
         </div>
         <div>
-          <h1 className="text-2xl font-extrabold text-white font-heading">{employee.name}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-2xl font-extrabold text-white font-heading">{employee.name}</h1>
+            {employee.department === 'faculty' && (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-violet-500/10 border border-violet-500/20 text-violet-400">Faculty</span>
+            )}
+            {employee.isPlaceholder && (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 border border-amber-500/20 text-amber-400">Placeholder — edit name/email</span>
+            )}
+          </div>
           <p className="text-sm text-slate-400">{employee.email}</p>
+          {employee.youtubeAlias && (
+            <p className="text-xs text-slate-500 mt-0.5">YouTube alias: <span className="text-slate-300">{employee.youtubeAlias}</span></p>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {/* Stats row — YouTube stats for faculty, task stats for others */}
+      {employee.department === 'faculty' ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="card border-violet-500/20 bg-gradient-to-br from-violet-950/30 to-slate-900/60">
+            <p className="text-xs font-bold uppercase tracking-wider text-violet-400 mb-1">Total Classes</p>
+            <p className="text-3xl font-extrabold text-white font-mono">{employee.teacherStats?.totalClasses || 0}</p>
+          </div>
+          <div className="card border-cyan-500/20 bg-gradient-to-br from-cyan-950/30 to-slate-900/60">
+            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">Hours Taught</p>
+            <p className="text-3xl font-extrabold text-cyan-300 font-mono">{employee.teacherStats?.totalHours || 0}<span className="text-lg">h</span></p>
+          </div>
+          <div className="card border-emerald-500/20 bg-gradient-to-br from-emerald-950/30 to-slate-900/60">
+            <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">Total Views</p>
+            <p className="text-3xl font-extrabold text-emerald-300 font-mono">
+              {employee.teacherStats?.totalViews >= 1000
+                ? `${(employee.teacherStats.totalViews / 1000).toFixed(1)}K`
+                : (employee.teacherStats?.totalViews || 0)}
+            </p>
+          </div>
+          <div className="card border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-950/30 to-slate-900/60">
+            <p className="text-xs font-bold uppercase tracking-wider text-fuchsia-400 mb-1">Current Series</p>
+            <p className="text-lg font-extrabold text-fuchsia-300 font-heading leading-tight">{employee.teacherStats?.currentSeries || '—'}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="card">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Total Assigned</p>
+            <p className="text-3xl font-extrabold text-white font-mono">{tasks.length}</p>
+          </div>
+          <div className="card border-emerald-500/20">
+            <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">Completed</p>
+            <p className="text-3xl font-extrabold text-emerald-300 font-mono">{completedTasks}</p>
+          </div>
+          <div className="card border-cyan-500/20">
+            <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">Total Hours Logged</p>
+            <p className="text-3xl font-extrabold text-cyan-300 font-mono">{totalHours.toFixed(1)}<span className="text-lg">h</span></p>
+          </div>
+        </div>
+      )}
+
+      {/* Recent YouTube videos — faculty only */}
+      {employee.department === 'faculty' && ytVideos.length > 0 && (
         <div className="card">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Total Assigned</p>
-          <p className="text-3xl font-extrabold text-white font-mono">{tasks.length}</p>
+          <h2 className="text-base font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">Recent Live Streams</h2>
+          <div className="space-y-2">
+            {ytVideos.map((v) => (
+              <a
+                key={v.videoId}
+                href={v.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-xl bg-slate-950/60 border border-white/5 hover:border-violet-500/20 hover:bg-slate-900 transition-all group"
+              >
+                <img src={v.thumbnail} alt={v.title} className="w-20 h-12 object-cover rounded-lg shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white group-hover:text-violet-300 transition-colors line-clamp-1">{v.title}</p>
+                  <div className="flex items-center gap-3 mt-0.5 text-[11px] text-slate-500">
+                    {v.series && <span className="text-violet-400">{v.series}</span>}
+                    {v.duration && <span>{v.duration}</span>}
+                    {v.views > 0 && <span>{v.views >= 1000 ? `${(v.views/1000).toFixed(1)}K` : v.views} views</span>}
+                    <span>{new Date(v.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
-        <div className="card border-emerald-500/20">
-          <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">Completed</p>
-          <p className="text-3xl font-extrabold text-emerald-300 font-mono">{completedTasks}</p>
-        </div>
-        <div className="card border-cyan-500/20">
-          <p className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">Total Hours Logged</p>
-          <p className="text-3xl font-extrabold text-cyan-300 font-mono">{totalHours.toFixed(1)}h</p>
-        </div>
-      </div>
+      )}
 
       <div className="card">
         <h2 className="text-base font-bold text-white font-heading mb-4 border-b border-white/10 pb-3">Assigned Tasks</h2>

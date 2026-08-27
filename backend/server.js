@@ -1,13 +1,55 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cron = require('node-cron');
 require('dotenv').config();
 
 const app = express();
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/strivers-task')
-.then(() => console.log('✅ MongoDB connected'))
+.then(async () => {
+  console.log('✅ MongoDB connected');
+
+  // Seed series data (idempotent — skips if already exists)
+  const Series = require('./models/Series');
+  const SERIES_SEED = [
+    {
+      name: 'Lali Series',
+      slug: 'lali',
+      type: 'partial_free',
+      description: 'Partially free ongoing series covering exam-focused MCQ practice.',
+      isActive: true,
+      keywords: ['lali series', 'lali'],
+    },
+    {
+      name: 'Udyam Series',
+      slug: 'udyam',
+      type: 'free',
+      description: 'Fully free series for WBP, KP, SSC GD, Panchayat aspirants.',
+      isActive: true,
+      keywords: ['udyam series', 'udyam'],
+    },
+  ];
+  for (const s of SERIES_SEED) {
+    await Series.findOneAndUpdate({ slug: s.slug }, s, { upsert: true, new: true });
+  }
+  console.log('✅ Series seeded (Lali, Udyam)');
+
+  // Daily cron: refresh YouTube view counts at 2:00 AM IST (8:30 PM UTC)
+  if (process.env.YOUTUBE_API_KEY) {
+    const { refreshViewCounts } = require('./services/youtubeSync');
+    cron.schedule('30 20 * * *', async () => {
+      console.log('⏰ [Cron] Daily view count refresh triggered');
+      try {
+        await refreshViewCounts(process.env.YOUTUBE_API_KEY);
+      } catch (err) {
+        console.error('⏰ [Cron] View refresh failed:', err.message);
+      }
+    }, { timezone: 'UTC' });
+    console.log('⏰ Daily view refresh cron scheduled (2:00 AM IST)');
+  }
+})
 .catch(err => {
   console.error('❌ MongoDB connection error:', err);
   process.exit(1);

@@ -1,55 +1,73 @@
 const axios = require('axios');
+const User = require('../models/User');
+const Video = require('../models/Video');
+const Series = require('../models/Series');
+const { syncAllStreams, refreshViewCounts } = require('../services/youtubeSync');
 
-const CHANNEL_ID = 'UCEOMA6LSxTcObT4--Ruqg1Q'; // @Striverseducation channel ID
+const CHANNEL_ID = 'UCEOMA6LSxTcObT4--Ruqg1Q';
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 
-/**
- * Extract teacher name from the video title.
- * Titles follow the pattern: "... | Teacher Name Sir/Ma'am"
- */
-const extractTeacher = (title) => {
-  // Try matching "| SomeName Sir" or "| SomeName Ma'am" or "| SomeName স্যার"
-  const match = title.match(/\|\s*([^|]+(?:Sir|Ma'am|স্যার|স্যার))\s*$/i);
-  if (match) return match[1].trim();
+// Prevent concurrent syncs
+let syncInProgress = false;
 
-  // Fall back: grab last pipe segment if it looks like a name
-  const parts = title.split('|');
-  if (parts.length >= 2) {
-    const last = parts[parts.length - 1].trim();
-    // If short (< 30 chars) and not all caps, likely a teacher name
-    if (last.length < 35 && last !== last.toUpperCase()) return last;
-  }
-  return null;
-};
-
-/**
- * Convert ISO 8601 duration (PT1H2M15S) to human-readable string (1:02:15)
- */
-const parseDuration = (iso) => {
-  if (!iso) return null;
-  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if (!match) return null;
-  const h = parseInt(match[1] || '0');
-  const m = parseInt(match[2] || '0');
-  const s = parseInt(match[3] || '0');
+/** Convert ISO 8601 duration to human-readable string */
+const formatDuration = (seconds) => {
+  if (!seconds) return null;
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
   if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   return `${m}:${String(s).padStart(2, '0')}`;
 };
 
+// ─── GET /api/youtube/streams ─────────────────────────────────────────────────
 /**
- * GET /api/youtube/streams
- * Fetch the most recent live streams from the Strivers channel.
+ * Returns recent streams — first tries the DB (fast), falls back to live YouTube API.
+ * Prefers DB data since it's enriched with teacher and series refs.
  */
 const getRecentStreams = async (req, res) => {
   const apiKey = process.env.YOUTUBE_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ message: 'YouTube API key not configured.' });
-  }
+  if (!apiKey) return res.status(500).json({ message: 'YouTube API key not configured.' });
+
+  const limit = parseInt(req.query.limit) || 12;
 
   try {
-    const maxResults = parseInt(req.query.limit) || 12;
+    // Try DB first
+    const dbCount = await Video.countDocuments();
 
-    // Step 1: Search for completed live streams
+    if (dbCount > 0) {
+      const videos = await Video.find({})
+        .sort({ publishedAt: -1 })
+        .limit(limit)
+        .populate('teacher', 'name youtubeAlias profilePicture teacherStats')
+        .populate('series', 'name type slug');
+
+      const streams = videos.map((v) => ({
+        videoId: v.videoId,
+        title: v.title,
+        teacher: v.teacher?.name || v.teacherAlias || null,
+        teacherAlias: v.teacherAlias,
+        series: v.series?.name || v.seriesRaw || null,
+        seriesType: v.series?.type || null,
+        duration: formatDuration(v.durationSeconds),
+        durationSeconds: v.durationSeconds,
+        views: v.views,
+        likes: v.likes,
+        thumbnail: v.thumbnail,
+        url: v.youtubeUrl,
+        publishedAt: v.publishedAt,
+        lastViewsRefresh: v.lastViewsRefresh,
+      }));
+
+      return res.json({
+        streams,
+        total: dbCount,
+        source: 'database',
+        lastSync: videos[0]?.updatedAt || null,
+      });
+    }
+
+    // Fallback: live YouTube API (before first sync)
     const searchRes = await axios.get(`${YOUTUBE_API_BASE}/search`, {
       params: {
         part: 'snippet',
@@ -57,61 +75,183 @@ const getRecentStreams = async (req, res) => {
         eventType: 'completed',
         type: 'video',
         order: 'date',
-        maxResults,
+        maxResults: limit,
         key: apiKey,
       },
     });
 
     const items = searchRes.data.items || [];
-    if (items.length === 0) {
-      return res.json({ streams: [], total: 0 });
-    }
-
     const videoIds = items.map((i) => i.id.videoId).join(',');
-
-    // Step 2: Fetch video details (duration, view count, etc.)
     const detailsRes = await axios.get(`${YOUTUBE_API_BASE}/videos`, {
-      params: {
-        part: 'contentDetails,statistics,snippet',
-        id: videoIds,
-        key: apiKey,
-      },
+      params: { part: 'contentDetails,statistics', id: videoIds, key: apiKey },
     });
 
     const detailsMap = {};
-    for (const video of detailsRes.data.items || []) {
-      detailsMap[video.id] = video;
+    for (const v of detailsRes.data.items || []) {
+      const match = v.contentDetails?.duration?.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      const secs = match ? (parseInt(match[1] || 0) * 3600) + (parseInt(match[2] || 0) * 60) + parseInt(match[3] || 0) : 0;
+      detailsMap[v.id] = { durationSeconds: secs, views: parseInt(v.statistics?.viewCount || 0) };
     }
 
-    // Step 3: Build the final stream list
     const streams = items.map((item) => {
-      const videoId = item.id.videoId;
-      const snippet = item.snippet;
-      const detail = detailsMap[videoId];
-      const title = snippet.title;
-
+      const d = detailsMap[item.id.videoId] || {};
       return {
-        videoId,
-        title,
-        teacher: extractTeacher(title),
-        thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url || snippet.thumbnails?.default?.url,
-        publishedAt: snippet.publishedAt,
-        channelTitle: snippet.channelTitle,
-        description: snippet.description,
-        duration: parseDuration(detail?.contentDetails?.duration),
-        views: parseInt(detail?.statistics?.viewCount || 0),
-        likes: parseInt(detail?.statistics?.likeCount || 0),
-        url: `https://www.youtube.com/watch?v=${videoId}`,
+        videoId: item.id.videoId,
+        title: item.snippet.title,
+        teacher: null,
+        series: null,
+        duration: formatDuration(d.durationSeconds),
+        durationSeconds: d.durationSeconds || 0,
+        views: d.views || 0,
+        thumbnail: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url || '',
+        url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+        publishedAt: item.snippet.publishedAt,
       };
     });
 
-    res.json({ streams, total: searchRes.data.pageInfo?.totalResults || streams.length });
+    res.json({ streams, total: searchRes.data.pageInfo?.totalResults || streams.length, source: 'youtube-api' });
   } catch (error) {
-    console.error('YouTube API error:', error.response?.data || error.message);
-    const status = error.response?.status || 500;
-    const msg = error.response?.data?.error?.message || 'Failed to fetch YouTube streams.';
-    res.status(status).json({ message: msg });
+    console.error('YouTube streams error:', error.response?.data || error.message);
+    res.status(error.response?.status || 500).json({
+      message: error.response?.data?.error?.message || 'Failed to fetch streams.',
+    });
   }
 };
 
-module.exports = { getRecentStreams };
+// ─── POST /api/youtube/sync ───────────────────────────────────────────────────
+/** Trigger a full sync. Prevents concurrent runs. */
+const triggerSync = async (req, res) => {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey) return res.status(500).json({ message: 'YouTube API key not configured.' });
+
+  if (syncInProgress) {
+    return res.status(409).json({ message: 'A sync is already in progress. Please wait.' });
+  }
+
+  syncInProgress = true;
+  try {
+    const result = await syncAllStreams(apiKey);
+    res.json({ message: 'Sync completed successfully.', ...result });
+  } catch (error) {
+    console.error('Sync error:', error.response?.data || error.message);
+    res.status(500).json({ message: error.response?.data?.error?.message || 'Sync failed.' });
+  } finally {
+    syncInProgress = false;
+  }
+};
+
+// ─── POST /api/youtube/refresh-views ─────────────────────────────────────────
+/** Refresh view counts for all existing videos. */
+const triggerRefreshViews = async (req, res) => {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey) return res.status(500).json({ message: 'YouTube API key not configured.' });
+
+  try {
+    const result = await refreshViewCounts(apiKey);
+    res.json({ message: 'View counts refreshed.', ...result });
+  } catch (error) {
+    console.error('Refresh views error:', error.message);
+    res.status(500).json({ message: 'Failed to refresh view counts.' });
+  }
+};
+
+// ─── GET /api/youtube/sync-status ────────────────────────────────────────────
+/** Quick status check: how many videos in DB, last sync time, teachers. */
+const getSyncStatus = async (req, res) => {
+  try {
+    const totalVideos = await Video.countDocuments();
+    const latestVideo = await Video.findOne().sort({ publishedAt: -1 }).select('publishedAt lastViewsRefresh updatedAt');
+    const totalTeachers = await User.countDocuments({ department: 'faculty', youtubeAlias: { $ne: null } });
+
+    res.json({
+      syncInProgress,
+      totalVideos,
+      totalTeachers,
+      lastSynced: latestVideo?.updatedAt || null,
+      lastViewsRefresh: latestVideo?.lastViewsRefresh || null,
+      latestVideoDate: latestVideo?.publishedAt || null,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to get sync status.' });
+  }
+};
+
+// ─── GET /api/youtube/teachers ────────────────────────────────────────────────
+/** Returns all faculty users with their teacher stats + recent 3 videos. */
+const getTeachers = async (req, res) => {
+  try {
+    const teachers = await User.find({ department: 'faculty' })
+      .select('name email profilePicture youtubeAlias teacherStats createdAt')
+      .sort({ 'teacherStats.totalClasses': -1 });
+
+    // Attach recent videos for each teacher
+    const result = await Promise.all(
+      teachers.map(async (t) => {
+        const recentVideos = await Video.find({ teacher: t._id })
+          .sort({ publishedAt: -1 })
+          .limit(3)
+          .select('title thumbnail youtubeUrl publishedAt durationSeconds views seriesRaw')
+          .populate('series', 'name');
+
+        return {
+          _id: t._id,
+          name: t.name,
+          email: t.email,
+          profilePicture: t.profilePicture,
+          youtubeAlias: t.youtubeAlias,
+          isPlaceholder: t.email?.endsWith('.placeholder@strivers.local'),
+          teacherStats: t.teacherStats,
+          recentVideos: recentVideos.map((v) => ({
+            videoId: v.videoId,
+            title: v.title,
+            thumbnail: v.thumbnail,
+            url: v.youtubeUrl,
+            publishedAt: v.publishedAt,
+            duration: formatDuration(v.durationSeconds),
+            views: v.views,
+            series: v.series?.name || v.seriesRaw || null,
+          })),
+        };
+      })
+    );
+
+    res.json({ teachers: result, total: result.length });
+  } catch (error) {
+    console.error('Get teachers error:', error.message);
+    res.status(500).json({ message: 'Failed to fetch teachers.' });
+  }
+};
+
+// ─── GET /api/youtube/series ──────────────────────────────────────────────────
+/** Returns all series with video counts. */
+const getSeries = async (req, res) => {
+  try {
+    const series = await Series.find().sort({ createdAt: 1 });
+    const result = await Promise.all(
+      series.map(async (s) => {
+        const count = await Video.countDocuments({ series: s._id });
+        const totalViews = await Video.aggregate([
+          { $match: { series: s._id } },
+          { $group: { _id: null, total: { $sum: '$views' } } },
+        ]);
+        return {
+          ...s.toObject(),
+          videoCount: count,
+          totalViews: totalViews[0]?.total || 0,
+        };
+      })
+    );
+    res.json({ series: result });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch series.' });
+  }
+};
+
+module.exports = {
+  getRecentStreams,
+  triggerSync,
+  triggerRefreshViews,
+  getSyncStatus,
+  getTeachers,
+  getSeries,
+};

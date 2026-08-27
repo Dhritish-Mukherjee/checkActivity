@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { getRecentStreams } = require('../controllers/youtubeController');
+const {
+  getRecentStreams,
+  triggerSync,
+  triggerRefreshViews,
+  getSyncStatus,
+  getTeachers,
+  getSeries,
+} = require('../controllers/youtubeController');
 const { auth } = require('../middleware/auth');
 const { isAdmin } = require('../middleware/roleCheck');
 
@@ -8,7 +15,14 @@ const { isAdmin } = require('../middleware/roleCheck');
 router.use(auth);
 router.use(isAdmin);
 
-// GET /api/youtube/streams — returns recent live streams from the channel
-router.get('/streams', getRecentStreams);
+// ── Read endpoints ───────────────────────────────────────────────────────────
+router.get('/streams',      getRecentStreams);   // Recent live streams
+router.get('/sync-status',  getSyncStatus);      // DB stats + sync state
+router.get('/teachers',     getTeachers);        // Faculty + YouTube stats
+router.get('/series',       getSeries);          // Series list with counts
+
+// ── Action endpoints ─────────────────────────────────────────────────────────
+router.post('/sync',          triggerSync);        // Full sync (admin button)
+router.post('/refresh-views', triggerRefreshViews); // Refresh view counts only
 
 module.exports = router;

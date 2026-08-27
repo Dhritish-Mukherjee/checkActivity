@@ -36,6 +36,20 @@ const userSchema = new mongoose.Schema({
     enum: ['faculty', 'tech', 'promotional', null],
     default: null
   },
+  // For faculty: the name alias that appears in YouTube video titles (e.g. "Somnath Sir")
+  youtubeAlias: {
+    type: String,
+    default: null,
+    trim: true,
+  },
+  // Aggregated YouTube stats — computed from the Video collection on each sync
+  teacherStats: {
+    totalViews:   { type: Number, default: 0 },
+    totalHours:   { type: Number, default: 0 },
+    totalClasses: { type: Number, default: 0 },
+    currentSeries:{ type: String, default: null },
+    lastSyncedAt: { type: Date,   default: null },
+  },
   createdAt: {
     type: Date,
     default: Date.now

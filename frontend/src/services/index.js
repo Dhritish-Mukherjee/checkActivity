@@ -109,7 +109,12 @@ export const dashboardAPI = {
 };
 
 export const youtubeAPI = {
-  getRecentStreams: (limit = 12) => api.get('/youtube/streams', { params: { limit }, bypassCache: true }),
+  getRecentStreams:  (limit = 12) => api.get('/youtube/streams', { params: { limit }, bypassCache: true }),
+  getSyncStatus:     ()           => api.get('/youtube/sync-status', { bypassCache: true }),
+  getTeachers:       ()           => api.get('/youtube/teachers', { bypassCache: true }),
+  getSeries:         ()           => api.get('/youtube/series', { bypassCache: true }),
+  triggerSync:       ()           => api.post('/youtube/sync'),
+  refreshViews:      ()           => api.post('/youtube/refresh-views'),
 };
 
 export default api;

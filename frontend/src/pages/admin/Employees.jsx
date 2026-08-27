@@ -228,18 +228,41 @@ const EmployeesPage = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 pt-3.5 border-t border-white/10 bg-slate-950/40 -mx-6 -mb-6 p-4 rounded-b-2xl pointer-events-none relative z-0">
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-white font-mono">{emp.totalTasks}</p>
-                    <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Tasks</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-emerald-400 font-mono">{emp.completedTasks}</p>
-                    <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Done</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-cyan-400 font-mono">{emp.totalHours}h</p>
-                    <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Logged</p>
-                  </div>
+                  {emp.department === 'faculty' ? (
+                    // Faculty: show YouTube stats
+                    <>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-white font-mono">{emp.teacherStats?.totalClasses ?? '—'}</p>
+                        <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Classes</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-violet-400 font-mono">{emp.teacherStats?.totalHours ? `${emp.teacherStats.totalHours}h` : '—'}</p>
+                        <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Hours</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-cyan-400 font-mono">
+                          {emp.teacherStats?.totalViews ? (emp.teacherStats.totalViews >= 1000 ? `${(emp.teacherStats.totalViews / 1000).toFixed(1)}K` : emp.teacherStats.totalViews) : '—'}
+                        </p>
+                        <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Views</p>
+                      </div>
+                    </>
+                  ) : (
+                    // Other staff: show task stats
+                    <>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-white font-mono">{emp.totalTasks}</p>
+                        <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Tasks</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-emerald-400 font-mono">{emp.completedTasks}</p>
+                        <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Done</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-bold text-cyan-400 font-mono">{emp.totalHours}h</p>
+                        <p className="text-[10px] uppercase font-semibold tracking-wider text-slate-400">Logged</p>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             );
