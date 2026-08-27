@@ -63,6 +63,7 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
             <NavLink
               key={link.to}
               to={link.to}
+              onClick={onClose}
               end={link.to === '/'}
               className={({ isActive }) =>
                 `flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 group ${
