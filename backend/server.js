@@ -44,6 +44,7 @@ const timeLogRoutes = require('./routes/timelogs');
 const dashboardRoutes = require('./routes/dashboard');
 const quizGeneratorRoutes = require('./routes/quizGenerator');
 const youtubeRoutes = require('./routes/youtube');
+const healthRoutes = require('./routes/health');
 const path = require('path');
 
 // Serve quiz generator statics
@@ -57,6 +58,10 @@ app.use('/api/timelogs', timeLogRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/quiz-generator', quizGeneratorRoutes);
 app.use('/api/youtube', youtubeRoutes);
+app.use('/api/health', healthRoutes);
+
+// Direct health endpoint
+app.get('/health', (req, res) => res.status(200).json({ status: 'OK' }));
 
 // Basic route for API testing
 app.get('/api', (req, res) => {

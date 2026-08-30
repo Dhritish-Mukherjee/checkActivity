@@ -118,4 +118,8 @@ export const youtubeAPI = {
   updateVideoTeacher: (id, teacherId) => api.patch(`/youtube/videos/${id}/teacher`, { teacherId }),
 };
 
+export const healthAPI = {
+  getHealth: () => api.get('/health', { bypassCache: true }),
+};
+
 export default api;
