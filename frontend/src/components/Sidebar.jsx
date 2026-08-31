@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
   const adminLinks = [
@@ -139,6 +140,7 @@ const Sidebar = ({ user, logout, isAdmin, isOpen, onClose }) => {
                 {user?.role}
               </span>
             </div>
+            <ThemeToggle size="sm" />
           </div>
         </div>
       </aside>

@@ -27,11 +27,57 @@ const DEPARTMENTS = [
 ];
 
 const DEPT_COLORS = {
-  faculty:     { bg: 'bg-violet-500/10', border: 'border-violet-500/20', text: 'text-violet-600 dark:text-violet-400', avatar: 'from-violet-600 to-purple-600', shadow: 'shadow-violet-500/20' },
-  tech:        { bg: 'bg-cyan-500/10',   border: 'border-cyan-500/20',   text: 'text-cyan-600 dark:text-cyan-400',   avatar: 'from-cyan-600 to-blue-600',   shadow: 'shadow-cyan-500/20' },
-  promotional: { bg: 'bg-rose-500/10',   border: 'border-rose-500/20',   text: 'text-rose-600 dark:text-rose-400',   avatar: 'from-rose-600 to-pink-600',   shadow: 'shadow-rose-500/20' },
-  owners_club: { bg: 'bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20', border: 'border-amber-400/40 shadow-[0_0_12px_rgba(251,191,36,0.25)]', text: 'text-amber-600 dark:text-amber-300', avatar: 'from-amber-400 via-yellow-500 to-orange-500', shadow: 'shadow-amber-500/40' },
-  default:     { bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', text: 'text-indigo-600 dark:text-indigo-400', avatar: 'from-indigo-600 to-purple-600', shadow: 'shadow-indigo-500/20' },
+  faculty:     {
+    bg: 'bg-gradient-to-br from-violet-50/80 to-white dark:from-violet-950/40 dark:to-slate-900/80',
+    border: 'border-violet-400/30 dark:border-violet-500/30',
+    text: 'text-violet-700 dark:text-violet-300',
+    textMuted: 'text-violet-600/80 dark:text-violet-400/80',
+    avatar: 'from-violet-500 via-violet-600 to-purple-600',
+    shadow: 'shadow-violet-500/20',
+    cardShadow: '0 4px 20px -4px rgba(139, 92, 246, 0.25)',
+    tier: 1,
+  },
+  promotional: {
+    bg: 'bg-gradient-to-br from-rose-50/90 to-white dark:from-rose-950/40 dark:to-slate-900/80',
+    border: 'border-rose-400/40 dark:border-rose-500/30',
+    text: 'text-rose-700 dark:text-rose-300',
+    textMuted: 'text-rose-600/80 dark:text-rose-400/80',
+    avatar: 'from-rose-500 via-pink-500 to-fuchsia-600',
+    shadow: 'shadow-rose-500/30',
+    cardShadow: '0 6px 24px -4px rgba(244, 63, 94, 0.30)',
+    tier: 2,
+  },
+  tech:        {
+    bg: 'bg-gradient-to-br from-cyan-50/90 via-sky-50/50 to-white dark:from-cyan-950/50 dark:via-sky-950/30 dark:to-slate-900/80',
+    border: 'border-cyan-400/50 dark:border-cyan-400/40',
+    text: 'text-cyan-700 dark:text-cyan-300',
+    textMuted: 'text-cyan-600/80 dark:text-cyan-400/80',
+    avatar: 'from-cyan-400 via-sky-500 to-blue-600',
+    shadow: 'shadow-cyan-500/40',
+    cardShadow: '0 8px 28px -4px rgba(6, 182, 212, 0.35)',
+    tier: 3,
+  },
+  owners_club: {
+    bg: 'bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50/80 dark:from-amber-950/50 dark:via-yellow-950/30 dark:to-slate-900/80',
+    border: 'border-amber-400/60 dark:border-amber-400/50',
+    text: 'text-amber-800 dark:text-amber-200',
+    textMuted: 'text-amber-700/80 dark:text-amber-300/80',
+    avatar: 'from-amber-300 via-yellow-400 to-orange-500',
+    shadow: 'shadow-amber-500/50',
+    cardShadow: '0 10px 35px -4px rgba(251, 191, 36, 0.45), 0 0 0 1px rgba(251, 191, 36, 0.15) inset, 0 0 20px -2px rgba(251, 191, 36, 0.4)',
+    cardAnimation: 'ownerShine 3s ease-in-out infinite',
+    tier: 4,
+  },
+  default:     {
+    bg: 'bg-gradient-to-br from-indigo-50/80 to-white dark:from-indigo-950/40 dark:to-slate-900/80',
+    border: 'border-indigo-400/30 dark:border-indigo-500/30',
+    text: 'text-indigo-700 dark:text-indigo-300',
+    textMuted: 'text-indigo-600/80 dark:text-indigo-400/80',
+    avatar: 'from-indigo-500 via-indigo-600 to-purple-600',
+    shadow: 'shadow-indigo-500/20',
+    cardShadow: '0 4px 20px -4px rgba(99, 102, 241, 0.25)',
+    tier: 0,
+  },
 };
 
 const getDeptStyle = (dept) => DEPT_COLORS[dept] || DEPT_COLORS.default;
@@ -46,7 +92,8 @@ const DeptBadge = ({ dept }) => {
         const info = DEPARTMENTS.find((x) => x.key === d);
         return (
           <span key={d} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${s.bg} ${s.border} border ${s.text}`}>
-            {info?.icon}{info?.label || d}
+            <span className={s.text}>{info?.icon}</span>
+            {info?.label || d}
           </span>
         );
       })}
@@ -179,76 +226,114 @@ const EmployeesPage = () => {
           filtered.map((emp) => {
             const primaryDept = Array.isArray(emp.department) ? emp.department[0] : emp.department;
             const style = getDeptStyle(primaryDept);
+            const isPremium = style.tier >= 2; // Tech, Promotional, Owner's Club get glow
+            const isElite = style.tier >= 3;   // Tech, Owner's Club get animated shine
+            const isOwner = style.tier === 4;  // Owner's Club gets crown badge
             return (
-              <div key={emp._id} className="card card-hover block group relative overflow-hidden transition-all duration-300">
+              <div
+                key={emp._id}
+                className={`relative overflow-hidden rounded-2xl border-2 ${style.bg} ${style.border} group transition-all duration-500 hover:-translate-y-1.5`}
+                style={{
+                  boxShadow: style.cardShadow,
+                  animation: style.cardAnimation || 'none',
+                }}
+              >
                 <div onClick={() => navigate(`/employees/${emp._id}`)} className="absolute inset-0 z-10 cursor-pointer" title={`View ${emp.name}'s profile`} />
-                
-                {/* Elegant Top Border Line */}
-                <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${style.avatar}`} />
-                
-                {/* Subtle hover background highlight */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${style.avatar} opacity-0 group-hover:opacity-[0.03] dark:group-hover:opacity-[0.05] transition-opacity duration-300 pointer-events-none`} />
-                
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700 pointer-events-none" />
+
+                {/* Top accent bar — thicker and glowing for premium tiers */}
+                <div className={`absolute top-0 left-0 w-full ${isOwner ? 'h-2' : isPremium ? 'h-1.5' : 'h-1'} bg-gradient-to-r ${style.avatar} ${isPremium ? 'shadow-lg' : ''}`} style={isPremium ? { boxShadow: `0 4px 12px -2px currentColor` } : {}} />
+
+                {/* Radial color wash that intensifies on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${style.avatar} ${isOwner ? 'opacity-[0.08] group-hover:opacity-[0.18] dark:opacity-[0.12] dark:group-hover:opacity-[0.22]' : isElite ? 'opacity-[0.05] group-hover:opacity-[0.14] dark:opacity-[0.08] dark:group-hover:opacity-[0.18]' : isPremium ? 'opacity-[0.04] group-hover:opacity-[0.10] dark:opacity-[0.06] dark:group-hover:opacity-[0.14]' : 'opacity-0 group-hover:opacity-[0.04] dark:group-hover:opacity-[0.06]'} transition-opacity duration-500 pointer-events-none`} />
+
+                {/* Animated shimmer sweep — only elite tiers (Tech, Owner's Club) */}
+                {isElite && (
+                  <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent_35%,rgba(255,255,255,0.18)_50%,transparent_65%)] bg-[length:250%_250%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-1000 pointer-events-none" />
+                )}
+
+                {/* Crown badge for Owner's Club */}
+                {isOwner && (
+                  <div className="absolute top-3 right-3 z-20 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 text-amber-950 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-amber-500/40 border border-amber-300/60 flex items-center gap-1">
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
+                    Elite
+                  </div>
+                )}
+
+                {/* Tier badge for Tech (tier 3, just below Owner) */}
+                {!isOwner && style.tier === 3 && (
+                  <div className="absolute top-3 right-3 z-20 px-2 py-0.5 rounded-full bg-cyan-500/20 dark:bg-cyan-400/20 text-cyan-700 dark:text-cyan-300 text-[9px] font-black uppercase tracking-widest border border-cyan-400/40 backdrop-blur-sm">
+                    Pro
+                  </div>
+                )}
 
                 {/* Delete Button */}
                 <button
                   type="button"
                   onClick={(e) => handleDelete(emp._id, emp.name, e)}
-                  className="absolute top-4 right-4 z-30 w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 dark:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-rose-500/30 border border-rose-500/30 cursor-pointer shadow-lg"
+                  className="absolute bottom-3 right-3 z-30 w-7 h-7 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-500/30 border border-rose-500/40 cursor-pointer shadow-lg backdrop-blur-sm"
                   title="Delete Employee"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </button>
 
                 {/* Card Content */}
-                <div className="flex items-center gap-3.5 mb-4 relative z-0 pointer-events-none">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${style.avatar} text-white font-black flex items-center justify-center text-base shadow-lg ${style.shadow} border border-white/20 shrink-0 overflow-hidden`}>
-                    {emp.profilePicture ? (
-                      <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
-                    ) : emp.name.charAt(0).toUpperCase()}
+                <div className="relative z-0 p-5 pointer-events-none pb-4">
+                  <div className="flex items-center gap-3.5 mb-4">
+                    <div className={`relative ${isOwner ? 'w-14 h-14' : 'w-12 h-12'} rounded-2xl bg-gradient-to-tr ${style.avatar} text-white font-black flex items-center justify-center ${isOwner ? 'text-lg' : 'text-base'} shadow-xl ${style.shadow} border-2 border-white/40 shrink-0 overflow-hidden`}>
+                      {emp.profilePicture ? (
+                        <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
+                      ) : emp.name.charAt(0).toUpperCase()}
+                      {isOwner && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-amber-300 to-yellow-500 border-2 border-white shadow-md flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-amber-900" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <p className={`font-bold truncate font-heading tracking-tight ${isOwner ? 'text-base' : 'text-sm'} ${style.text} group-hover:brightness-110 transition-all`}>
+                        {emp.name}
+                      </p>
+                      <p className="text-[11px] truncate font-medium" style={{ color: 'var(--text-muted)' }}>{emp.email}</p>
+                      <DeptBadge dept={emp.department} />
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0 pr-10 space-y-1">
-                    <p className="font-bold group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-colors truncate font-heading" style={{ color: 'var(--text-heading)' }}>{emp.name}</p>
-                    <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{emp.email}</p>
-                    <DeptBadge dept={emp.department} />
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-3 gap-2 pt-3.5 -mx-6 -mb-6 p-4 rounded-b-2xl pointer-events-none relative z-0" style={{ backgroundColor: 'var(--bg-subtle)', borderTop: '1px solid var(--border-base)' }}>
-                  {(Array.isArray(emp.department) ? emp.department.includes('faculty') : emp.department === 'faculty') ? (
-                    <>
-                      <div className="text-center">
-                        <p className="text-lg font-bold font-mono" style={{ color: 'var(--text-heading)' }}>{emp.teacherStats?.totalClasses ?? '—'}</p>
-                        <p className="text-[10px] uppercase font-semibold tracking-wider" style={{ color: 'var(--text-faint)' }}>Classes</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-lg font-bold text-violet-600 dark:text-violet-400 font-mono">{emp.teacherStats?.totalHours ? `${emp.teacherStats.totalHours}h` : '—'}</p>
-                        <p className="text-[10px] uppercase font-semibold tracking-wider" style={{ color: 'var(--text-faint)' }}>Hours</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-lg font-bold text-cyan-600 dark:text-cyan-400 font-mono">
-                          {emp.teacherStats?.totalViews ? (emp.teacherStats.totalViews >= 1000 ? `${(emp.teacherStats.totalViews / 1000).toFixed(1)}K` : emp.teacherStats.totalViews) : '—'}
-                        </p>
-                        <p className="text-[10px] uppercase font-semibold tracking-wider" style={{ color: 'var(--text-faint)' }}>Views</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-center">
-                        <p className="text-lg font-bold font-mono" style={{ color: 'var(--text-heading)' }}>{emp.totalTasks}</p>
-                        <p className="text-[10px] uppercase font-semibold tracking-wider" style={{ color: 'var(--text-faint)' }}>Tasks</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400 font-mono">{emp.completedTasks}</p>
-                        <p className="text-[10px] uppercase font-semibold tracking-wider" style={{ color: 'var(--text-faint)' }}>Done</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-lg font-bold text-cyan-600 dark:text-cyan-400 font-mono">{emp.totalHours}h</p>
-                        <p className="text-[10px] uppercase font-semibold tracking-wider" style={{ color: 'var(--text-faint)' }}>Logged</p>
-                      </div>
-                    </>
-                  )}
+                  {/* Stats footer — themed with department color */}
+                  <div className={`grid grid-cols-3 gap-2 pt-3.5 -mx-5 -mb-5 px-5 py-3.5 rounded-b-2xl border-t ${isOwner ? 'bg-gradient-to-b from-amber-100/40 to-amber-200/50 dark:from-amber-900/20 dark:to-amber-950/30 border-amber-300/40' : isElite ? 'bg-gradient-to-b from-cyan-100/30 to-cyan-50/40 dark:from-cyan-900/15 dark:to-cyan-950/30 border-cyan-300/30' : isPremium ? 'bg-gradient-to-b from-rose-100/30 to-rose-50/40 dark:from-rose-900/15 dark:to-rose-950/30 border-rose-300/30' : 'bg-gradient-to-b from-violet-100/30 to-violet-50/40 dark:from-violet-900/15 dark:to-violet-950/30 border-violet-300/30'}`}>
+                    {(Array.isArray(emp.department) ? emp.department.includes('faculty') : emp.department === 'faculty') ? (
+                      <>
+                        <div className="text-center">
+                          <p className={`text-lg font-bold font-mono ${style.text}`}>{emp.teacherStats?.totalClasses ?? '—'}</p>
+                          <p className="text-[9px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'var(--text-faint)' }}>Classes</p>
+                        </div>
+                        <div className="text-center">
+                          <p className={`text-lg font-bold font-mono ${style.text}`}>{emp.teacherStats?.totalHours ? `${emp.teacherStats.totalHours}h` : '—'}</p>
+                          <p className="text-[9px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'var(--text-faint)' }}>Hours</p>
+                        </div>
+                        <div className="text-center">
+                          <p className={`text-lg font-bold font-mono ${style.text}`}>
+                            {emp.teacherStats?.totalViews ? (emp.teacherStats.totalViews >= 1000 ? `${(emp.teacherStats.totalViews / 1000).toFixed(1)}K` : emp.teacherStats.totalViews) : '—'}
+                          </p>
+                          <p className="text-[9px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'var(--text-faint)' }}>Views</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-center">
+                          <p className={`text-lg font-bold font-mono ${style.text}`}>{emp.totalTasks}</p>
+                          <p className="text-[9px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'var(--text-faint)' }}>Tasks</p>
+                        </div>
+                        <div className="text-center">
+                          <p className={`text-lg font-bold font-mono ${style.text}`}>{emp.completedTasks}</p>
+                          <p className="text-[9px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'var(--text-faint)' }}>Done</p>
+                        </div>
+                        <div className="text-center">
+                          <p className={`text-lg font-bold font-mono ${style.text}`}>{emp.totalHours}h</p>
+                          <p className="text-[9px] uppercase font-bold tracking-wider mt-0.5" style={{ color: 'var(--text-faint)' }}>Logged</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             );

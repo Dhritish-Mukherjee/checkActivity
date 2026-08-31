@@ -62,11 +62,11 @@ const MyTimeLogs = () => {
         </div>
 
         {/* Total Stat Card */}
-        <div className="card bg-gradient-to-tr from-indigo-500/10 via-violet-500/5 to-violet-500/0 dark:from-indigo-900/60 dark:via-violet-900/40 dark:to-slate-900/80 border-indigo-500/30 flex flex-col justify-between">
-          <p className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-300">Total Hours Logged</p>
+        <div className="card bg-gradient-to-tr from-indigo-50 via-violet-50 to-white dark:from-indigo-950/60 dark:via-violet-950/40 dark:to-slate-900/80 border-indigo-500/30 flex flex-col justify-between shadow-lg shadow-indigo-500/5">
+          <p className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">Total Hours Logged</p>
           <div className="my-2">
-            <span className="font-mono text-4xl font-extrabold tracking-tight" style={{ color: 'var(--text-heading)' }}>
-              {hours}<span className="text-xl text-indigo-500 dark:text-indigo-300">h</span> {minutes}<span className="text-xl text-indigo-500 dark:text-indigo-300">m</span>
+            <span className="font-mono text-4xl font-extrabold tracking-tight drop-shadow-sm" style={{ color: 'var(--text-heading)' }}>
+              {hours}<span className="text-xl text-indigo-700 dark:text-indigo-300">h</span> {minutes}<span className="text-xl text-indigo-700 dark:text-indigo-300">m</span>
             </span>
           </div>
           <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Total accumulated across selected period</p>

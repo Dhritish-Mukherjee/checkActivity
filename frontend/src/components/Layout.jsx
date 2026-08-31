@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import Sidebar from './Sidebar';
+import ThemeToggle from './ThemeToggle';
 import AdminDashboard from '../pages/admin/Dashboard';
 import ManageTasks from '../pages/admin/ManageTasks';
 import EmployeesPage from '../pages/admin/Employees';
@@ -16,7 +16,6 @@ import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
   const { user, logout, isAdmin, isTeamMember } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -81,28 +80,7 @@ const Layout = () => {
               </div>
 
               {/* Theme Toggle Button */}
-              <button
-                onClick={toggleTheme}
-                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                className="relative w-9 h-9 flex items-center justify-center rounded-xl border transition-all duration-200 hover:scale-105 active:scale-95"
-                style={{
-                  backgroundColor: 'var(--bg-subtle)',
-                  borderColor: 'var(--border-base)',
-                  color: 'var(--text-muted)',
-                }}
-              >
-                {isDark ? (
-                  /* Sun icon — shown in dark mode to switch to light */
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07-6.07-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                  </svg>
-                ) : (
-                  /* Moon icon — shown in light mode to switch to dark */
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
-                  </svg>
-                )}
-              </button>
+              <ThemeToggle />
 
               {/* Logout Button */}
               <button
