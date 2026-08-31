@@ -17,15 +17,48 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           port: ${{ secrets.VPS_PORT }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
           script: |
+            set -e
+
+            echo "================================"
+            echo "🚀 Starting deployment"
+            echo "================================"
+
             cd /var/www/checkActivity
+
+            echo "📥 Fetching latest master..."
             git fetch origin master
             git reset --hard origin/master
+
+            echo "📌 Deployed commit:"
+            git --no-pager log -1 --oneline
+
+            echo "📦 Installing backend dependencies..."
             cd backend
             npm ci
+
+            echo "🎨 Building frontend..."
             cd ../frontend
             npm ci
             npm run build
-            sudo systemctl restart checkactivity
+
+            echo "🔄 Restarting checkActivity..."
+            sudo -n systemctl restart checkactivity
+
+            echo "⏳ Waiting for application..."
             sleep 3
+
+            echo "📊 Service status:"
+            sudo systemctl is-active checkactivity
+
+            echo "🕐 Service start time:"
+            sudo systemctl show checkactivity \
+              -p ExecMainStartTimestamp
+
+            echo "❤️ Health check:"
             curl -f http://127.0.0.1:5000/health
+
+            echo "================================"
+            echo "✅ DEPLOYMENT SUCCESSFUL"
+            echo "================================"
