@@ -8,5 +8,5 @@ Disallow: /api/
 Disallow: /outputs/
 
 # Host and Sitemap declaration
-Host: https://strivers.co.in
-Sitemap: https://strivers.co.in/sitemap.xml
+Host: https://workspace.strivers.co.in
+Sitemap: https://workspace.strivers.co.in/sitemap.xml
