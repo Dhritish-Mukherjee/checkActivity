@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import Sidebar from './Sidebar';
 import AdminDashboard from '../pages/admin/Dashboard';
 import ManageTasks from '../pages/admin/ManageTasks';
@@ -15,20 +16,21 @@ import GlobalTimerBanner from './GlobalTimerBanner';
 
 const Layout = () => {
   const { user, logout, isAdmin, isTeamMember } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 relative overflow-x-hidden flex">
-      {/* Background Ambient Glow Orbs */}
-      <div className="fixed top-[-10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none animate-float" />
-      <div className="fixed bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none animate-pulse-glow" style={{ animationDelay: '1s' }} />
+    <div className="min-h-screen [background-color:var(--bg-base)] [color:var(--text-base)] relative overflow-x-hidden flex transition-colors duration-200">
+      {/* Background Ambient Glow Orbs — subtler in light mode */}
+      <div className="fixed top-[-10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/10 dark:bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none animate-float" />
+      <div className="fixed bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-purple-600/10 dark:bg-purple-600/10 rounded-full blur-[160px] pointer-events-none animate-pulse-glow" style={{ animationDelay: '1s' }} />
       <div className="fixed top-[40%] right-[30%] w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
 
       {/* Sidebar */}
-      <Sidebar 
-        user={user} 
-        logout={logout} 
-        isAdmin={isAdmin} 
+      <Sidebar
+        user={user}
+        logout={logout}
+        isAdmin={isAdmin}
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
       />
@@ -39,36 +41,73 @@ const Layout = () => {
         {isTeamMember && <GlobalTimerBanner />}
 
         {/* Top Header */}
-        <header className="sticky top-0 z-20 bg-slate-950/70 backdrop-blur-xl border-b border-white/10 px-4 py-3 md:px-8 md:py-4">
+        <header
+          className="sticky top-0 z-20 backdrop-blur-xl border-b px-4 py-3 md:px-8 md:py-4"
+          style={{
+            backgroundColor: 'var(--bg-header)',
+            borderColor: 'var(--border-base)',
+          }}
+        >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden p-2 -ml-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg"
+                className="md:hidden p-2 -ml-2 rounded-lg transition-colors"
+                style={{ color: 'var(--text-muted)' }}
+                onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-base)'; e.currentTarget.style.backgroundColor = 'var(--bg-subtle)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.backgroundColor = 'transparent'; }}
+                aria-label="Open menu"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
               </button>
               <div>
-                <h1 className="text-base md:text-lg font-bold text-white tracking-tight flex items-center gap-2 font-heading">
-                  <span className="text-gradient">Strivers</span> <span className="hidden sm:inline">Platform</span>
+                <h1 className="text-base md:text-lg font-bold tracking-tight flex items-center gap-2 font-heading" style={{ color: 'var(--text-heading)' }}>
+                  <span className="text-gradient">Strivers</span>{' '}
+                  <span className="hidden sm:inline">Platform</span>
                 </h1>
-                <p className="text-[10px] md:text-xs text-slate-400 truncate max-w-[150px] sm:max-w-none">
+                <p className="text-[10px] md:text-xs truncate max-w-[150px] sm:max-w-none" style={{ color: 'var(--text-faint)' }}>
                   {isAdmin ? 'Administrator Operations Command' : 'Personal Activity & Time Hub'}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              {/* Status pill */}
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-2 sm:gap-4">
+              {/* Live Sync pill */}
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                 Live Sync Active
               </div>
+
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="relative w-9 h-9 flex items-center justify-center rounded-xl border transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{
+                  backgroundColor: 'var(--bg-subtle)',
+                  borderColor: 'var(--border-base)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                {isDark ? (
+                  /* Sun icon — shown in dark mode to switch to light */
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07-6.07-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                  </svg>
+                ) : (
+                  /* Moon icon — shown in light mode to switch to dark */
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                  </svg>
+                )}
+              </button>
 
               {/* Logout Button */}
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-rose-500/10 group"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-500 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-rose-500/10 group"
               >
                 <span>Logout</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">⇲</span>

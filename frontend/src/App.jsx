@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
 import CatLoader from './components/CatLoader';
@@ -9,7 +10,7 @@ function RedirectByRole() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[100dvh] bg-slate-950">
+      <div className="flex items-center justify-center min-h-[100dvh] theme-bg">
         <CatLoader text="Initializing Workspace..." />
       </div>
     );
@@ -33,15 +34,16 @@ function LoginGuard() {
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginGuard />} />
-
-          <Route path="/*" element={<RedirectByRole />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginGuard />} />
+            <Route path="/*" element={<RedirectByRole />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

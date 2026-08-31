@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
@@ -14,7 +14,6 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
       await login(email, password);
       navigate('/');
@@ -26,35 +25,44 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#080c14] text-slate-100 relative overflow-hidden p-6">
+    <div
+      className="min-h-screen flex items-center justify-center relative overflow-hidden p-6 transition-colors duration-200"
+      style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-base)' }}
+    >
       {/* Background Ambient Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-600/20 dark:bg-indigo-600/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-600/20 dark:bg-purple-600/20 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Auth Card */}
-      <div className="w-full max-w-md bg-slate-900/70 backdrop-blur-2xl border border-white/10 p-8 rounded-3xl shadow-2xl shadow-indigo-950/50 relative z-10">
+      <div
+        className="w-full max-w-md backdrop-blur-2xl p-8 rounded-3xl shadow-2xl relative z-10"
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          border: '1px solid var(--border-base)',
+        }}
+      >
         <div className="text-center mb-8">
-          <img 
-            src="/logo.png" 
-            alt="Strivers Logo" 
-            className="w-16 h-16 mx-auto mb-4 object-contain drop-shadow-xl" 
+          <img
+            src="/logo.png"
+            alt="Strivers Logo"
+            className="w-16 h-16 mx-auto mb-4 object-contain drop-shadow-xl"
           />
-          <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading mb-1">
+          <h1 className="text-3xl font-extrabold tracking-tight font-heading mb-1" style={{ color: 'var(--text-heading)' }}>
             Welcome Back
           </h1>
-          <p className="text-sm text-slate-400">Sign in to your Strivers Workspace</p>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Sign in to your Strivers Workspace</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm rounded-xl flex items-center gap-2">
+            <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-500 dark:text-rose-400 text-sm rounded-xl flex items-center gap-2">
               <span>⚠️</span>
               <span>{error}</span>
             </div>
           )}
 
           <div>
-            <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
               Email Address
             </label>
             <input
@@ -63,13 +71,18 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-base)',
+                color: 'var(--text-base)',
+              }}
               placeholder="name@strivers.co.in"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
               Password
             </label>
             <input
@@ -78,7 +91,12 @@ const LoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
+              style={{
+                backgroundColor: 'var(--bg-input)',
+                border: '1px solid var(--border-base)',
+                color: 'var(--text-base)',
+              }}
               placeholder="••••••••"
             />
           </div>
@@ -98,8 +116,6 @@ const LoginPage = () => {
             )}
           </button>
         </form>
-
-
       </div>
     </div>
   );
