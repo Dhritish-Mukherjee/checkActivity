@@ -176,31 +176,31 @@ const AdminDashboard = () => {
 
       {/* Stats Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-        <div className="card border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-transparent dark:from-indigo-950/30 dark:to-slate-900/60">
+        <div className="card border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-indigo-500/0 dark:from-indigo-950/30 dark:to-slate-900/60">
           <p className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Total System Tasks</p>
           <p className="text-4xl font-extrabold tracking-tight font-mono" style={{ color: 'var(--text-heading)' }}>{stats?.totalTasks || 0}</p>
           <p className="text-[11px] mt-2" style={{ color: 'var(--text-faint)' }}>Active &amp; completed work items</p>
         </div>
 
-        <div className="card border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent dark:from-emerald-950/30 dark:to-slate-900/60">
+        <div className="card border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-emerald-500/0 dark:from-emerald-950/30 dark:to-slate-900/60">
           <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">Completed (7 Days)</p>
           <p className="text-4xl font-extrabold text-emerald-600 dark:text-emerald-300 tracking-tight font-mono">{stats?.tasksCompletedThisWeek || 0}</p>
           <p className="text-[11px] mt-2" style={{ color: 'var(--text-faint)' }}>Closed out successfully</p>
         </div>
 
-        <div className="card border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-transparent dark:from-cyan-950/30 dark:to-slate-900/60">
+        <div className="card border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 to-cyan-500/0 dark:from-cyan-950/30 dark:to-slate-900/60">
           <p className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 mb-1">Total Hours Logged</p>
           <p className="text-4xl font-extrabold text-cyan-600 dark:text-cyan-300 tracking-tight font-mono">{stats?.totalHours || 0}<span className="text-xl">h</span></p>
           <p className="text-[11px] mt-2" style={{ color: 'var(--text-faint)' }}>Across all team logs</p>
         </div>
 
-        <div className="card border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-transparent dark:from-purple-950/30 dark:to-slate-900/60">
+        <div className="card border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-purple-500/0 dark:from-purple-950/30 dark:to-slate-900/60">
           <p className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-1">Active Team Members</p>
           <p className="text-4xl font-extrabold text-purple-600 dark:text-purple-300 tracking-tight font-mono">{stats?.activeEmployees || 0}</p>
           <p className="text-[11px] mt-2" style={{ color: 'var(--text-faint)' }}>Registered employees</p>
         </div>
 
-        <div className="card border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/10 to-transparent dark:from-fuchsia-950/30 dark:to-slate-900/60">
+        <div className="card border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/10 to-fuchsia-500/0 dark:from-fuchsia-950/30 dark:to-slate-900/60">
           <p className="text-xs font-bold uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 mb-1">Quizzes Generated</p>
           <p className="text-4xl font-extrabold text-fuchsia-600 dark:text-fuchsia-300 tracking-tight font-mono">{stats?.totalQuizzesGenerated || 0}</p>
           <p className="text-[11px] mt-2" style={{ color: 'var(--text-faint)' }}>By Quiz Engine</p>

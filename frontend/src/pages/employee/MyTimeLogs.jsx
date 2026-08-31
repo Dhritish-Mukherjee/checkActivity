@@ -62,7 +62,7 @@ const MyTimeLogs = () => {
         </div>
 
         {/* Total Stat Card */}
-        <div className="card bg-gradient-to-tr from-indigo-500/10 via-violet-500/5 to-transparent dark:from-indigo-900/60 dark:via-violet-900/40 dark:to-slate-900/80 border-indigo-500/30 flex flex-col justify-between">
+        <div className="card bg-gradient-to-tr from-indigo-500/10 via-violet-500/5 to-violet-500/0 dark:from-indigo-900/60 dark:via-violet-900/40 dark:to-slate-900/80 border-indigo-500/30 flex flex-col justify-between">
           <p className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-300">Total Hours Logged</p>
           <div className="my-2">
             <span className="font-mono text-4xl font-extrabold tracking-tight" style={{ color: 'var(--text-heading)' }}>
