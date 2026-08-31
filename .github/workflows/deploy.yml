@@ -79,29 +79,21 @@ jobs:
             # Restart application
             # ========================================
 
-            echo "================================"
-            echo "🔄 Restarting checkActivity"
-            echo "================================"
-
-            sudo -n systemctl restart checkactivity
-
             # ========================================
             # Verify service
             # ========================================
+
+            echo "🔄 Restarting checkActivity"
+            sudo -n /usr/bin/systemctl restart checkactivity
 
             echo "⏳ Waiting for application..."
             sleep 3
 
             echo "📊 Service status:"
-            sudo systemctl is-active checkactivity
+            systemctl is-active checkactivity
 
             echo "🕐 Service start time:"
-            sudo systemctl show checkactivity \
-              -p ExecMainStartTimestamp
-
-            # ========================================
-            # Health check
-            # ========================================
+            systemctl show checkactivity -p ExecMainStartTimestamp
 
             echo "================================"
             echo "❤️ Health check"
