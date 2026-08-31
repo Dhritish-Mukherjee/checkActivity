@@ -3,6 +3,97 @@ import { useNavigate } from 'react-router-dom';
 import { dashboardAPI, authAPI } from '../../services';
 import CatLoader from '../../components/CatLoader';
 
+/* ─── Departmental Watermark Background Patterns ──────────────────────────── */
+
+const OwnerWatermark = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.20] group-hover:opacity-[0.35] dark:opacity-[0.24] dark:group-hover:opacity-[0.42] transition-opacity duration-500 text-amber-600 dark:text-amber-400">
+    {/* Upward valuation curve */}
+    <svg className="absolute -bottom-6 -right-6 w-60 h-36" viewBox="0 0 200 120" fill="none" stroke="currentColor">
+      <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="5 3" />
+      <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12 L 195 120 L 10 120 Z" fill="currentColor" fillOpacity="0.10" />
+    </svg>
+    {/* Large currency & wealth symbols in corner */}
+    <div className="absolute top-2.5 right-28 font-mono font-black text-xl tracking-widest opacity-70">
+      $ · ₹ · €
+    </div>
+    {/* Crown Seal watermark */}
+    <svg className="absolute -top-3 -right-3 w-28 h-28 opacity-15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
+    </svg>
+    <div className="absolute bottom-16 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-60">
+      VALUATION // FOUNDER CONTROL
+    </div>
+    <div className="absolute top-1/2 left-24 -translate-y-1/2 font-mono text-[10px] font-black tracking-wider opacity-45 rotate-6">
+      ▲ +340% CAPITAL YIELD
+    </div>
+  </div>
+);
+
+const TechWatermark = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.18] group-hover:opacity-[0.32] dark:opacity-[0.22] dark:group-hover:opacity-[0.40] transition-opacity duration-500 text-cyan-600 dark:text-cyan-400 font-mono text-[10px] leading-tight">
+    {/* Circuit board traces */}
+    <svg className="absolute -top-6 -right-6 w-48 h-48" viewBox="0 0 160 160" fill="none" stroke="currentColor">
+      <path d="M10 20 H70 V70 H130 V130 H160" strokeWidth="1.5" />
+      <circle cx="70" cy="70" r="3.5" fill="currentColor" />
+      <circle cx="130" cy="130" r="3.5" fill="currentColor" />
+      <path d="M90 15 V50 H140" strokeWidth="1.5" strokeDasharray="3 3" />
+    </svg>
+    {/* Monospace Code Lines */}
+    <div className="absolute top-3 right-28 text-right space-y-1 opacity-75 font-mono text-[10px]">
+      <p className="font-bold">const system = new Engine();</p>
+      <p>await cluster.deploy();</p>
+      <p>{"<Node status='OK' />"}</p>
+    </div>
+    <div className="absolute bottom-15 left-5 space-y-0.5 opacity-65 font-mono text-[9px]">
+      <p className="font-semibold">git commit -m "feat(core): v2.4"</p>
+      <p>latency: 0.8ms · 99.99% uptime</p>
+    </div>
+  </div>
+);
+
+const PromotionalWatermark = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.18] group-hover:opacity-[0.32] dark:opacity-[0.22] dark:group-hover:opacity-[0.40] transition-opacity duration-500 text-rose-600 dark:text-rose-400">
+    {/* Campaign launch curve */}
+    <svg className="absolute -bottom-4 -right-4 w-52 h-36" viewBox="0 0 180 120" fill="none" stroke="currentColor">
+      <path d="M10 110 C 60 100, 90 60, 160 20" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+      <circle cx="160" cy="20" r="6" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2" />
+      <path d="M140 30 L160 20 L150 40" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+    <div className="absolute top-3 right-28 font-mono font-black text-xs tracking-wider opacity-75">
+      CAMPAIGN // 10X REACH
+    </div>
+    <div className="absolute top-1/2 left-24 -translate-y-1/2 font-mono text-[10px] font-black uppercase tracking-widest opacity-55 -rotate-6">
+      🚀 CTR 16.4% · VIRAL REACH
+    </div>
+    <div className="absolute bottom-15 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-65">
+      BROADCAST · MEDIA · ENGAGEMENT
+    </div>
+  </div>
+);
+
+const FacultyWatermark = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.18] group-hover:opacity-[0.32] dark:opacity-[0.22] dark:group-hover:opacity-[0.40] transition-opacity duration-500 text-violet-700 dark:text-violet-400">
+    {/* Coordinate grid & Calculus Curve */}
+    <svg className="absolute -bottom-2 -right-2 w-52 h-36" viewBox="0 0 180 120" fill="none" stroke="currentColor">
+      <path d="M10 100 L 170 100" strokeWidth="1" opacity="0.3" />
+      <path d="M25 110 L 25 10" strokeWidth="1" opacity="0.3" />
+      <path d="M25 90 Q 75 90, 105 50 T 170 15" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+    {/* LaTeX-style Scientific Equations */}
+    <div className="absolute top-3 right-28 text-right space-y-0.5 text-[11px] font-bold italic opacity-75 font-mono">
+      <p>E = mc²</p>
+      <p>∫ f(x)dx = F(x) + C</p>
+      <p>e^(iπ) + 1 = 0</p>
+    </div>
+    <div className="absolute bottom-15 left-5 space-y-0.5 text-[9px] font-bold opacity-65 font-mono">
+      <p>lim (x→0) sin(x)/x = 1</p>
+      <p>∑ (1/2ⁿ) = 1 · ∇ × B = μ₀J</p>
+    </div>
+  </div>
+);
+
+/* ─── Departments Filter Configuration ────────────────────────────────────── */
+
 const DEPARTMENTS = [
   {
     key: 'all',
@@ -82,6 +173,7 @@ const DEPT_CONFIG = {
       </svg>
     ),
     isOwner: true,
+    Watermark: OwnerWatermark,
   },
   tech: {
     name: 'Tech',
@@ -103,6 +195,7 @@ const DEPT_CONFIG = {
         <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       </svg>
     ),
+    Watermark: TechWatermark,
   },
   promotional: {
     name: 'Promotional',
@@ -124,6 +217,7 @@ const DEPT_CONFIG = {
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6" />
       </svg>
     ),
+    Watermark: PromotionalWatermark,
   },
   faculty: {
     name: 'Faculty',
@@ -145,6 +239,7 @@ const DEPT_CONFIG = {
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253" />
       </svg>
     ),
+    Watermark: FacultyWatermark,
   },
   default: {
     name: 'Team Member',
@@ -166,6 +261,7 @@ const DEPT_CONFIG = {
         <circle cx="12" cy="12" r="10" />
       </svg>
     ),
+    Watermark: null,
   },
 };
 
@@ -338,6 +434,9 @@ const EmployeesPage = () => {
                 key={emp._id}
                 className={`relative overflow-hidden rounded-2xl border-2 ${config.cardBg} ${config.cardBorder} ${config.cardShadow} group transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between`}
               >
+                {/* Department Watermark Motif */}
+                {config.Watermark && <config.Watermark />}
+
                 {/* Clickable Card Overlay */}
                 <div
                   onClick={() => navigate(`/employees/${emp._id}`)}
@@ -346,11 +445,11 @@ const EmployeesPage = () => {
                 />
 
                 {/* Top Hierarchy Indicator Bar */}
-                <div className={`w-full ${config.accentBar}`} />
+                <div className={`w-full relative z-10 ${config.accentBar}`} />
 
                 {/* Hierarchy Badge in Corner */}
                 <div
-                  className={`absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase border shadow-xs ${config.badgeStyle}`}
+                  className={`absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase border shadow-xs backdrop-blur-xs ${config.badgeStyle}`}
                 >
                   {config.icon}
                   <span className="font-heading">{config.name}</span>
@@ -367,7 +466,7 @@ const EmployeesPage = () => {
                 </button>
 
                 {/* Card Main Info */}
-                <div className="p-5 pointer-events-none pb-0">
+                <div className="p-5 pointer-events-none pb-0 relative z-10">
                   <div className="flex items-center gap-3.5 mb-4 pr-24">
                     {/* Avatar with hierarchy ring */}
                     <div className={`relative ${config.avatarSize} rounded-2xl bg-gradient-to-tr ${config.avatarGradient} text-white font-black flex items-center justify-center text-lg shadow-md ring-2 ${config.avatarRing} ring-offset-2 ring-offset-white dark:ring-offset-slate-900 border border-white/60 shrink-0 overflow-hidden`}>
@@ -401,7 +500,7 @@ const EmployeesPage = () => {
                 </div>
 
                 {/* Stats Footer with Hierarchy Tint */}
-                <div className={`grid grid-cols-3 gap-2 px-5 py-3.5 mt-4 border-t ${config.statsBg}`}>
+                <div className={`grid grid-cols-3 gap-2 px-5 py-3.5 mt-4 border-t relative z-10 ${config.statsBg}`}>
                   {isFacultyEmp ? (
                     <>
                       <div className="text-center">
