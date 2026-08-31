@@ -67,44 +67,21 @@ export const ThemeProvider = ({ children }) => {
     );
 
     const root = document.documentElement;
-    root.classList.add('is-theme-switching');
+    root.style.setProperty('--theme-x', `${x}px`);
+    root.style.setProperty('--theme-y', `${y}px`);
+    root.style.setProperty('--theme-r', `${endRadius}px`);
+    root.classList.add('is-theme-transitioning');
 
     const transition = document.startViewTransition(() => {
       flushSync(() => {
         setIsDark(nextState);
-        if (nextState) {
-          root.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-        } else {
-          root.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-        }
+        root.classList.toggle('dark', nextState);
+        localStorage.setItem('theme', nextState ? 'dark' : 'light');
       });
-    });
-
-    transition.ready.then(() => {
-      const anim = root.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 420,
-          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-          pseudoElement: '::view-transition-new(root)',
-        }
-      );
-      anim.finished.finally(() => {
-        root.classList.remove('is-theme-switching');
-      });
-    }).catch(() => {
-      root.classList.remove('is-theme-switching');
     });
 
     transition.finished.finally(() => {
-      root.classList.remove('is-theme-switching');
+      root.classList.remove('is-theme-transitioning');
     });
   }, []);
 

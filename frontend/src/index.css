@@ -83,13 +83,19 @@
   color-scheme: dark;
 }
 
-/* ─── Ultra-Smooth Circular View Transition ────────────────────────────── */
+/* ─── GPU-Accelerated Hardware Circular View Transition ───────────────────── */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+  will-change: transform, clip-path;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
   height: 100%;
   overflow: clip;
+  pointer-events: none;
 }
 
 ::view-transition-old(root) {
@@ -98,14 +104,25 @@
 
 ::view-transition-new(root) {
   z-index: 999999;
+  animation: 420ms cubic-bezier(0.16, 1, 0.3, 1) both theme-circle-reveal;
 }
 
-/* Freeze element transitions during theme switching so screenshots and clip-path run at native 120/60 FPS */
+@keyframes theme-circle-reveal {
+  from {
+    clip-path: circle(0px at var(--theme-x, 50vw) var(--theme-y, 50vh));
+  }
+  to {
+    clip-path: circle(var(--theme-r, 150vmax) at var(--theme-x, 50vw) var(--theme-y, 50vh));
+  }
+}
+
+/* Freeze element transitions and pause animations during theme switching so screenshots and GPU clip-path run at buttery 120/60 FPS */
 html.is-theme-transitioning,
 html.is-theme-transitioning *,
 html.is-theme-transitioning *::before,
 html.is-theme-transitioning *::after {
   transition: none !important;
+  animation-play-state: paused !important;
 }
 
 @layer base {
