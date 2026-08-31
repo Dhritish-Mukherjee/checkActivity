@@ -2,17 +2,166 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Strivers — Activity & Productivity Platform</title>
-    <!-- Google Fonts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Strivers — Activity, Task &amp; Productivity Management Platform</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Strivers — Activity, Task &amp; Productivity Management Platform" />
+    <meta name="description" content="Strivers is a high-performance workspace platform for employee activity tracking, task management, time logging, and productivity analytics." />
+    <meta name="keywords" content="activity tracker, task management, productivity platform, time logs, employee tracking, strivers, workplace analytics, team management, quiz engine" />
+    <meta name="author" content="Strivers" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://strivers.co.in/" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Favicons & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Strivers Workspace" />
+    <meta property="og:url" content="https://strivers.co.in/" />
+    <meta property="og:title" content="Strivers — Activity, Task &amp; Productivity Management Platform" />
+    <meta property="og:description" content="Streamline employee task tracking, activity time logs, and performance analytics with Strivers." />
+    <meta property="og:image" content="https://strivers.co.in/logo.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Strivers Activity &amp; Productivity Platform Logo" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@Strivers" />
+    <meta name="twitter:creator" content="@Strivers" />
+    <meta name="twitter:title" content="Strivers — Activity, Task &amp; Productivity Management Platform" />
+    <meta name="twitter:description" content="Streamline employee task tracking, activity time logs, and performance analytics with Strivers." />
+    <meta name="twitter:image" content="https://strivers.co.in/logo.png" />
+
+    <!-- DNS Prefetch & Preconnect for Fast Asset Loading -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-DAY-90z-.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-ByiTH-o4.css">
+
+    <!-- Schema.org JSON-LD Structured Data for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://strivers.co.in/#webapp",
+          "name": "Strivers Platform",
+          "url": "https://strivers.co.in/",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All modern browsers",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "description": "Unified workspace platform for task management, activity tracking, employee time logging, and productivity analytics.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Real-time Task & Project Management",
+            "Automated Time Logging & Productivity Tracking",
+            "Team Member Performance Analytics",
+            "Interactive Quiz Engine & Skill Evaluation",
+            "Live Sync & Role-based Access Control"
+          ]
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://strivers.co.in/#organization",
+          "name": "Strivers",
+          "url": "https://strivers.co.in/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://strivers.co.in/logo.png",
+            "width": "512",
+            "height": "512"
+          },
+          "sameAs": [
+            "https://github.com/Dhritish-Mukherjee/checkActivity",
+            "https://www.linkedin.com/",
+            "https://twitter.com/"
+          ]
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://strivers.co.in/#navigation",
+          "name": "Main Navigation",
+          "hasPart": [
+            {
+              "@type": "WebPage",
+              "name": "Workspace Dashboard",
+              "url": "https://strivers.co.in/"
+            },
+            {
+              "@type": "WebPage",
+              "name": "Sign In",
+              "url": "https://strivers.co.in/login"
+            },
+            {
+              "@type": "WebPage",
+              "name": "Task Hub",
+              "url": "https://strivers.co.in/tasks"
+            },
+            {
+              "@type": "WebPage",
+              "name": "Time Logs",
+              "url": "https://strivers.co.in/time-logs"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <script type="module" crossorigin src="/assets/index-3XFaSyj6.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CKOXYh_h.css">
   </head>
   <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white min-h-screen">
+    <!-- React Root Mount Container -->
     <div id="root"></div>
+
+    <!-- Noscript Fallback for SEO Crawlers & Non-JS Clients -->
+    <noscript>
+      <header style="padding: 2rem; text-align: center; border-bottom: 1px solid #334155; background: #0f172a;">
+        <h1 style="font-size: 2rem; color: #818cf8; margin-bottom: 0.5rem;">Strivers — Activity, Task &amp; Productivity Platform</h1>
+        <p style="color: #94a3b8; font-size: 1rem;">Unified Operations Command &amp; Team Activity Hub</p>
+      </header>
+      <main style="padding: 2rem; max-width: 800px; margin: 0 auto; color: #cbd5e1; line-height: 1.6;">
+        <section>
+          <h2 style="color: #f1f5f9; font-size: 1.5rem; margin-bottom: 1rem;">Empower Your Team With Seamless Activity Management</h2>
+          <p>
+            Strivers provides intelligent task allocation, live time-tracking, activity analytics, and AI-powered quiz assessments designed to elevate workforce productivity.
+          </p>
+          <ul style="margin: 1rem 0 1.5rem 1.5rem; list-style-type: disc;">
+            <li><strong>Task Management:</strong> Create, assign, and track project deadlines in real-time.</li>
+            <li><strong>Time &amp; Activity Logs:</strong> Monitor working sessions with high precision timer controls.</li>
+            <li><strong>Performance Analytics:</strong> Gain actionable insights into employee output and milestones.</li>
+            <li><strong>Quiz Engine:</strong> Generate custom assessments to reinforce team knowledge.</li>
+          </ul>
+        </section>
+        <nav aria-label="Noscript Navigation" style="margin-top: 2rem; padding: 1rem; background: #1e293b; border-radius: 0.5rem;">
+          <h3 style="color: #f8fafc; font-size: 1.1rem; margin-bottom: 0.5rem;">Quick Links</h3>
+          <ul style="display: flex; gap: 1.5rem; list-style: none; padding: 0;">
+            <li><a href="/login" style="color: #818cf8; text-decoration: underline;">Sign In to Workspace</a></li>
+            <li><a href="/tasks" style="color: #818cf8; text-decoration: underline;">Tasks Overview</a></li>
+            <li><a href="/time-logs" style="color: #818cf8; text-decoration: underline;">Time Logs</a></li>
+            <li><a href="https://strivers.co.in/sitemap.xml" style="color: #818cf8; text-decoration: underline;">Sitemap</a></li>
+          </ul>
+        </nav>
+      </main>
+      <footer style="padding: 1.5rem; text-align: center; color: #64748b; font-size: 0.875rem; border-top: 1px solid #334155;">
+        &copy; 2026 Strivers Workspace. All rights reserved. | <a href="/sitemap.xml" style="color: #64748b;">XML Sitemap</a>
+      </footer>
+    </noscript>
+
   </body>
 </html>

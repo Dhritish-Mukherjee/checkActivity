@@ -1,0 +1,12 @@
+# Robots.txt for Strivers Platform
+# Allows search engines to crawl public content and points to sitemap
+
+User-agent: *
+Allow: /
+Allow: /login
+Disallow: /api/
+Disallow: /outputs/
+
+# Host and Sitemap declaration
+Host: https://strivers.co.in
+Sitemap: https://strivers.co.in/sitemap.xml

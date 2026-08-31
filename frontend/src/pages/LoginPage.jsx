@@ -25,8 +25,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center relative overflow-hidden p-6 transition-colors duration-200"
+    <main
+      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden p-6 transition-colors duration-200"
       style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-base)' }}
     >
       {/* Background Ambient Orbs */}
@@ -34,28 +34,32 @@ const LoginPage = () => {
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-600/20 dark:bg-purple-600/20 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Auth Card */}
-      <div
+      <section
+        aria-labelledby="login-heading"
         className="w-full max-w-md backdrop-blur-2xl p-8 rounded-3xl shadow-2xl relative z-10"
         style={{
           backgroundColor: 'var(--bg-card)',
           border: '1px solid var(--border-base)',
         }}
       >
-        <div className="text-center mb-8">
+        <header className="text-center mb-8">
           <img
             src="/logo.png"
-            alt="Strivers Logo"
+            alt="Strivers Activity & Productivity Platform Logo"
+            width={64}
+            height={64}
+            loading="eager"
             className="w-16 h-16 mx-auto mb-4 object-contain drop-shadow-xl"
           />
-          <h1 className="text-3xl font-extrabold tracking-tight font-heading mb-1" style={{ color: 'var(--text-heading)' }}>
+          <h1 id="login-heading" className="text-3xl font-extrabold tracking-tight font-heading mb-1" style={{ color: 'var(--text-heading)' }}>
             Welcome Back
           </h1>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Sign in to your Strivers Workspace</p>
-        </div>
+        </header>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5" aria-label="Sign In Form">
           {error && (
-            <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-500 dark:text-rose-400 text-sm rounded-xl flex items-center gap-2">
+            <div role="alert" className="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-500 dark:text-rose-400 text-sm rounded-xl flex items-center gap-2">
               <span>⚠️</span>
               <span>{error}</span>
             </div>
@@ -68,6 +72,8 @@ const LoginPage = () => {
             <input
               type="email"
               id="email"
+              name="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -88,6 +94,8 @@ const LoginPage = () => {
             <input
               type="password"
               id="password"
+              name="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -104,6 +112,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
+            aria-label="Sign in to your account"
             className="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 border border-white/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
@@ -116,8 +125,12 @@ const LoginPage = () => {
             )}
           </button>
         </form>
-      </div>
-    </div>
+      </section>
+
+      <footer className="mt-8 text-center text-xs relative z-10" style={{ color: 'var(--text-muted)' }}>
+        <p>&copy; {new Date().getFullYear()} Strivers. All rights reserved.</p>
+      </footer>
+    </main>
   );
 };
 
