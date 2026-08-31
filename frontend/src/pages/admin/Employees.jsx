@@ -36,49 +36,6 @@ const DEPT_COLORS = {
 
 const getDeptStyle = (dept) => DEPT_COLORS[dept] || DEPT_COLORS.default;
 
-const renderFlashyEffects = (dept, style) => {
-  switch(dept) {
-    case 'owners_club':
-      return (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 via-yellow-500/5 to-orange-500/10 opacity-50 pointer-events-none" />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 shadow-[0_0_10px_rgba(251,191,36,0.8)]" />
-          <div className="absolute -inset-[1px] bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 rounded-2xl opacity-40 group-hover:opacity-100 blur-md transition-opacity duration-500 pointer-events-none animate-pulse" />
-          <div className="absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full blur-[50px] opacity-40 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none animate-pulse" />
-          <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full blur-[50px] opacity-30 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
-        </>
-      );
-    case 'tech':
-      return (
-        <>
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.15)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
-          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-cyan-500/20 to-transparent opacity-30 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none" />
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-cyan-400 rounded-full blur-[50px] opacity-40 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none animate-pulse" />
-          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500 rounded-full blur-[50px] opacity-30 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none animate-pulse" style={{ animationDelay: '1.5s' }} />
-        </>
-      );
-    case 'promotional':
-      return (
-        <>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-400 to-pink-500 shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
-          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,rgba(244,63,94,0.2),transparent_60%)] pointer-events-none group-hover:opacity-100 opacity-60 transition-opacity duration-500" />
-          <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_bottom_left,rgba(236,72,153,0.2),transparent_60%)] pointer-events-none group-hover:opacity-100 opacity-60 transition-opacity duration-500" />
-          <div className="absolute -top-5 -right-5 w-32 h-32 bg-rose-400 rounded-full blur-[40px] opacity-40 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none" />
-          <div className="absolute -bottom-5 -left-5 w-32 h-32 bg-pink-500 rounded-full blur-[40px] opacity-30 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none" />
-        </>
-      );
-    default:
-      return (
-        <>
-          <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${style.avatar} opacity-80`} />
-          <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${style.avatar} rounded-full blur-[40px] opacity-20 dark:opacity-30 group-hover:opacity-50 dark:group-hover:opacity-60 transition-opacity duration-500 pointer-events-none`} />
-          <div className={`absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br ${style.avatar} rounded-full blur-[40px] opacity-10 dark:opacity-20 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none`} />
-        </>
-      );
-  }
-};
-
 const DeptBadge = ({ dept }) => {
   if (!dept || (Array.isArray(dept) && dept.length === 0)) return null;
   const depts = Array.isArray(dept) ? dept : [dept];
@@ -223,9 +180,15 @@ const EmployeesPage = () => {
             const primaryDept = Array.isArray(emp.department) ? emp.department[0] : emp.department;
             const style = getDeptStyle(primaryDept);
             return (
-              <div key={emp._id} className={`card card-hover block group relative overflow-hidden transition-all duration-300 hover:shadow-xl ${style.shadow} hover:border-transparent`}>
+              <div key={emp._id} className="card card-hover block group relative overflow-hidden transition-all duration-300">
                 <div onClick={() => navigate(`/employees/${emp._id}`)} className="absolute inset-0 z-10 cursor-pointer" title={`View ${emp.name}'s profile`} />
-                {renderFlashyEffects(primaryDept, style)}
+                
+                {/* Elegant Top Border Line */}
+                <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${style.avatar}`} />
+                
+                {/* Subtle hover background highlight */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${style.avatar} opacity-0 group-hover:opacity-[0.03] dark:group-hover:opacity-[0.05] transition-opacity duration-300 pointer-events-none`} />
+                
                 <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700 pointer-events-none" />
 
                 {/* Delete Button */}

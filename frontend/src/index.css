@@ -81,9 +81,9 @@
 
 @layer base {
   *, ::before, ::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 400ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
   }
   
   body {
@@ -115,17 +115,19 @@
 @layer components {
   .card {
     background-color: var(--bg-card);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-base);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: var(--shadow-card);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: transform, box-shadow, background-color, border-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
   }
 
   .card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* handled by .card transitions */
   }
   .card-hover:hover {
     transform: translateY(-2px);
