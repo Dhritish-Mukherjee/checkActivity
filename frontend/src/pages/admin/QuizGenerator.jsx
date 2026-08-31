@@ -33,12 +33,10 @@ const QuizGenerator = () => {
   }, []);
 
   useEffect(() => {
+    if (logs.length === 0) return;
     const box = consoleBoxRef.current;
     if (!box) return;
-    const isNearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-    if (isNearBottom) {
-      logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+    box.scrollTop = box.scrollHeight;
   }, [logs]);
 
   const addLog = (msg, step = 'info') => {

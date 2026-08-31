@@ -3,47 +3,46 @@ import { useNavigate } from 'react-router-dom';
 import { dashboardAPI, authAPI } from '../../services';
 import CatLoader from '../../components/CatLoader';
 
-/* ─── Minimalist in Resting State ➔ Dynamic Maximalist on Hover ──────────── */
+/* ─── Pure Vector Thematic Artwork (Zero Superimposed Text) ───────────────── */
 
 const OwnerWatermark = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-amber-500 transition-all duration-500">
-    {/* Resting state: Subtle minimalist luxury crest */}
-    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
-      <svg className="absolute -top-6 -right-6 w-36 h-36" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
-        <circle cx="50" cy="50" r="45" strokeDasharray="3 3" />
+    {/* Resting state: Subtle minimalist luxury crest in top corner */}
+    <div className="opacity-[0.05] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -top-5 -right-5 w-32 h-32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
+        <circle cx="50" cy="50" r="44" strokeDasharray="3 3" />
         <polygon points="50,15 62,38 85,38 66,54 73,78 50,62 27,78 34,54 15,38 38,38" />
       </svg>
     </div>
 
-    {/* Hover state: Rich maximalist golden bloom & valuation sparklines */}
+    {/* Hover state: Vibrant golden bloom + upward growth curves + crown seal */}
     <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-400/[0.12] via-yellow-500/[0.04] to-transparent dark:from-amber-400/[0.18]" />
+      {/* Golden radial background glow bloom */}
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-400/[0.14] via-yellow-500/[0.04] to-transparent dark:from-amber-400/[0.20]" />
       
-      {/* Upward Valuation Curve */}
-      <svg className="absolute -bottom-4 -right-4 w-56 h-32" viewBox="0 0 200 120" fill="none" stroke="currentColor">
-        <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="5 3" />
-        <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12 L 195 120 L 10 120 Z" fill="currentColor" fillOpacity="0.14" />
+      {/* Upward Valuation & Growth Vector Line (bottom right) */}
+      <svg className="absolute -bottom-2 -right-2 w-52 h-28 opacity-80" viewBox="0 0 200 100" fill="none" stroke="currentColor">
+        <path d="M10 85 Q 70 75, 100 65 T 160 30 T 195 10" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="5 3" />
+        <path d="M10 85 Q 70 75, 100 65 T 160 30 T 195 10 L 195 100 L 10 100 Z" fill="currentColor" fillOpacity="0.12" />
       </svg>
       
-      {/* Currency & Crown Watermark */}
-      <div className="absolute top-2.5 right-24 font-mono font-black text-sm tracking-widest opacity-80 text-amber-600 dark:text-amber-300">
-        $ · ₹ · € · ₿
-      </div>
-      <svg className="absolute -top-3 -right-3 w-24 h-24 opacity-25" viewBox="0 0 24 24" fill="currentColor">
+      {/* Crown Heraldic Vector in upper right corner */}
+      <svg className="absolute -top-2 -right-2 w-28 h-28 opacity-25" viewBox="0 0 24 24" fill="currentColor">
         <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
       </svg>
-      
-      <div className="absolute bottom-14 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-75 text-amber-700 dark:text-amber-300">
-        FOUNDER CONTROL // +340% CAPITAL YIELD
-      </div>
+
+      {/* Decorative Starbursts */}
+      <svg className="absolute top-10 right-28 w-5 h-5 opacity-40 animate-pulse" viewBox="0 0 24 24" fill="currentColor">
+        <polygon points="12,2 15,9 22,12 15,15 12,22 9,15 2,12 9,9" />
+      </svg>
     </div>
   </div>
 );
 
 const TechWatermark = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-cyan-500 transition-all duration-500">
-    {/* Resting state: Subtle minimalist circuit */}
-    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
+    {/* Resting state: Subtle minimalist circuit node in top corner */}
+    <div className="opacity-[0.05] group-hover:opacity-0 transition-opacity duration-300">
       <svg className="absolute -top-4 -right-4 w-32 h-32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
         <path d="M10 10 H50 V50 H90 V90" />
         <circle cx="50" cy="50" r="3" fill="currentColor" />
@@ -51,95 +50,89 @@ const TechWatermark = () => (
       </svg>
     </div>
 
-    {/* Hover state: Rich maximalist cyber circuitry & terminal telemetry */}
+    {/* Hover state: Vibrant cyber cyan circuitry & grid architecture */}
     <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/[0.12] via-sky-500/[0.04] to-transparent dark:from-cyan-400/[0.18]" />
+      {/* Cyber Cyan glow bloom */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/[0.14] via-sky-500/[0.04] to-transparent dark:from-cyan-400/[0.20]" />
       
-      {/* Circuit board bus lines */}
-      <svg className="absolute -top-4 -right-4 w-44 h-44" viewBox="0 0 160 160" fill="none" stroke="currentColor">
+      {/* Circuit board traces & node bus */}
+      <svg className="absolute -top-4 -right-4 w-44 h-44 opacity-75" viewBox="0 0 160 160" fill="none" stroke="currentColor">
         <path d="M10 20 H70 V70 H130 V130 H160" strokeWidth="1.5" />
         <circle cx="70" cy="70" r="3.5" fill="currentColor" />
         <circle cx="130" cy="130" r="3.5" fill="currentColor" />
         <path d="M90 15 V50 H140" strokeWidth="1.5" strokeDasharray="3 3" />
+        <circle cx="140" cy="50" r="3" fill="currentColor" />
       </svg>
-      
-      {/* Monospace Terminal Code */}
-      <div className="absolute top-2.5 right-24 text-right space-y-0.5 opacity-85 font-mono text-[9px] text-cyan-600 dark:text-cyan-300">
-        <p className="font-bold">const sys = new Engine();</p>
-        <p>await cluster.deploy();</p>
-        <p>{"<Node status='ACTIVE' />"}</p>
-      </div>
-      <div className="absolute bottom-14 left-5 space-y-0.5 opacity-75 font-mono text-[9px] text-cyan-700 dark:text-cyan-300">
-        <p>git commit -m "feat(core): v2.4"</p>
-        <p>latency: 0.6ms · 99.99% uptime</p>
-      </div>
+
+      {/* Microchip Schematic Grid in bottom right */}
+      <svg className="absolute -bottom-2 -right-2 w-36 h-28 opacity-60" viewBox="0 0 120 90" fill="none" stroke="currentColor">
+        <rect x="60" y="40" width="50" height="40" rx="4" strokeWidth="1.2" strokeDasharray="3 2" />
+        <path d="M30 60 H60 M110 60 H120 M85 20 V40 M85 80 V90" strokeWidth="1.2" />
+        <circle cx="60" cy="60" r="2.5" fill="currentColor" />
+      </svg>
     </div>
   </div>
 );
 
 const PromotionalWatermark = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-rose-500 transition-all duration-500">
-    {/* Resting state: Subtle minimalist trajectory */}
-    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
-      <svg className="absolute -bottom-4 -right-4 w-36 h-28" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1.2">
+    {/* Resting state: Subtle launch trajectory path in corner */}
+    <div className="opacity-[0.05] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -bottom-4 -right-4 w-32 h-24" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1.2">
         <path d="M10 70 C 40 60, 60 40, 110 15" strokeLinecap="round" strokeDasharray="4 3" />
       </svg>
     </div>
 
-    {/* Hover state: Rich maximalist launch curves & viral metrics */}
+    {/* Hover state: Vibrant rose-fuchsia dynamic waves & radar targeting */}
     <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-400/[0.12] via-pink-500/[0.04] to-transparent dark:from-rose-400/[0.18]" />
+      {/* Rose glow bloom */}
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-400/[0.14] via-pink-500/[0.04] to-transparent dark:from-rose-400/[0.20]" />
       
-      {/* Rocket trajectory & target radar */}
-      <svg className="absolute -bottom-4 -right-4 w-48 h-36" viewBox="0 0 180 120" fill="none" stroke="currentColor">
+      {/* Rocket trajectory & target radar in corner */}
+      <svg className="absolute -bottom-2 -right-2 w-48 h-32 opacity-80" viewBox="0 0 180 120" fill="none" stroke="currentColor">
         <path d="M10 110 C 60 100, 90 60, 160 20" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
         <circle cx="160" cy="20" r="6" fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="2" />
         <path d="M140 30 L160 20 L150 40" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      
-      <div className="absolute top-2.5 right-24 font-mono font-black text-xs tracking-wider opacity-85 text-rose-600 dark:text-rose-300">
-        CAMPAIGN // 10X REACH
-      </div>
-      <div className="absolute top-1/2 left-24 -translate-y-1/2 font-mono text-[10px] font-black uppercase tracking-widest opacity-70 -rotate-6 text-rose-600 dark:text-rose-300">
-        🚀 CTR 16.4% · VIRAL REACH
-      </div>
-      <div className="absolute bottom-14 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-75 text-rose-700 dark:text-rose-300">
-        BROADCAST · MEDIA · ENGAGEMENT
-      </div>
+
+      {/* Concentric broadcast radar pulses in top right */}
+      <svg className="absolute -top-4 -right-4 w-36 h-36 opacity-35" viewBox="0 0 120 120" fill="none" stroke="currentColor">
+        <circle cx="100" cy="20" r="20" strokeWidth="1.2" strokeDasharray="3 3" />
+        <circle cx="100" cy="20" r="40" strokeWidth="1.2" strokeDasharray="3 3" />
+        <circle cx="100" cy="20" r="60" strokeWidth="1.2" strokeDasharray="3 3" />
+      </svg>
     </div>
   </div>
 );
 
 const FacultyWatermark = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-violet-500 transition-all duration-500">
-    {/* Resting state: Subtle minimalist coordinate line */}
-    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
-      <svg className="absolute -bottom-3 -right-3 w-36 h-24" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1">
-        <path d="M10 70 L 110 70" opacity="0.4" />
-        <path d="M20 75 L 20 10" opacity="0.4" />
+    {/* Resting state: Subtle coordinate curve in corner */}
+    <div className="opacity-[0.05] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -bottom-3 -right-3 w-32 h-20" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1">
+        <path d="M10 70 L 110 70" opacity="0.3" />
+        <path d="M20 75 L 20 10" opacity="0.3" />
       </svg>
     </div>
 
-    {/* Hover state: Rich maximalist calculus curve & physics equations */}
+    {/* Hover state: Vibrant scholarly violet coordinate waves & orbital rings */}
     <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-400/[0.12] via-purple-500/[0.04] to-transparent dark:from-violet-400/[0.18]" />
+      {/* Violet glow bloom */}
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-400/[0.14] via-purple-500/[0.04] to-transparent dark:from-violet-400/[0.20]" />
       
-      {/* Calculus Curve */}
-      <svg className="absolute -bottom-2 -right-2 w-48 h-32" viewBox="0 0 180 120" fill="none" stroke="currentColor">
-        <path d="M10 100 L 170 100" strokeWidth="1.2" opacity="0.4" />
-        <path d="M25 110 L 25 10" strokeWidth="1.2" opacity="0.4" />
-        <path d="M25 90 Q 75 90, 105 50 T 170 15" strokeWidth="2.2" strokeLinecap="round" />
+      {/* Calculus & Bell Curve in bottom right corner */}
+      <svg className="absolute -bottom-1 -right-1 w-48 h-28 opacity-80" viewBox="0 0 180 100" fill="none" stroke="currentColor">
+        <path d="M10 85 L 170 85" strokeWidth="1.2" opacity="0.4" />
+        <path d="M30 95 L 30 10" strokeWidth="1.2" opacity="0.4" />
+        <path d="M30 80 Q 80 80, 110 40 T 170 15" strokeWidth="2.2" strokeLinecap="round" />
       </svg>
-      
-      {/* LaTeX Equations */}
-      <div className="absolute top-2.5 right-24 text-right space-y-0.5 text-[10px] font-bold italic opacity-85 font-mono text-violet-600 dark:text-violet-300">
-        <p>E = mc² · ∫f(x)dx</p>
-        <p>e^(iπ) + 1 = 0</p>
-      </div>
-      <div className="absolute bottom-14 left-5 space-y-0.5 text-[9px] font-bold opacity-75 font-mono text-violet-700 dark:text-violet-300">
-        <p>lim (x→0) sin(x)/x = 1</p>
-        <p>∇ × B = μ₀J + μ₀ε₀(∂E/∂t)</p>
-      </div>
+
+      {/* Orbital Scientific Rings in top right */}
+      <svg className="absolute -top-4 -right-4 w-36 h-36 opacity-30" viewBox="0 0 120 120" fill="none" stroke="currentColor">
+        <ellipse cx="60" cy="60" rx="45" ry="18" strokeWidth="1.2" transform="rotate(30 60 60)" />
+        <ellipse cx="60" cy="60" rx="45" ry="18" strokeWidth="1.2" transform="rotate(-30 60 60)" />
+        <circle cx="60" cy="60" r="4" fill="currentColor" />
+      </svg>
     </div>
   </div>
 );
@@ -252,7 +245,7 @@ const DEPT_CONFIG = {
     cardBorderHover: 'hover:border-violet-400 dark:hover:border-violet-400/90 hover:shadow-2xl hover:shadow-violet-500/20',
     icon: (
       <svg className="w-3 h-3 text-violet-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
     ),
     Watermark: FacultyWatermark,
@@ -416,7 +409,7 @@ const EmployeesPage = () => {
         })}
       </div>
 
-      {/* Employee Cards Grid — Clean Minimalist Resting ➔ Dynamic Maximalist Hover */}
+      {/* Employee Cards Grid — Clean Minimalist Resting ➔ Pure Vector Maximalist Hover */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
           <div className="col-span-full flex justify-center py-16"><CatLoader text="Loading Members..." /></div>
@@ -437,7 +430,7 @@ const EmployeesPage = () => {
                 key={emp._id}
                 className={`relative overflow-hidden rounded-2xl border bg-white dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800/90 shadow-sm ${config.cardBorderHover} group transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between`}
               >
-                {/* Minimalist ➔ Maximalist Thematic Watermark on Hover */}
+                {/* Pure Vector Watermark Background */}
                 {config.Watermark && <config.Watermark />}
 
                 {/* Clickable Card Overlay */}
