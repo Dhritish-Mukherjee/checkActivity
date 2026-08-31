@@ -66,10 +66,12 @@ export const ThemeProvider = ({ children }) => {
       Math.max(y, window.innerHeight - y)
     );
 
+    const root = document.documentElement;
+    root.classList.add('is-theme-switching');
+
     const transition = document.startViewTransition(() => {
       flushSync(() => {
         setIsDark(nextState);
-        const root = document.documentElement;
         if (nextState) {
           root.classList.add('dark');
           localStorage.setItem('theme', 'dark');
@@ -81,7 +83,7 @@ export const ThemeProvider = ({ children }) => {
     });
 
     transition.ready.then(() => {
-      document.documentElement.animate(
+      const anim = root.animate(
         {
           clipPath: [
             `circle(0px at ${x}px ${y}px)`,
@@ -89,13 +91,20 @@ export const ThemeProvider = ({ children }) => {
           ],
         },
         {
-          duration: 480,
-          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          duration: 420,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
           pseudoElement: '::view-transition-new(root)',
         }
       );
+      anim.finished.finally(() => {
+        root.classList.remove('is-theme-switching');
+      });
     }).catch(() => {
-      // In case transition fails or gets aborted
+      root.classList.remove('is-theme-switching');
+    });
+
+    transition.finished.finally(() => {
+      root.classList.remove('is-theme-switching');
     });
   }, []);
 

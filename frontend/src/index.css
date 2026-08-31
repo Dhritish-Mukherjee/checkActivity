@@ -81,11 +81,13 @@
   color-scheme: dark;
 }
 
-/* ─── Modern Circular View Transition Setup ─────────────────────────────────── */
+/* ─── Ultra-Smooth Circular View Transition ────────────────────────────── */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  height: 100%;
+  overflow: clip;
 }
 
 ::view-transition-old(root) {
@@ -93,28 +95,23 @@
 }
 
 ::view-transition-new(root) {
-  z-index: 99999;
+  z-index: 999999;
 }
 
-.dark::view-transition-old(root) {
-  z-index: 1;
-}
-
-.dark::view-transition-new(root) {
-  z-index: 99999;
+/* Freeze element transitions during theme switching so screenshots and clip-path run at native 120/60 FPS */
+html.is-theme-transitioning,
+html.is-theme-transitioning *,
+html.is-theme-transitioning *::before,
+html.is-theme-transitioning *::after {
+  transition: none !important;
 }
 
 @layer base {
-  *, ::before, ::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 250ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
   body {
     background-color: var(--bg-base);
     color: var(--text-base);
     font-family: var(--font-sans);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
