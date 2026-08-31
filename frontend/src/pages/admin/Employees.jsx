@@ -3,96 +3,68 @@ import { useNavigate } from 'react-router-dom';
 import { dashboardAPI, authAPI } from '../../services';
 import CatLoader from '../../components/CatLoader';
 
-/* ─── Departmental Watermark Background Patterns ──────────────────────────── */
+/* ─── Minimalist Thematic Watermarks (Subtle, Non-Intrusive Vector Motifs) ── */
 
 const OwnerWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.20] group-hover:opacity-[0.35] dark:opacity-[0.24] dark:group-hover:opacity-[0.42] transition-opacity duration-500 text-amber-600 dark:text-amber-400">
-    {/* Upward valuation curve */}
-    <svg className="absolute -bottom-6 -right-6 w-60 h-36" viewBox="0 0 200 120" fill="none" stroke="currentColor">
-      <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="5 3" />
-      <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12 L 195 120 L 10 120 Z" fill="currentColor" fillOpacity="0.10" />
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.07] group-hover:opacity-[0.14] dark:opacity-[0.10] dark:group-hover:opacity-[0.18] transition-opacity duration-300 text-amber-500">
+    {/* Fine-line geometric luxury star / crest */}
+    <svg className="absolute -top-6 -right-6 w-36 h-36" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
+      <circle cx="50" cy="50" r="45" strokeDasharray="3 3" />
+      <polygon points="50,15 62,38 85,38 66,54 73,78 50,62 27,78 34,54 15,38 38,38" />
     </svg>
-    {/* Large currency & wealth symbols in corner */}
-    <div className="absolute top-2.5 right-28 font-mono font-black text-xl tracking-widest opacity-70">
-      $ · ₹ · €
-    </div>
-    {/* Crown Seal watermark */}
-    <svg className="absolute -top-3 -right-3 w-28 h-28 opacity-15" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
+    {/* Subtle financial sparkline curve */}
+    <svg className="absolute -bottom-4 -right-4 w-44 h-24" viewBox="0 0 160 80" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M10 70 Q 50 60, 80 50 T 150 15" strokeLinecap="round" strokeDasharray="4 3" />
     </svg>
-    <div className="absolute bottom-16 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-60">
-      VALUATION // FOUNDER CONTROL
-    </div>
-    <div className="absolute top-1/2 left-24 -translate-y-1/2 font-mono text-[10px] font-black tracking-wider opacity-45 rotate-6">
-      ▲ +340% CAPITAL YIELD
-    </div>
   </div>
 );
 
 const TechWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.18] group-hover:opacity-[0.32] dark:opacity-[0.22] dark:group-hover:opacity-[0.40] transition-opacity duration-500 text-cyan-600 dark:text-cyan-400 font-mono text-[10px] leading-tight">
-    {/* Circuit board traces */}
-    <svg className="absolute -top-6 -right-6 w-48 h-48" viewBox="0 0 160 160" fill="none" stroke="currentColor">
-      <path d="M10 20 H70 V70 H130 V130 H160" strokeWidth="1.5" />
-      <circle cx="70" cy="70" r="3.5" fill="currentColor" />
-      <circle cx="130" cy="130" r="3.5" fill="currentColor" />
-      <path d="M90 15 V50 H140" strokeWidth="1.5" strokeDasharray="3 3" />
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.06] group-hover:opacity-[0.12] dark:opacity-[0.09] dark:group-hover:opacity-[0.16] transition-opacity duration-300 text-cyan-500 font-mono text-[9px] leading-relaxed">
+    {/* Clean circuit traces in corner */}
+    <svg className="absolute -top-4 -right-4 w-32 h-32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
+      <path d="M10 10 H50 V50 H90 V90" />
+      <circle cx="50" cy="50" r="3" fill="currentColor" />
+      <circle cx="90" cy="90" r="3" fill="currentColor" />
     </svg>
-    {/* Monospace Code Lines */}
-    <div className="absolute top-3 right-28 text-right space-y-1 opacity-75 font-mono text-[10px]">
-      <p className="font-bold">const system = new Engine();</p>
-      <p>await cluster.deploy();</p>
-      <p>{"<Node status='OK' />"}</p>
-    </div>
-    <div className="absolute bottom-15 left-5 space-y-0.5 opacity-65 font-mono text-[9px]">
-      <p className="font-semibold">git commit -m "feat(core): v2.4"</p>
-      <p>latency: 0.8ms · 99.99% uptime</p>
+    {/* Faint clean code lines */}
+    <div className="absolute top-3.5 right-24 text-right space-y-0.5 opacity-80">
+      <p>const core = new Engine();</p>
+      <p>await deploy();</p>
     </div>
   </div>
 );
 
 const PromotionalWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.18] group-hover:opacity-[0.32] dark:opacity-[0.22] dark:group-hover:opacity-[0.40] transition-opacity duration-500 text-rose-600 dark:text-rose-400">
-    {/* Campaign launch curve */}
-    <svg className="absolute -bottom-4 -right-4 w-52 h-36" viewBox="0 0 180 120" fill="none" stroke="currentColor">
-      <path d="M10 110 C 60 100, 90 60, 160 20" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
-      <circle cx="160" cy="20" r="6" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="2" />
-      <path d="M140 30 L160 20 L150 40" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.06] group-hover:opacity-[0.12] dark:opacity-[0.09] dark:group-hover:opacity-[0.16] transition-opacity duration-300 text-rose-500">
+    {/* Clean launch trajectory */}
+    <svg className="absolute -bottom-4 -right-4 w-36 h-28" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1.2">
+      <path d="M10 70 C 40 60, 60 40, 110 15" strokeLinecap="round" strokeDasharray="4 3" />
+      <circle cx="110" cy="15" r="4" fill="currentColor" />
     </svg>
-    <div className="absolute top-3 right-28 font-mono font-black text-xs tracking-wider opacity-75">
-      CAMPAIGN // 10X REACH
-    </div>
-    <div className="absolute top-1/2 left-24 -translate-y-1/2 font-mono text-[10px] font-black uppercase tracking-widest opacity-55 -rotate-6">
-      🚀 CTR 16.4% · VIRAL REACH
-    </div>
-    <div className="absolute bottom-15 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-65">
-      BROADCAST · MEDIA · ENGAGEMENT
+    {/* Clean reach metric */}
+    <div className="absolute top-3.5 right-24 font-mono font-bold text-[10px] tracking-wider opacity-70">
+      // 10X REACH
     </div>
   </div>
 );
 
 const FacultyWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.18] group-hover:opacity-[0.32] dark:opacity-[0.22] dark:group-hover:opacity-[0.40] transition-opacity duration-500 text-violet-700 dark:text-violet-400">
-    {/* Coordinate grid & Calculus Curve */}
-    <svg className="absolute -bottom-2 -right-2 w-52 h-36" viewBox="0 0 180 120" fill="none" stroke="currentColor">
-      <path d="M10 100 L 170 100" strokeWidth="1" opacity="0.3" />
-      <path d="M25 110 L 25 10" strokeWidth="1" opacity="0.3" />
-      <path d="M25 90 Q 75 90, 105 50 T 170 15" strokeWidth="2" strokeLinecap="round" />
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.06] group-hover:opacity-[0.12] dark:opacity-[0.09] dark:group-hover:opacity-[0.16] transition-opacity duration-300 text-violet-500 font-mono">
+    {/* Coordinate curve */}
+    <svg className="absolute -bottom-3 -right-3 w-36 h-24" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1">
+      <path d="M10 70 L 110 70" opacity="0.4" />
+      <path d="M20 75 L 20 10" opacity="0.4" />
+      <path d="M20 60 Q 55 60, 75 35 T 110 15" strokeWidth="1.5" />
     </svg>
-    {/* LaTeX-style Scientific Equations */}
-    <div className="absolute top-3 right-28 text-right space-y-0.5 text-[11px] font-bold italic opacity-75 font-mono">
-      <p>E = mc²</p>
-      <p>∫ f(x)dx = F(x) + C</p>
-      <p>e^(iπ) + 1 = 0</p>
-    </div>
-    <div className="absolute bottom-15 left-5 space-y-0.5 text-[9px] font-bold opacity-65 font-mono">
-      <p>lim (x→0) sin(x)/x = 1</p>
-      <p>∑ (1/2ⁿ) = 1 · ∇ × B = μ₀J</p>
+    {/* Subtle equation */}
+    <div className="absolute top-3.5 right-24 text-right text-[10px] font-semibold italic opacity-80">
+      <p>E = mc² · ∫f(x)dx</p>
     </div>
   </div>
 );
 
-/* ─── Departments Filter Configuration ────────────────────────────────────── */
+/* ─── Departments Configuration ───────────────────────────────────────────── */
 
 const DEPARTMENTS = [
   {
@@ -109,7 +81,6 @@ const DEPARTMENTS = [
     key: 'owners_club',
     label: "Owner's Club",
     color: 'amber',
-    badge: 'Tier 1',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -120,7 +91,6 @@ const DEPARTMENTS = [
     key: 'tech',
     label: 'Tech',
     color: 'cyan',
-    badge: 'Tier 2',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -131,7 +101,6 @@ const DEPARTMENTS = [
     key: 'promotional',
     label: 'Promotional',
     color: 'rose',
-    badge: 'Tier 3',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
@@ -142,7 +111,6 @@ const DEPARTMENTS = [
     key: 'faculty',
     label: 'Faculty',
     color: 'violet',
-    badge: 'Tier 4',
     icon: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -154,21 +122,13 @@ const DEPARTMENTS = [
 const DEPT_CONFIG = {
   owners_club: {
     name: "Owner's Club",
-    rankLabel: 'Executive Leadership',
-    tierNumber: 'Tier 1',
-    cardBg: 'bg-gradient-to-br from-amber-50/90 via-yellow-50/40 to-white dark:from-amber-950/40 dark:via-slate-900/95 dark:to-amber-950/20',
-    cardBorder: 'border-amber-400/80 dark:border-amber-500/50',
-    cardShadow: 'shadow-md shadow-amber-500/10 hover:shadow-xl hover:shadow-amber-500/20',
-    accentBar: 'h-2 bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500',
-    badgeStyle: 'bg-amber-500/15 text-amber-900 dark:text-amber-200 border-amber-400/70 dark:border-amber-500/50',
-    statsBg: 'bg-amber-500/[0.08] dark:bg-amber-950/50 border-amber-400/30 dark:border-amber-500/30',
+    accentBar: 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500',
+    badgeStyle: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/25',
     avatarGradient: 'from-amber-400 via-yellow-500 to-orange-500',
-    avatarRing: 'ring-amber-400 dark:ring-amber-400/80',
-    nameColor: 'text-amber-950 dark:text-amber-100',
-    numberColor: 'text-amber-900 dark:text-amber-200',
-    avatarSize: 'w-14 h-14',
+    avatarRing: 'ring-amber-400/40',
+    cardBorderHover: 'hover:border-amber-400/50 dark:hover:border-amber-500/35',
     icon: (
-      <svg className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+      <svg className="w-3 h-3 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
         <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
       </svg>
     ),
@@ -177,21 +137,13 @@ const DEPT_CONFIG = {
   },
   tech: {
     name: 'Tech',
-    rankLabel: 'Engineering & Systems',
-    tierNumber: 'Tier 2',
-    cardBg: 'bg-gradient-to-br from-cyan-50/90 via-sky-50/30 to-white dark:from-cyan-950/40 dark:via-slate-900/95 dark:to-cyan-950/20',
-    cardBorder: 'border-cyan-400/80 dark:border-cyan-500/50',
-    cardShadow: 'shadow-md shadow-cyan-500/10 hover:shadow-xl hover:shadow-cyan-500/20',
-    accentBar: 'h-1.5 bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500',
-    badgeStyle: 'bg-cyan-500/15 text-cyan-900 dark:text-cyan-200 border-cyan-400/70 dark:border-cyan-500/50',
-    statsBg: 'bg-cyan-500/[0.08] dark:bg-cyan-950/50 border-cyan-400/30 dark:border-cyan-500/30',
+    accentBar: 'bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500',
+    badgeStyle: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/25',
     avatarGradient: 'from-cyan-400 via-sky-500 to-blue-600',
-    avatarRing: 'ring-cyan-400 dark:ring-cyan-400/80',
-    nameColor: 'text-cyan-950 dark:text-cyan-100',
-    numberColor: 'text-cyan-900 dark:text-cyan-200',
-    avatarSize: 'w-12 h-12',
+    avatarRing: 'ring-cyan-400/40',
+    cardBorderHover: 'hover:border-cyan-400/50 dark:hover:border-cyan-500/35',
     icon: (
-      <svg className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+      <svg className="w-3 h-3 text-cyan-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       </svg>
     ),
@@ -199,21 +151,13 @@ const DEPT_CONFIG = {
   },
   promotional: {
     name: 'Promotional',
-    rankLabel: 'Growth & Outreach',
-    tierNumber: 'Tier 3',
-    cardBg: 'bg-gradient-to-br from-rose-50/90 via-pink-50/30 to-white dark:from-rose-950/35 dark:via-slate-900/95 dark:to-rose-950/20',
-    cardBorder: 'border-rose-400/70 dark:border-rose-500/40',
-    cardShadow: 'shadow-md shadow-rose-500/10 hover:shadow-xl hover:shadow-rose-500/20',
-    accentBar: 'h-1.5 bg-gradient-to-r from-rose-400 via-pink-400 to-fuchsia-500',
-    badgeStyle: 'bg-rose-500/15 text-rose-900 dark:text-rose-200 border-rose-400/60 dark:border-rose-500/40',
-    statsBg: 'bg-rose-500/[0.07] dark:bg-rose-950/40 border-rose-400/30 dark:border-rose-500/30',
+    accentBar: 'bg-gradient-to-r from-rose-400 via-pink-400 to-fuchsia-500',
+    badgeStyle: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/25',
     avatarGradient: 'from-rose-400 via-pink-500 to-fuchsia-600',
-    avatarRing: 'ring-rose-400 dark:ring-rose-400/80',
-    nameColor: 'text-rose-950 dark:text-rose-100',
-    numberColor: 'text-rose-900 dark:text-rose-200',
-    avatarSize: 'w-12 h-12',
+    avatarRing: 'ring-rose-400/40',
+    cardBorderHover: 'hover:border-rose-400/50 dark:hover:border-rose-500/35',
     icon: (
-      <svg className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+      <svg className="w-3 h-3 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6" />
       </svg>
     ),
@@ -221,21 +165,13 @@ const DEPT_CONFIG = {
   },
   faculty: {
     name: 'Faculty',
-    rankLabel: 'Academic Educator',
-    tierNumber: 'Tier 4',
-    cardBg: 'bg-gradient-to-br from-violet-50/80 via-purple-50/20 to-white dark:from-violet-950/30 dark:via-slate-900/95 dark:to-violet-950/15',
-    cardBorder: 'border-violet-300/80 dark:border-violet-500/35',
-    cardShadow: 'shadow-sm shadow-violet-500/5 hover:shadow-xl hover:shadow-violet-500/15',
-    accentBar: 'h-1.5 bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-500',
-    badgeStyle: 'bg-violet-500/15 text-violet-900 dark:text-violet-200 border-violet-400/50 dark:border-violet-500/40',
-    statsBg: 'bg-violet-500/[0.06] dark:bg-violet-950/40 border-violet-300/40 dark:border-violet-500/25',
+    accentBar: 'bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-500',
+    badgeStyle: 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border-violet-500/25',
     avatarGradient: 'from-violet-500 via-purple-600 to-indigo-600',
-    avatarRing: 'ring-violet-400 dark:ring-violet-400/80',
-    nameColor: 'text-slate-900 dark:text-slate-100',
-    numberColor: 'text-violet-950 dark:text-violet-200',
-    avatarSize: 'w-12 h-12',
+    avatarRing: 'ring-violet-400/40',
+    cardBorderHover: 'hover:border-violet-400/50 dark:hover:border-violet-500/35',
     icon: (
-      <svg className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+      <svg className="w-3 h-3 text-violet-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253" />
       </svg>
     ),
@@ -243,21 +179,13 @@ const DEPT_CONFIG = {
   },
   default: {
     name: 'Team Member',
-    rankLabel: 'General Staff',
-    tierNumber: 'Member',
-    cardBg: 'bg-white dark:bg-slate-900/90',
-    cardBorder: 'border-slate-200/90 dark:border-slate-800',
-    cardShadow: 'shadow-sm hover:shadow-lg',
-    accentBar: 'h-1 bg-gradient-to-r from-indigo-400 via-indigo-500 to-purple-500',
-    badgeStyle: 'bg-indigo-500/10 text-indigo-900 dark:text-indigo-200 border-indigo-500/30',
-    statsBg: 'bg-slate-50/90 dark:bg-slate-950/40 border-slate-200/60 dark:border-slate-800/80',
+    accentBar: 'bg-gradient-to-r from-indigo-400 via-indigo-500 to-purple-500',
+    badgeStyle: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/25',
     avatarGradient: 'from-indigo-500 via-indigo-600 to-purple-600',
-    avatarRing: 'ring-indigo-400 dark:ring-indigo-400/80',
-    nameColor: 'text-slate-900 dark:text-slate-100',
-    numberColor: 'text-slate-900 dark:text-slate-100',
-    avatarSize: 'w-12 h-12',
+    avatarRing: 'ring-indigo-400/40',
+    cardBorderHover: 'hover:border-indigo-400/50 dark:hover:border-indigo-500/35',
     icon: (
-      <svg className="w-3.5 h-3.5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+      <svg className="w-3 h-3 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <circle cx="12" cy="12" r="10" />
       </svg>
     ),
@@ -380,16 +308,16 @@ const EmployeesPage = () => {
         </button>
       </div>
 
-      {/* Category Tabs with Hierarchy Tiers */}
+      {/* Category Tabs */}
       <div className="flex items-center gap-2 flex-wrap pb-1" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
         {DEPARTMENTS.map((dept) => {
           const isActive = activeTab === dept.key;
           const colorMap = {
-            indigo: isActive ? 'bg-indigo-500/15 border-indigo-500/50 text-indigo-700 dark:text-indigo-300' : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
-            amber:  isActive ? 'bg-amber-500/15 border-amber-500/60 text-amber-800 dark:text-amber-300 shadow-sm' : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
-            cyan:   isActive ? 'bg-cyan-500/15 border-cyan-500/60 text-cyan-800 dark:text-cyan-300'     : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
-            rose:   isActive ? 'bg-rose-500/15 border-rose-500/60 text-rose-800 dark:text-rose-300'     : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
-            violet: isActive ? 'bg-violet-500/15 border-violet-500/60 text-violet-800 dark:text-violet-300' : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+            indigo: isActive ? 'bg-indigo-500/15 border-indigo-500/40 text-indigo-700 dark:text-indigo-300' : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+            amber:  isActive ? 'bg-amber-500/15 border-amber-500/50 text-amber-800 dark:text-amber-300' : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+            cyan:   isActive ? 'bg-cyan-500/15 border-cyan-500/50 text-cyan-800 dark:text-cyan-300'     : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+            rose:   isActive ? 'bg-rose-500/15 border-rose-500/50 text-rose-800 dark:text-rose-300'     : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
+            violet: isActive ? 'bg-violet-500/15 border-violet-500/50 text-violet-800 dark:text-violet-300' : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5',
           };
           return (
             <button
@@ -400,11 +328,6 @@ const EmployeesPage = () => {
             >
               {dept.icon}
               <span>{dept.label}</span>
-              {dept.badge && (
-                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-black/5 dark:bg-white/10 opacity-80">
-                  {dept.badge}
-                </span>
-              )}
               <span className="ml-0.5 text-[11px] font-mono px-1.5 py-0.5 rounded-md" style={{ backgroundColor: 'var(--bg-subtle)' }}>
                 {countFor(dept.key)}
               </span>
@@ -413,7 +336,7 @@ const EmployeesPage = () => {
         })}
       </div>
 
-      {/* Employee Cards Grid */}
+      {/* Employee Cards Grid — Clean, Refined & Minimalist */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
           <div className="col-span-full flex justify-center py-16"><CatLoader text="Loading Members..." /></div>
@@ -432,9 +355,9 @@ const EmployeesPage = () => {
             return (
               <div
                 key={emp._id}
-                className={`relative overflow-hidden rounded-2xl border-2 ${config.cardBg} ${config.cardBorder} ${config.cardShadow} group transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between`}
+                className={`relative overflow-hidden rounded-2xl border bg-white dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800/90 shadow-sm hover:shadow-lg hover:shadow-slate-200/60 dark:hover:shadow-black/40 ${config.cardBorderHover} group transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between`}
               >
-                {/* Department Watermark Motif */}
+                {/* Subtle Thematic Watermark */}
                 {config.Watermark && <config.Watermark />}
 
                 {/* Clickable Card Overlay */}
@@ -444,12 +367,12 @@ const EmployeesPage = () => {
                   title={`View ${emp.name}'s profile`}
                 />
 
-                {/* Top Hierarchy Indicator Bar */}
-                <div className={`w-full relative z-10 ${config.accentBar}`} />
+                {/* Refined 2px Top Accent Bar */}
+                <div className={`w-full h-1 relative z-10 ${config.accentBar}`} />
 
-                {/* Hierarchy Badge in Corner */}
+                {/* Clean Corner Department Badge */}
                 <div
-                  className={`absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase border shadow-xs backdrop-blur-xs ${config.badgeStyle}`}
+                  className={`absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-bold tracking-wider uppercase border shadow-2xs backdrop-blur-xs ${config.badgeStyle}`}
                 >
                   {config.icon}
                   <span className="font-heading">{config.name}</span>
@@ -465,72 +388,69 @@ const EmployeesPage = () => {
                   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </button>
 
-                {/* Card Main Info */}
+                {/* Card Main Header Info */}
                 <div className="p-5 pointer-events-none pb-0 relative z-10">
-                  <div className="flex items-center gap-3.5 mb-4 pr-24">
-                    {/* Avatar with hierarchy ring */}
-                    <div className={`relative ${config.avatarSize} rounded-2xl bg-gradient-to-tr ${config.avatarGradient} text-white font-black flex items-center justify-center text-lg shadow-md ring-2 ${config.avatarRing} ring-offset-2 ring-offset-white dark:ring-offset-slate-900 border border-white/60 shrink-0 overflow-hidden`}>
+                  <div className="flex items-center gap-3.5 mb-4 pr-20">
+                    {/* Avatar */}
+                    <div className={`relative w-12 h-12 rounded-xl bg-gradient-to-tr ${config.avatarGradient} text-white font-bold flex items-center justify-center text-base shadow-sm ring-2 ${config.avatarRing} ring-offset-2 ring-offset-white dark:ring-offset-slate-900 shrink-0 overflow-hidden`}>
                       {emp.profilePicture ? (
                         <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
                       ) : (
                         emp.name.charAt(0).toUpperCase()
                       )}
                       {config.isOwner && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-amber-300 to-yellow-500 border border-white shadow-xs flex items-center justify-center">
-                          <svg className="w-2.5 h-2.5 text-amber-950" viewBox="0 0 24 24" fill="currentColor">
+                        <div className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-amber-300 to-yellow-500 border border-white shadow-xs flex items-center justify-center">
+                          <svg className="w-2 h-2 text-amber-950" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
                           </svg>
                         </div>
                       )}
                     </div>
 
-                    {/* Name and Role details */}
+                    {/* Name and Email */}
                     <div className="flex-1 min-w-0 space-y-0.5">
-                      <p className={`font-extrabold truncate font-heading tracking-tight text-base ${config.nameColor} group-hover:brightness-110 transition-all`}>
+                      <p className="font-bold truncate font-heading tracking-tight text-base text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                         {emp.name}
                       </p>
                       <p className="text-xs truncate font-medium text-slate-500 dark:text-slate-400">
                         {emp.email}
                       </p>
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                        {config.rankLabel}
-                      </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Stats Footer with Hierarchy Tint */}
-                <div className={`grid grid-cols-3 gap-2 px-5 py-3.5 mt-4 border-t relative z-10 ${config.statsBg}`}>
+                {/* Clean, Refined Stats Footer */}
+                <div className="grid grid-cols-3 gap-2 px-5 py-3 mt-4 bg-slate-50/70 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800/60 relative z-10">
                   {isFacultyEmp ? (
                     <>
                       <div className="text-center">
-                        <p className={`text-base font-bold font-mono ${config.numberColor}`}>{emp.teacherStats?.totalClasses ?? '—'}</p>
-                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 mt-0.5">Classes</p>
+                        <p className="text-base font-bold font-mono text-slate-900 dark:text-slate-100">{emp.teacherStats?.totalClasses ?? '—'}</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Classes</p>
                       </div>
                       <div className="text-center">
-                        <p className={`text-base font-bold font-mono ${config.numberColor}`}>{emp.teacherStats?.totalHours ? `${emp.teacherStats.totalHours}h` : '—'}</p>
-                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 mt-0.5">Hours</p>
+                        <p className="text-base font-bold font-mono text-slate-900 dark:text-slate-100">{emp.teacherStats?.totalHours ? `${emp.teacherStats.totalHours}h` : '—'}</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Hours</p>
                       </div>
                       <div className="text-center">
-                        <p className={`text-base font-bold font-mono ${config.numberColor}`}>
+                        <p className="text-base font-bold font-mono text-slate-900 dark:text-slate-100">
                           {emp.teacherStats?.totalViews ? (emp.teacherStats.totalViews >= 1000 ? `${(emp.teacherStats.totalViews / 1000).toFixed(1)}K` : emp.teacherStats.totalViews) : '—'}
                         </p>
-                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 mt-0.5">Views</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Views</p>
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="text-center">
-                        <p className={`text-base font-bold font-mono ${config.numberColor}`}>{emp.totalTasks}</p>
-                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 mt-0.5">Tasks</p>
+                        <p className="text-base font-bold font-mono text-slate-900 dark:text-slate-100">{emp.totalTasks}</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Tasks</p>
                       </div>
                       <div className="text-center">
-                        <p className={`text-base font-bold font-mono ${config.numberColor}`}>{emp.completedTasks}</p>
-                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 mt-0.5">Done</p>
+                        <p className="text-base font-bold font-mono text-slate-900 dark:text-slate-100">{emp.completedTasks}</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Done</p>
                       </div>
                       <div className="text-center">
-                        <p className={`text-base font-bold font-mono ${config.numberColor}`}>{emp.totalHours}h</p>
-                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 mt-0.5">Logged</p>
+                        <p className="text-base font-bold font-mono text-slate-900 dark:text-slate-100">{emp.totalHours}h</p>
+                        <p className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">Logged</p>
                       </div>
                     </>
                   )}
