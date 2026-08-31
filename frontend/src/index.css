@@ -109,7 +109,7 @@
 
 @layer components {
   .card {
-    background: var(--bg-card);
+    background-color: var(--bg-card);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-base);

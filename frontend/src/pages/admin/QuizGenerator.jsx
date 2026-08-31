@@ -117,11 +117,11 @@ const QuizGenerator = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading flex items-center gap-2">
-          <Zap size={28} className="text-indigo-400" />
+        <h1 className="text-3xl font-extrabold text-[var(--text-heading)] tracking-tight font-heading flex items-center gap-2">
+          <Zap size={28} className="text-indigo-500 dark:text-indigo-400" />
           Content Engine
         </h1>
-        <p className="text-slate-400 text-sm mt-1">Convert raw educational text into high-engagement PowerPoint slides.</p>
+        <p className="text-[var(--text-muted)] text-sm mt-1">Convert raw educational text into high-engagement PowerPoint slides.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -131,7 +131,7 @@ const QuizGenerator = () => {
             <form onSubmit={handleGenerate} className="space-y-6">
               
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-slate-300 mb-3">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-3">
                   1. Design Template
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -141,8 +141,8 @@ const QuizGenerator = () => {
                         key={t.number}
                         className={`relative p-4 rounded-xl border transition-all cursor-pointer ${
                           template === t.number 
-                            ? 'bg-indigo-500/10 border-indigo-500/50 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.2)]' 
-                            : 'bg-slate-900/50 border-white/5 text-slate-400 hover:bg-slate-800'
+                            ? 'bg-indigo-500/10 border-indigo-500/50 text-indigo-600 dark:text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.2)]' 
+                            : 'bg-[var(--bg-subtle)] border-[var(--border-base)] text-[var(--text-muted)] hover:bg-[var(--border-base)]'
                         }`}
                         onClick={() => setTemplate(t.number)}
                       >
@@ -165,7 +165,7 @@ const QuizGenerator = () => {
                     ))
                   ) : (
                     <div
-                      className={`relative p-4 rounded-xl border transition-all cursor-pointer bg-indigo-500/10 border-indigo-500/50 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.2)]`}
+                      className={`relative p-4 rounded-xl border transition-all cursor-pointer bg-indigo-500/10 border-indigo-500/50 text-indigo-600 dark:text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.2)]`}
                       onClick={() => setTemplate('master')}
                     >
                       <Layers size={20} className="mb-2 opacity-80" />
@@ -176,7 +176,7 @@ const QuizGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
                   2. Quiz Data (Markdown or Text)
                 </label>
                 <textarea 
@@ -185,28 +185,28 @@ const QuizGenerator = () => {
                   value={questions} 
                   onChange={(e) => setQuestions(e.target.value)} 
                   required
-                  className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none font-mono"
+                  className="w-full px-4 py-3 bg-[var(--bg-input)] border border-[var(--border-base)] rounded-xl text-[var(--text-base)] text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none font-mono shadow-sm transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
                   3. Cover Image (Optional)
                 </label>
                 <input type="file" id="thumb" hidden onChange={(e) => setThumbnail(e.target.files[0])} accept="image/*" />
                 <label 
                   htmlFor="thumb" 
-                  className="block w-full border border-dashed border-white/20 rounded-xl p-6 text-center bg-slate-900/30 hover:bg-slate-900/60 transition-colors cursor-pointer"
+                  className="block w-full border border-dashed border-[var(--border-base)] rounded-xl p-6 text-center bg-[var(--bg-subtle)] hover:bg-[var(--border-base)] transition-colors cursor-pointer"
                 >
-                  <Upload size={24} className="mx-auto mb-2 text-slate-400" />
-                  <p className="text-sm font-medium text-slate-300">
+                  <Upload size={24} className="mx-auto mb-2 text-[var(--text-faint)]" />
+                  <p className="text-sm font-medium text-[var(--text-muted)]">
                     {thumbnail ? thumbnail.name : 'Click to upload a cover image (replaces slide 1 background)'}
                   </p>
                 </label>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
                   4. Output File Name
                 </label>
                 <input 
@@ -214,7 +214,7 @@ const QuizGenerator = () => {
                   value={outputName} 
                   onChange={(e) => setOutputName(e.target.value)} 
                   placeholder="e.g. Science_Quiz_01" 
-                  className="w-full px-4 py-3 bg-slate-950/80 border border-white/10 rounded-xl text-white text-sm focus:border-indigo-500 outline-none"
+                  className="w-full px-4 py-3 bg-[var(--bg-input)] border border-[var(--border-base)] rounded-xl text-[var(--text-base)] text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none shadow-sm transition-all"
                 />
               </div>
 
@@ -252,17 +252,17 @@ const QuizGenerator = () => {
             
             <div 
               ref={consoleBoxRef}
-              className="flex-1 bg-slate-950 rounded-xl p-4 overflow-y-auto font-mono text-xs border border-white/5 relative min-h-[300px] max-h-[500px]"
+              className="flex-1 bg-black/5 dark:bg-slate-950 rounded-xl p-4 overflow-y-auto font-mono text-xs border border-[var(--border-base)] relative min-h-[300px] max-h-[500px]"
             >
-              {logs.length === 0 && <div className="text-slate-600">READY: Waiting for buffer instruction...</div>}
+              {logs.length === 0 && <div className="text-[var(--text-faint)]">READY: Waiting for buffer instruction...</div>}
               {logs.map(log => (
                 <div key={log.id} className="mb-2">
-                  <span className="text-slate-500 mr-2">[{log.time}]</span>
+                  <span className="text-[var(--text-muted)] mr-2">[{log.time}]</span>
                   <span className={`
-                    ${log.step === 'error' ? 'text-rose-400' : ''}
-                    ${log.step === 'complete' ? 'text-emerald-400' : ''}
-                    ${log.step === 'info' ? 'text-cyan-400' : ''}
-                    ${!['error', 'complete', 'info'].includes(log.step) ? 'text-slate-300' : ''}
+                    ${log.step === 'error' ? 'text-rose-500 dark:text-rose-400' : ''}
+                    ${log.step === 'complete' ? 'text-emerald-600 dark:text-emerald-400' : ''}
+                    ${log.step === 'info' ? 'text-cyan-600 dark:text-cyan-400' : ''}
+                    ${!['error', 'complete', 'info'].includes(log.step) ? 'text-[var(--text-base)]' : ''}
                   `}>
                     {log.message}
                   </span>
@@ -292,11 +292,11 @@ const QuizGenerator = () => {
               </div>
             )}
 
-            <div className="mt-6 border-t border-white/5 pt-4">
-              <div className="text-[10px] text-slate-500 uppercase font-bold mb-2">Guidelines</div>
-              <div className="space-y-2 text-xs text-slate-400">
-                <div className="flex gap-2"><Info size={14} className="shrink-0 text-slate-500" /> PPTX will be generated based on Strivers theme.</div>
-                <div className="flex gap-2"><Info size={14} className="shrink-0 text-slate-500" /> AI optimizes for readable text density automatically.</div>
+            <div className="mt-6 border-t border-[var(--border-subtle)] pt-4">
+              <div className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-2">Guidelines</div>
+              <div className="space-y-2 text-xs text-[var(--text-faint)]">
+                <div className="flex gap-2"><Info size={14} className="shrink-0 text-[var(--text-faint)]" /> PPTX will be generated based on Strivers theme.</div>
+                <div className="flex gap-2"><Info size={14} className="shrink-0 text-[var(--text-faint)]" /> AI optimizes for readable text density automatically.</div>
               </div>
             </div>
           </motion.div>

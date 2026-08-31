@@ -180,8 +180,11 @@ const EmployeesPage = () => {
             const primaryDept = Array.isArray(emp.department) ? emp.department[0] : emp.department;
             const style = getDeptStyle(primaryDept);
             return (
-              <div key={emp._id} className="card card-hover block group relative overflow-hidden">
+              <div key={emp._id} className={`card card-hover block group relative overflow-hidden transition-all duration-300 hover:shadow-xl ${style.shadow} hover:border-transparent`}>
                 <div onClick={() => navigate(`/employees/${emp._id}`)} className="absolute inset-0 z-10 cursor-pointer" title={`View ${emp.name}'s profile`} />
+                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${style.avatar} opacity-70`} />
+                <div className={`absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br ${style.avatar} rounded-full blur-[40px] opacity-20 dark:opacity-30 group-hover:opacity-40 dark:group-hover:opacity-50 transition-opacity pointer-events-none`} />
+                <div className={`absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-br ${style.avatar} rounded-full blur-[40px] opacity-10 dark:opacity-20 group-hover:opacity-30 transition-opacity pointer-events-none`} />
                 <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_45%,rgba(255,255,255,0.02)_50%,transparent_55%)] bg-[length:200%_200%] bg-[100%_100%] group-hover:bg-[0%_0%] transition-all duration-700 pointer-events-none" />
 
                 {/* Delete Button */}
