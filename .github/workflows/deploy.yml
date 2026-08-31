@@ -17,34 +17,77 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           port: ${{ secrets.VPS_PORT }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script_stop: true
+
           script: |
             set -e
+
+            # ========================================
+            # Load NVM / Node.js
+            # ========================================
+
+            export NVM_DIR="/home/deploy/.nvm"
+            source "$NVM_DIR/nvm.sh"
+            nvm use 22
 
             echo "================================"
             echo "🚀 Starting deployment"
             echo "================================"
 
+            echo "Node: $(node --version)"
+            echo "npm: $(npm --version)"
+
+            # ========================================
+            # Update repository
+            # ========================================
+
             cd /var/www/checkActivity
 
             echo "📥 Fetching latest master..."
+
             git fetch origin master
             git reset --hard origin/master
 
             echo "📌 Deployed commit:"
             git --no-pager log -1 --oneline
 
-            echo "📦 Installing backend dependencies..."
-            cd backend
+            # ========================================
+            # Backend
+            # ========================================
+
+            echo "================================"
+            echo "📦 Installing backend dependencies"
+            echo "================================"
+
+            cd /var/www/checkActivity/backend
+
             npm ci
 
-            echo "🎨 Building frontend..."
-            cd ../frontend
+            # ========================================
+            # Frontend
+            # ========================================
+
+            echo "================================"
+            echo "🎨 Building frontend"
+            echo "================================"
+
+            cd /var/www/checkActivity/frontend
+
             npm ci
             npm run build
 
-            echo "🔄 Restarting checkActivity..."
+            # ========================================
+            # Restart application
+            # ========================================
+
+            echo "================================"
+            echo "🔄 Restarting checkActivity"
+            echo "================================"
+
             sudo -n systemctl restart checkactivity
+
+            # ========================================
+            # Verify service
+            # ========================================
 
             echo "⏳ Waiting for application..."
             sleep 3
@@ -56,9 +99,17 @@ jobs:
             sudo systemctl show checkactivity \
               -p ExecMainStartTimestamp
 
-            echo "❤️ Health check:"
+            # ========================================
+            # Health check
+            # ========================================
+
+            echo "================================"
+            echo "❤️ Health check"
+            echo "================================"
+
             curl -f http://127.0.0.1:5000/health
 
+            echo ""
             echo "================================"
             echo "✅ DEPLOYMENT SUCCESSFUL"
             echo "================================"
