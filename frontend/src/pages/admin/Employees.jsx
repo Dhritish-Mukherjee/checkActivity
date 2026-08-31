@@ -3,68 +3,148 @@ import { useNavigate } from 'react-router-dom';
 import { dashboardAPI, authAPI } from '../../services';
 import CatLoader from '../../components/CatLoader';
 
-/* ─── Minimalist Thematic Watermarks (Subtle, Non-Intrusive Vector Motifs) ── */
+/* ─── Minimalist in Resting State ➔ Dynamic Maximalist on Hover ──────────── */
 
 const OwnerWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.07] group-hover:opacity-[0.14] dark:opacity-[0.10] dark:group-hover:opacity-[0.18] transition-opacity duration-300 text-amber-500">
-    {/* Fine-line geometric luxury star / crest */}
-    <svg className="absolute -top-6 -right-6 w-36 h-36" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
-      <circle cx="50" cy="50" r="45" strokeDasharray="3 3" />
-      <polygon points="50,15 62,38 85,38 66,54 73,78 50,62 27,78 34,54 15,38 38,38" />
-    </svg>
-    {/* Subtle financial sparkline curve */}
-    <svg className="absolute -bottom-4 -right-4 w-44 h-24" viewBox="0 0 160 80" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M10 70 Q 50 60, 80 50 T 150 15" strokeLinecap="round" strokeDasharray="4 3" />
-    </svg>
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-amber-500 transition-all duration-500">
+    {/* Resting state: Subtle minimalist luxury crest */}
+    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -top-6 -right-6 w-36 h-36" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
+        <circle cx="50" cy="50" r="45" strokeDasharray="3 3" />
+        <polygon points="50,15 62,38 85,38 66,54 73,78 50,62 27,78 34,54 15,38 38,38" />
+      </svg>
+    </div>
+
+    {/* Hover state: Rich maximalist golden bloom & valuation sparklines */}
+    <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-400/[0.12] via-yellow-500/[0.04] to-transparent dark:from-amber-400/[0.18]" />
+      
+      {/* Upward Valuation Curve */}
+      <svg className="absolute -bottom-4 -right-4 w-56 h-32" viewBox="0 0 200 120" fill="none" stroke="currentColor">
+        <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="5 3" />
+        <path d="M10 105 Q 60 85, 90 90 T 150 45 T 195 12 L 195 120 L 10 120 Z" fill="currentColor" fillOpacity="0.14" />
+      </svg>
+      
+      {/* Currency & Crown Watermark */}
+      <div className="absolute top-2.5 right-24 font-mono font-black text-sm tracking-widest opacity-80 text-amber-600 dark:text-amber-300">
+        $ · ₹ · € · ₿
+      </div>
+      <svg className="absolute -top-3 -right-3 w-24 h-24 opacity-25" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
+      </svg>
+      
+      <div className="absolute bottom-14 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-75 text-amber-700 dark:text-amber-300">
+        FOUNDER CONTROL // +340% CAPITAL YIELD
+      </div>
+    </div>
   </div>
 );
 
 const TechWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.06] group-hover:opacity-[0.12] dark:opacity-[0.09] dark:group-hover:opacity-[0.16] transition-opacity duration-300 text-cyan-500 font-mono text-[9px] leading-relaxed">
-    {/* Clean circuit traces in corner */}
-    <svg className="absolute -top-4 -right-4 w-32 h-32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
-      <path d="M10 10 H50 V50 H90 V90" />
-      <circle cx="50" cy="50" r="3" fill="currentColor" />
-      <circle cx="90" cy="90" r="3" fill="currentColor" />
-    </svg>
-    {/* Faint clean code lines */}
-    <div className="absolute top-3.5 right-24 text-right space-y-0.5 opacity-80">
-      <p>const core = new Engine();</p>
-      <p>await deploy();</p>
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-cyan-500 transition-all duration-500">
+    {/* Resting state: Subtle minimalist circuit */}
+    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -top-4 -right-4 w-32 h-32" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1">
+        <path d="M10 10 H50 V50 H90 V90" />
+        <circle cx="50" cy="50" r="3" fill="currentColor" />
+        <circle cx="90" cy="90" r="3" fill="currentColor" />
+      </svg>
+    </div>
+
+    {/* Hover state: Rich maximalist cyber circuitry & terminal telemetry */}
+    <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/[0.12] via-sky-500/[0.04] to-transparent dark:from-cyan-400/[0.18]" />
+      
+      {/* Circuit board bus lines */}
+      <svg className="absolute -top-4 -right-4 w-44 h-44" viewBox="0 0 160 160" fill="none" stroke="currentColor">
+        <path d="M10 20 H70 V70 H130 V130 H160" strokeWidth="1.5" />
+        <circle cx="70" cy="70" r="3.5" fill="currentColor" />
+        <circle cx="130" cy="130" r="3.5" fill="currentColor" />
+        <path d="M90 15 V50 H140" strokeWidth="1.5" strokeDasharray="3 3" />
+      </svg>
+      
+      {/* Monospace Terminal Code */}
+      <div className="absolute top-2.5 right-24 text-right space-y-0.5 opacity-85 font-mono text-[9px] text-cyan-600 dark:text-cyan-300">
+        <p className="font-bold">const sys = new Engine();</p>
+        <p>await cluster.deploy();</p>
+        <p>{"<Node status='ACTIVE' />"}</p>
+      </div>
+      <div className="absolute bottom-14 left-5 space-y-0.5 opacity-75 font-mono text-[9px] text-cyan-700 dark:text-cyan-300">
+        <p>git commit -m "feat(core): v2.4"</p>
+        <p>latency: 0.6ms · 99.99% uptime</p>
+      </div>
     </div>
   </div>
 );
 
 const PromotionalWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.06] group-hover:opacity-[0.12] dark:opacity-[0.09] dark:group-hover:opacity-[0.16] transition-opacity duration-300 text-rose-500">
-    {/* Clean launch trajectory */}
-    <svg className="absolute -bottom-4 -right-4 w-36 h-28" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1.2">
-      <path d="M10 70 C 40 60, 60 40, 110 15" strokeLinecap="round" strokeDasharray="4 3" />
-      <circle cx="110" cy="15" r="4" fill="currentColor" />
-    </svg>
-    {/* Clean reach metric */}
-    <div className="absolute top-3.5 right-24 font-mono font-bold text-[10px] tracking-wider opacity-70">
-      // 10X REACH
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-rose-500 transition-all duration-500">
+    {/* Resting state: Subtle minimalist trajectory */}
+    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -bottom-4 -right-4 w-36 h-28" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1.2">
+        <path d="M10 70 C 40 60, 60 40, 110 15" strokeLinecap="round" strokeDasharray="4 3" />
+      </svg>
+    </div>
+
+    {/* Hover state: Rich maximalist launch curves & viral metrics */}
+    <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-400/[0.12] via-pink-500/[0.04] to-transparent dark:from-rose-400/[0.18]" />
+      
+      {/* Rocket trajectory & target radar */}
+      <svg className="absolute -bottom-4 -right-4 w-48 h-36" viewBox="0 0 180 120" fill="none" stroke="currentColor">
+        <path d="M10 110 C 60 100, 90 60, 160 20" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 4" />
+        <circle cx="160" cy="20" r="6" fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="2" />
+        <path d="M140 30 L160 20 L150 40" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      
+      <div className="absolute top-2.5 right-24 font-mono font-black text-xs tracking-wider opacity-85 text-rose-600 dark:text-rose-300">
+        CAMPAIGN // 10X REACH
+      </div>
+      <div className="absolute top-1/2 left-24 -translate-y-1/2 font-mono text-[10px] font-black uppercase tracking-widest opacity-70 -rotate-6 text-rose-600 dark:text-rose-300">
+        🚀 CTR 16.4% · VIRAL REACH
+      </div>
+      <div className="absolute bottom-14 left-5 font-mono text-[9px] uppercase font-black tracking-widest opacity-75 text-rose-700 dark:text-rose-300">
+        BROADCAST · MEDIA · ENGAGEMENT
+      </div>
     </div>
   </div>
 );
 
 const FacultyWatermark = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 opacity-[0.06] group-hover:opacity-[0.12] dark:opacity-[0.09] dark:group-hover:opacity-[0.16] transition-opacity duration-300 text-violet-500 font-mono">
-    {/* Coordinate curve */}
-    <svg className="absolute -bottom-3 -right-3 w-36 h-24" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1">
-      <path d="M10 70 L 110 70" opacity="0.4" />
-      <path d="M20 75 L 20 10" opacity="0.4" />
-      <path d="M20 60 Q 55 60, 75 35 T 110 15" strokeWidth="1.5" />
-    </svg>
-    {/* Subtle equation */}
-    <div className="absolute top-3.5 right-24 text-right text-[10px] font-semibold italic opacity-80">
-      <p>E = mc² · ∫f(x)dx</p>
+  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0 text-violet-500 transition-all duration-500">
+    {/* Resting state: Subtle minimalist coordinate line */}
+    <div className="opacity-[0.06] group-hover:opacity-0 transition-opacity duration-300">
+      <svg className="absolute -bottom-3 -right-3 w-36 h-24" viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="1">
+        <path d="M10 70 L 110 70" opacity="0.4" />
+        <path d="M20 75 L 20 10" opacity="0.4" />
+      </svg>
+    </div>
+
+    {/* Hover state: Rich maximalist calculus curve & physics equations */}
+    <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-400/[0.12] via-purple-500/[0.04] to-transparent dark:from-violet-400/[0.18]" />
+      
+      {/* Calculus Curve */}
+      <svg className="absolute -bottom-2 -right-2 w-48 h-32" viewBox="0 0 180 120" fill="none" stroke="currentColor">
+        <path d="M10 100 L 170 100" strokeWidth="1.2" opacity="0.4" />
+        <path d="M25 110 L 25 10" strokeWidth="1.2" opacity="0.4" />
+        <path d="M25 90 Q 75 90, 105 50 T 170 15" strokeWidth="2.2" strokeLinecap="round" />
+      </svg>
+      
+      {/* LaTeX Equations */}
+      <div className="absolute top-2.5 right-24 text-right space-y-0.5 text-[10px] font-bold italic opacity-85 font-mono text-violet-600 dark:text-violet-300">
+        <p>E = mc² · ∫f(x)dx</p>
+        <p>e^(iπ) + 1 = 0</p>
+      </div>
+      <div className="absolute bottom-14 left-5 space-y-0.5 text-[9px] font-bold opacity-75 font-mono text-violet-700 dark:text-violet-300">
+        <p>lim (x→0) sin(x)/x = 1</p>
+        <p>∇ × B = μ₀J + μ₀ε₀(∂E/∂t)</p>
+      </div>
     </div>
   </div>
 );
 
-/* ─── Departments Configuration ───────────────────────────────────────────── */
+/* ─── Departments Filter Configuration ────────────────────────────────────── */
 
 const DEPARTMENTS = [
   {
@@ -123,10 +203,10 @@ const DEPT_CONFIG = {
   owners_club: {
     name: "Owner's Club",
     accentBar: 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500',
-    badgeStyle: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/25',
+    badgeStyle: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30 group-hover:bg-amber-500/20 group-hover:border-amber-400/80',
     avatarGradient: 'from-amber-400 via-yellow-500 to-orange-500',
-    avatarRing: 'ring-amber-400/40',
-    cardBorderHover: 'hover:border-amber-400/50 dark:hover:border-amber-500/35',
+    avatarRing: 'ring-amber-400/40 group-hover:ring-amber-400',
+    cardBorderHover: 'hover:border-amber-400 dark:hover:border-amber-400/90 hover:shadow-2xl hover:shadow-amber-500/20',
     icon: (
       <svg className="w-3 h-3 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
         <path d="M5 16L3 5l5.5 4L12 4l3.5 5L21 5l-2 11H5zm0 2h14v2H5v-2z" />
@@ -138,10 +218,10 @@ const DEPT_CONFIG = {
   tech: {
     name: 'Tech',
     accentBar: 'bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500',
-    badgeStyle: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/25',
+    badgeStyle: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/30 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/80',
     avatarGradient: 'from-cyan-400 via-sky-500 to-blue-600',
-    avatarRing: 'ring-cyan-400/40',
-    cardBorderHover: 'hover:border-cyan-400/50 dark:hover:border-cyan-500/35',
+    avatarRing: 'ring-cyan-400/40 group-hover:ring-cyan-400',
+    cardBorderHover: 'hover:border-cyan-400 dark:hover:border-cyan-400/90 hover:shadow-2xl hover:shadow-cyan-500/20',
     icon: (
       <svg className="w-3 h-3 text-cyan-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -152,10 +232,10 @@ const DEPT_CONFIG = {
   promotional: {
     name: 'Promotional',
     accentBar: 'bg-gradient-to-r from-rose-400 via-pink-400 to-fuchsia-500',
-    badgeStyle: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/25',
+    badgeStyle: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30 group-hover:bg-rose-500/20 group-hover:border-rose-400/80',
     avatarGradient: 'from-rose-400 via-pink-500 to-fuchsia-600',
-    avatarRing: 'ring-rose-400/40',
-    cardBorderHover: 'hover:border-rose-400/50 dark:hover:border-rose-500/35',
+    avatarRing: 'ring-rose-400/40 group-hover:ring-rose-400',
+    cardBorderHover: 'hover:border-rose-400 dark:hover:border-rose-400/90 hover:shadow-2xl hover:shadow-rose-500/20',
     icon: (
       <svg className="w-3 h-3 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6" />
@@ -166,10 +246,10 @@ const DEPT_CONFIG = {
   faculty: {
     name: 'Faculty',
     accentBar: 'bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-500',
-    badgeStyle: 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border-violet-500/25',
+    badgeStyle: 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border-violet-500/30 group-hover:bg-violet-500/20 group-hover:border-violet-400/80',
     avatarGradient: 'from-violet-500 via-purple-600 to-indigo-600',
-    avatarRing: 'ring-violet-400/40',
-    cardBorderHover: 'hover:border-violet-400/50 dark:hover:border-violet-500/35',
+    avatarRing: 'ring-violet-400/40 group-hover:ring-violet-400',
+    cardBorderHover: 'hover:border-violet-400 dark:hover:border-violet-400/90 hover:shadow-2xl hover:shadow-violet-500/20',
     icon: (
       <svg className="w-3 h-3 text-violet-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253" />
@@ -180,10 +260,10 @@ const DEPT_CONFIG = {
   default: {
     name: 'Team Member',
     accentBar: 'bg-gradient-to-r from-indigo-400 via-indigo-500 to-purple-500',
-    badgeStyle: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/25',
+    badgeStyle: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30 group-hover:bg-indigo-500/20',
     avatarGradient: 'from-indigo-500 via-indigo-600 to-purple-600',
-    avatarRing: 'ring-indigo-400/40',
-    cardBorderHover: 'hover:border-indigo-400/50 dark:hover:border-indigo-500/35',
+    avatarRing: 'ring-indigo-400/40 group-hover:ring-indigo-400',
+    cardBorderHover: 'hover:border-indigo-400/60 dark:hover:border-indigo-500/40 hover:shadow-xl',
     icon: (
       <svg className="w-3 h-3 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
         <circle cx="12" cy="12" r="10" />
@@ -336,7 +416,7 @@ const EmployeesPage = () => {
         })}
       </div>
 
-      {/* Employee Cards Grid — Clean, Refined & Minimalist */}
+      {/* Employee Cards Grid — Clean Minimalist Resting ➔ Dynamic Maximalist Hover */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
           <div className="col-span-full flex justify-center py-16"><CatLoader text="Loading Members..." /></div>
@@ -355,9 +435,9 @@ const EmployeesPage = () => {
             return (
               <div
                 key={emp._id}
-                className={`relative overflow-hidden rounded-2xl border bg-white dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800/90 shadow-sm hover:shadow-lg hover:shadow-slate-200/60 dark:hover:shadow-black/40 ${config.cardBorderHover} group transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between`}
+                className={`relative overflow-hidden rounded-2xl border bg-white dark:bg-slate-900/90 border-slate-200/90 dark:border-slate-800/90 shadow-sm ${config.cardBorderHover} group transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between`}
               >
-                {/* Subtle Thematic Watermark */}
+                {/* Minimalist ➔ Maximalist Thematic Watermark on Hover */}
                 {config.Watermark && <config.Watermark />}
 
                 {/* Clickable Card Overlay */}
@@ -367,12 +447,12 @@ const EmployeesPage = () => {
                   title={`View ${emp.name}'s profile`}
                 />
 
-                {/* Refined 2px Top Accent Bar */}
-                <div className={`w-full h-1 relative z-10 ${config.accentBar}`} />
+                {/* Top Hierarchy Indicator Bar (expands on hover) */}
+                <div className={`w-full h-1 group-hover:h-1.5 transition-all duration-300 relative z-10 ${config.accentBar}`} />
 
-                {/* Clean Corner Department Badge */}
+                {/* Corner Department Badge */}
                 <div
-                  className={`absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-bold tracking-wider uppercase border shadow-2xs backdrop-blur-xs ${config.badgeStyle}`}
+                  className={`absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-bold tracking-wider uppercase border shadow-2xs backdrop-blur-xs transition-all duration-300 ${config.badgeStyle}`}
                 >
                   {config.icon}
                   <span className="font-heading">{config.name}</span>
@@ -391,8 +471,8 @@ const EmployeesPage = () => {
                 {/* Card Main Header Info */}
                 <div className="p-5 pointer-events-none pb-0 relative z-10">
                   <div className="flex items-center gap-3.5 mb-4 pr-20">
-                    {/* Avatar */}
-                    <div className={`relative w-12 h-12 rounded-xl bg-gradient-to-tr ${config.avatarGradient} text-white font-bold flex items-center justify-center text-base shadow-sm ring-2 ${config.avatarRing} ring-offset-2 ring-offset-white dark:ring-offset-slate-900 shrink-0 overflow-hidden`}>
+                    {/* Avatar with energetic hover scaling */}
+                    <div className={`relative w-12 h-12 rounded-xl bg-gradient-to-tr ${config.avatarGradient} text-white font-bold flex items-center justify-center text-base shadow-sm ring-2 ${config.avatarRing} ring-offset-2 ring-offset-white dark:ring-offset-slate-900 group-hover:scale-105 transition-all duration-300 shrink-0 overflow-hidden`}>
                       {emp.profilePicture ? (
                         <img src={emp.profilePicture} alt={emp.name} className="w-full h-full object-cover" />
                       ) : (
@@ -419,8 +499,8 @@ const EmployeesPage = () => {
                   </div>
                 </div>
 
-                {/* Clean, Refined Stats Footer */}
-                <div className="grid grid-cols-3 gap-2 px-5 py-3 mt-4 bg-slate-50/70 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800/60 relative z-10">
+                {/* Structured Stats Footer */}
+                <div className="grid grid-cols-3 gap-2 px-5 py-3 mt-4 bg-slate-50/70 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800/60 relative z-10 transition-colors duration-300">
                   {isFacultyEmp ? (
                     <>
                       <div className="text-center">
